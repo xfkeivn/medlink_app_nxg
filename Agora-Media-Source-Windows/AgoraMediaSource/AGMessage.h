@@ -1,0 +1,17 @@
+#pragma once
+
+#define WM_GOBACK			WM_USER+100
+#define WM_GONEXT			WM_USER+101
+#define WM_JOINCHANNEL		WM_USER+200
+#define WM_LEAVECHANNEL		WM_USER+201
+
+#define WM_CLIENT_LOGINSUCCESS	        WM_USER+300
+#define WM_CLIENT_QUITAPP               WM_USER+301
+#define WM_CLIENT_JOINMEETING           WM_USER+302
+#define WM_CLIENT_INCOMINGCALL          WM_USER+303
+#define WM_CLIENT_LOGOUT                WM_USER+304
+#define WM_CLIENT_REJECTCALL            WM_USER+305
+#define WM_CLIENT_ACCEPTCALL            WM_USER+306
+#define WM_CLIENT_INIT                  WM_USER+307
+
+#define WM_AGSLD_TMBPOSCHANGED	WM_USER+200

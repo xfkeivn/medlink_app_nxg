@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="380,319" caption="0,0,0,32">
+  <!--Font size 12-->
+  <Font id="0" name="Segoe UI" size="12" bold="true"/>
+  <Font id="1" name="Segoe UI" size="12" bold="false"/>
+  <!--Font size 13-->
+  <Font id="2" name="Segoe UI" size="13" bold="false"/>
+  <Font id="3" name="Segoe UI" size="13" bold="true"/>
+  <!--Font size 15-->
+  <Font id="4" name="Segoe UI" size="15" bold="false"/>
+  <Font id="5" name="Segoe UI" size="15" bold="true"/>
+  <Font id="14" name="Segoe UI" size="14" bold="false"/>
+  <!--Font size 14-->
+  <Font id="6" name="Segoe UI" size="14" bold="false"/>
+  <Font id="7" name="Segoe UI" size="14" bold="true"/>
+  <!--8-->
+  <Font id="8" name="Segoe UI" size="21" bold="true"/>
+  <!--9-->
+  <Font id="9" name="Segoe UI" size="17" bold="true"/>
+  <!--10-->
+  <Font id="10" name="Segoe UI" size="24" bold="false"/>
+  <!--11-->
+  <Font id="11" name="Segoe UI" size="20" bold="false"/>
+  <!--12-->
+  <Font id="12" name="Segoe UI" size="14" bold="false"/>
+  <Font id="13" name="Segoe UI" size="17" bold="false"/>
+
+  
+    <!--Default name="Button" value=" height=&quot;30&quot; width=&quot;100&quot; hotbkcolor=&quot;#FF179FF5 &quot; pushedbkcolor=&quot;#FF179FF5 &quot; focusedbkcolor=&quot;#FF179FF5 &quot; bkcolor=&quot;#FF179FF5 &quot;" /-->
+    <Default name="VScrollBar" value="width=&quot;10&quot; button1normalimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;0,0,10,10&apos; &quot; button1hotimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;20,0,30,10&apos;&quot; button1pushedimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;10,0,20,10&apos;&quot; button1disabledimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;30,0,40,10&apos;&quot; button2normalimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;0,26,10,36&apos;&quot; button2hotimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;20,26,30,36&apos;&quot; button2pushedimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;10,26,20,36&apos;&quot; button2disabledimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;30,26,40,36&apos;&quot; thumbnormalimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;0,12,10,25&apos;&quot; thumbhotimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;20,12,30,25&apos;&quot; thumbpushedimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;10,12,20,25&apos;&quot; thumbdisabledimage   =&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;30,12,40,25&apos;&quot; bknormalimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;0,11,10,12&apos;&quot; bkhotimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;20,11,30,12&apos;&quot; bkpushedimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;10,11,20,12&apos;&quot; bkdisabledimage=&quot;res=&apos;vscroll_bar.png&apos; restype=&apos;ZPIMGRES&apos; source=&apos;30,11,40,12&apos;&quot; " />
+    <HorizontalLayout bkcolor="#FF004481" bkcolor2="#FF004481" name="incoming_call_panel">
+	<!--HorizontalLayout bkcolor="#ff3a6fa1" bkcolor2="#ff3a6fa1" name="incoming_call_panel"-->	
+        <Control width="30" />
+		<VerticalLayout>		
+			<HorizontalLayout height="88">
+				<Control />
+				<VerticalLayout width="58">
+					<Control />
+					<Control width="58" height="58" bkimage="res=&apos;GROUP.PNG&apos; restype=&apos;ZPIMGRES&apos; " />
+				</VerticalLayout>
+				<Control />
+			</HorizontalLayout>
+			<VerticalLayout height="60">	
+				<Control />
+				<label font="7" height="20" name="calling_label" text="Calling from Zhongshan Hospital..." textcolor="#FFFFFFFF" autowidth="true" ShowHtml="true" align="center"/>
+				<label font="7" height="20" name="timing_label" text="" textcolor="#FFFFFFFF" autowidth="true" ShowHtml="true" align="center"/>
+			</VerticalLayout>	
+			<!--HorizontalLayout>
+				<Control width="20"/>
+				<VerticalLayout>
+					<Control height="20"/>
+					<Button name="btn_reject" height="74" width="74"
+								normalimage="res='BUTTON_REJECT_NORMAL.PNG' restype='ZPIMGRES'" 
+								hotimage="res='BUTTON_REJECT_HOVER.PNG' restype='ZPIMGRES'" 
+								pushedimage="res='BUTTON_REJECT_PRESS.PNG' restype='ZPIMGRES'"/>
+				</VerticalLayout>
+				<Control width="74"/>
+				<GifAnim autoplay="true" width="106" height="106" bkimage="ACCEPT.GIF" gifrestype="ZPIMGRES" name="gif_accept" />							
+			</HorizontalLayout-->
+
+			<HorizontalLayout>
+					<Button name="btn_reject" height="105" width="105"
+								normalimage="res='BUTTON_REJECT_NORMAL.PNG' restype='ZPIMGRES'" 
+								hotimage="res='BUTTON_REJECT_HOVER.PNG' restype='ZPIMGRES'" 
+								pushedimage="res='BUTTON_REJECT_PRESS.PNG' restype='ZPIMGRES'"/>
+					<Control width="25"/>
+					<VerticalLayout>
+						<Control height="22"/>
+						<GifAnim autoplay="true"  width="60" height="60" bkimage="res\\ripple.gif" autosize="false" />
+						<Control />
+					</VerticalLayout>
+					<Control width="25"/>
+					<!--<Button name="btn_accept" height="105" width="105"
+								normalimage="res='BUTTON_ACCEPT_NORMAL.PNG' restype='ZPIMGRES'" 
+								hotimage="res='BUTTON_ACCEPT_HOVER.PNG' restype='ZPIMGRES'" 
+								pushedimage="res='BUTTON_ACCEPT_PRESS.PNG' restype='ZPIMGRES'"/> -->
+        <GifAnim name="gif_accept" width="105" height="105" autosize="false" bkimage="res\\accept.gif" autoplay="true" />
+        
+			</HorizontalLayout>			
+		</VerticalLayout>
+		<Control width="30" />
+    </HorizontalLayout>
+</Window>

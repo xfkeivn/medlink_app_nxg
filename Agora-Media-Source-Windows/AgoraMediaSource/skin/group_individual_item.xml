@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="818,607" bkcolor="#FF0F2B4B" caption="0,0,0,32">
+  <Font id="0" name="Calibri" size="16" bold="false" italic="false" />
+  <ListContainerElement width="260" name="list1" height="70" inset="0,0,0,0" bkcolor="#FF19375A">
+    <HorizontalLayout>
+      <Button name="status_btn" width="48" height="48" padding="38,11,0,0" mouse="false" bkimage="file='res\single.png'" normalimage="file='res\offline.png' dest='32,32,48,48'"/>
+      <Control width="10"/>
+      <VerticalLayout>
+        <Control height="10"/>
+        <Label name="name_label" textcolor="#FFFFFFFF" font="0" />
+        <Label name="telephone_label" textcolor="#B3BECA" font="0" />
+      </VerticalLayout>
+    </HorizontalLayout>
+  </ListContainerElement>
+</Window>
