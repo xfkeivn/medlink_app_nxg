@@ -58,6 +58,7 @@ protected:
 	void DoStartMeetingBtnClick();
 	static DWORD WINAPI threadTiming(LPVOID lpParamter);
 	void removeThread(string user_id);
+	void doSort();
 	//void teminalAllThreads();
 protected:
 	CPaintManagerUI                                      m_PaintManager;
@@ -65,6 +66,7 @@ protected:
 	map<CCheckBoxUI*, Individual*>                       checkMap;
 	map<Individual*, CListContainerElementUI*>           m_model_ui_map;
 	map<string, HANDLE>                                  m_thread_map;
+	vector<CListContainerElementUI*>                     m_listElements;
 private:
 	CButtonUI* m_btnStartMeeting;
 	CListUI*   m_clientslist;

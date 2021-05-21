@@ -2,6 +2,8 @@
 #include "LoggedInUI.h"
 #include "CTipDlg.h"
 
+extern bool compareWithStatusAndName(CListContainerElementUI * item1, CListContainerElementUI * item2);
+
 typedef struct _CLIENT_PARAM {
 	LoggedInUI *loggedInUI;
 	string user_id;
@@ -318,6 +320,8 @@ void LoggedInUI::onClientsUpdate(string rsp)
 {
 	vector<Individual*> clients = clients_manager->getClients(rsp);
 	m_clientslist->RemoveAll();
+	m_model_ui_map.clear();
+	m_listElements.clear();
 	for (int i = 0; i < clients.size(); i++)
 	{
 		Individual* individual = dynamic_cast<Individual*>(clients[i]);
@@ -370,9 +374,8 @@ void LoggedInUI::onClientsUpdate(string rsp)
 			pStatus->SetBkImage(string2LPCTSTR(s));
 		}
 		m_clientslist->Add(pListItem);
+		m_listElements.push_back(pListItem);
 		m_model_ui_map.insert(map<Individual*, CListContainerElementUI*>::value_type(clients[i], pListItem));
-
-
 	}
 	if (m_model_ui_map.size() > 0)
 	{
@@ -596,6 +599,7 @@ void LoggedInUI::updateClientsStatus(string user_id, UserStatus status, string c
 			}
 		}
 	}
+	doSort();
 	map<CCheckBoxUI*, Individual*>::iterator it = checkMap.begin();
 	while (it != checkMap.end())
 	{
@@ -608,6 +612,7 @@ void LoggedInUI::updateClientsStatus(string user_id, UserStatus status, string c
 		it++;
 	}
 	m_btnStartMeeting->SetEnabled(false);
+	
 	//m_btnStartMeeting->SetNormalImage(_T("file = 'res\\start_meeting_normal.png'"));
 	//m_btnStartMeeting->SetHotImage(_T("file = 'res\\start_meeting_hot.png'"));
 	//m_btnStartMeeting->SetPushedImage(_T("file = 'res\\start_meeting_push.png'"));
@@ -835,4 +840,45 @@ DWORD WINAPI LoggedInUI::threadTiming(LPVOID lpParamter)
 		param->loggedInUI->onInvitationRefuseOrTimeoutByClient(param->user_id, false);
 	}
 	return 0;
+}
+
+void LoggedInUI::doSort()
+{
+	sort(m_listElements.begin(), m_listElements.end(), compareWithStatusAndName);
+	vector<CListContainerElementUI *>::iterator listElementIter;
+	int index = 0;
+	for (listElementIter = m_listElements.begin(); listElementIter != m_listElements.end(); listElementIter++) {
+		CListContainerElementUI *pListElement = *listElementIter;
+		m_clientslist->SetItemIndex(pListElement, index);
+		index++;
+	}
+}
+
+bool compareWithStatusAndName(CListContainerElementUI * item1, CListContainerElementUI * item2)
+{
+	CLabelUI *pLabelName1 = static_cast<CLabelUI *>(item1->FindSubControl(_T("name_label")));
+	CCheckBoxUI *pCheckbox1 = static_cast<CCheckBoxUI *>(item1->FindSubControl(_T("checkbox")));
+	CLabelUI *pLabelName2 = static_cast<CLabelUI *>(item2->FindSubControl(_T("name_label")));
+	CCheckBoxUI *pCheckbox2 = static_cast<CCheckBoxUI *>(item2->FindSubControl(_T("checkbox")));
+	if (pCheckbox1->IsEnabled() && !pCheckbox2->IsEnabled())
+	{
+		return true;
+	}
+	else if (!pCheckbox1->IsEnabled() && pCheckbox2->IsEnabled())
+	{
+		return false;
+	}
+	else
+	{
+		LPCTSTR strName1 = pLabelName1->GetText().GetData();
+		LPCTSTR strName2 = pLabelName2->GetText().GetData();
+
+
+		if (_tcscmp(strName1, strName2) < 0) 
+			return true;
+		else 
+			return false;
+	}
+
+	
 }
