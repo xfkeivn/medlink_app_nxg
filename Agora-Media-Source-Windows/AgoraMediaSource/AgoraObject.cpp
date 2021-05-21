@@ -66,6 +66,10 @@ IRtcEngine *CAgoraObject::GetEngine()
 #endif
 
 		m_lpAgoraEngine->initialize(ctx);		
+		if (!m_lpAgoraObject->GetSelfHost())
+		{
+			m_lpAgoraObject->MuteLocalVideo(true);
+		}
 	}
 		
 	return m_lpAgoraEngine;
