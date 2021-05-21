@@ -6,7 +6,7 @@
 #include "../rapidjson/writer.h"
 #include "../rapidjson/document.h"
 #include <map>
-
+#include <algorithm>
 
 class ClientsManager
 {

@@ -3,6 +3,7 @@
 #include <direct.h>
 #include "base64.h"
 
+extern bool CompareWithTitleAse(Individual* client1, Individual* client2);
 ClientsManager* ClientsManager::instance_ = NULL;
 
 ClientsManager* ClientsManager::getInstance()
@@ -184,7 +185,18 @@ vector<Individual*> ClientsManager::getClients(string rsp)
 		logError("Error in getting host clients response:" + rsp);
 		::MessageBox(NULL, L"Error in getting host clients！", L"error", MB_OK);
 	}
+	sort(all_clients.begin(), all_clients.end(), CompareWithTitleAse);
 	return all_clients;
+}
+// 比较函数，比较字段是名称,升序
+bool CompareWithTitleAse(Individual* client1, Individual* client2)
+{
+	wstring name1 = client1->getWName();
+	wstring name2 = client2->getWName();
+	if (_tcscmp(name1.c_str(), name2.c_str()) < 0) 
+		return true;
+	else 
+		return false;
 }
 
 map<string, Individual*> ClientsManager::getIndividualMap()
