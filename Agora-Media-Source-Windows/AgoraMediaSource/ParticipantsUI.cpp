@@ -18,6 +18,10 @@ ParticipantsUI::ParticipantsUI(HWND hwnd)
 	this->hwndParent = hwnd;
 	m_clientsManager = ClientsManager::getInstance();
 	m_bRemotingControling = false;
+	m_twoWinsQueueForWinMode2 = new TwoWinsQueue();
+	m_twoWinsQueueForWinMode4 = new TwoWinsQueue();
+	m_twoWinsQueueForWinMode6 = new TwoWinsQueue();
+	m_threeWinsQueueForWinMode7 = new ThreeWinsQueue();
 }
 
 UINT ParticipantsUI::GetSkinRes()
@@ -75,15 +79,11 @@ void ParticipantsUI::InitWindow()
 	m_winmode6_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode6_btn")));
 	m_winmode7_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode7_btn")));
 	m_winmode8_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode8_btn")));
-	m_winmode1_prop = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(_T("winmode1_prop")));
-	m_winmode1_hdm1_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode1_hdmi1")));
-	m_winmode1_hdm2_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode1_hdmi2")));
-	m_winmode1_hdm3_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode1_hdmi3")));
-	m_winmode1_hdm4_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("winmode1_hdmi4")));
-	//m_winmode2_prop = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(_T("winmode2_prop")));
-	//m_winmode4_prop = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(_T("winmode4_prop")));
-	//m_winmode6_prop = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(_T("winmode6_prop")));
-	//m_winmode7_prop = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(_T("winmode7_prop")));
+	m_hdm1_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("hdmi1")));
+	m_hdm2_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("hdmi2")));
+	m_hdm3_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("hdmi3")));
+	m_hdm4_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("hdmi4")));
+
 	//if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 	//{
 		int size = getResolutionFontSize(MAX_TITLE_SIZE);
@@ -93,7 +93,7 @@ void ParticipantsUI::InitWindow()
 		//pListVerticalScrollBar->SetAttribute(_T("width"), _T("48"));
 		pListVerticalScrollBar->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(scrollbar_width)).c_str());
 	//}
-		int pictureDivider = CAGConfig::GetInstance()->GetPictureDivider();
+		pictureDivider = CAGConfig::GetInstance()->GetPictureDivider();
 		if (pictureDivider == 2)
 		{
 			m_video_2input_ctrl->SetVisible(true);
@@ -107,13 +107,14 @@ void ParticipantsUI::InitWindow()
 
 void ParticipantsUI::Notify(TNotifyUI& msg)
 {
-	logInfo("msg.sType=" + StringUtil::StringFromLPCTSTR(msg.sType.GetData()) + ",msg.pSender=" + StringUtil::StringFromLPCTSTR(msg.pSender->GetName().GetData()));
+	//logInfo("msg.sType=" + StringUtil::StringFromLPCTSTR(msg.sType.GetData()) + ",msg.pSender=" + StringUtil::StringFromLPCTSTR(msg.pSender->GetName().GetData()));
 	if (msg.sType == _T("click"))
 	{
 		if (msg.pSender->GetName() == L"remote_ctrl_btn")
 		{
 			BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-			if (isRCEnable)
+			CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+			if (isRCEnable && equipment.MakeUpper() != _T("SPYGLASS"))
 			{
 				if (CAGConfig::GetInstance()->GetDeviceCom().IsEmpty())
 				{
@@ -122,10 +123,6 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 				}
 			}
 			m_bRemotingControling = !m_bRemotingControling;
-			if (m_bRemotingControling)
-			{
-				m_video_2input_ctrl->SetVisible(false);
-			}
 			CButtonUI* remote_control_btn = static_cast<CButtonUI *>(msg.pSender);
 			map<CButtonUI*, Individual*>::iterator it = remoteMap.find(remote_control_btn);
 			if (it != remoteMap.end())
@@ -137,17 +134,29 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 					{ 
 						logInfo("Grant user " + participant->getUserId() + " to have remote control.");
 						CommandManager::GetInstance()->GrantRemoteControl(atoi(participant->getUserId().c_str()));
+						if (pictureDivider == 2)
+						{
+							m_video_2input_ctrl->SetVisible(false);
+						}						
 					}
 					else
 					{
 						logInfo("Take back remote control form user " + participant->getUserId());
 						CommandManager::GetInstance()->TakeBackRemoteControl(atoi(participant->getUserId().c_str()));
+						if (pictureDivider == 2)
+						{
+							m_video_2input_ctrl->SetVisible(true);
+						}						
 					}
 				}
 				else
 				{
 					logInfo("Client " + participant->getUserId() + " give back remote control.");
 					::SendMessage(hwndParent, WM_GIVEBACK_REMOTE_CONTROL, 0, 0);
+					if (pictureDivider == 2)
+					{
+						m_video_2input_ctrl->SetVisible(true);
+					}
 				}
 			}
 			 
@@ -266,9 +275,11 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE1 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE1, true, true);
 			}
 			else {
+				logInfo("Only broadcast VIDEO_WINMODE1 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE1, false, true);
 			}
 		}
@@ -276,10 +287,12 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE2 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE2, true, true);
 			}
 			else 
 			{
+				logInfo("Only broadcast VIDEO_WINMODE2 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE2, false, true);
 			}
 		}
@@ -287,10 +300,12 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE4 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE4, true, true);
 			}
 			else
 			{
+				logInfo("Only broadcast VIDEO_WINMODE4 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE4, false, true);
 			}
 		}
@@ -298,10 +313,12 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE6 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE6, true, true);
 			}
 			else
 			{
+				logInfo("Only broadcast VIDEO_WINMODE6 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE6, false, true);
 			}
 		}
@@ -309,67 +326,78 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE7 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE7, true, true);
 			}
 			else
 			{
+				logInfo("Only broadcast VIDEO_WINMODE7 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE7, false, true);
 			}
 		}
 		else if (msg.pSender->GetName() == L"winmode8_btn")
 		{
-			m_winmode1_prop->SetVisible(false);
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
+				logInfo("Host send VIDEO_WINMODE8 cmd to serial port, and broadcast it.");
 				selectVideoMode(VIDEO_WINMODE8, true, true);
 			}
 			else
 			{
+				logInfo("Only broadcast VIDEO_WINMODE8 cmd in the channel.");
 				selectVideoMode(VIDEO_WINMODE8, false, true);
 			}
 		}
-		else if (msg.pSender->GetName() == L"winmode1_hdmi1")
+		else if (msg.pSender->GetName() == L"hdmi1")
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
-				selectVideoMode(VIDEO_HDMI1_WIN1, true, true);
+				logInfo("Host send VIDEO_HDMI1 cmd to serial port, and broadcast it.");
+				selectVideoMode(VIDEO_HDMI1, true, true);
 			}
 			else 
 			{
-				selectVideoMode(VIDEO_HDMI1_WIN1, false, true);
+				logInfo("Only broadcast VIDEO_HDMI1 cmd in the channel.");
+				selectVideoMode(VIDEO_HDMI1, false, true);
 			}
 		}
-		else if (msg.pSender->GetName() == L"winmode1_hdmi2")
+		else if (msg.pSender->GetName() == L"hdmi2")
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
-				selectVideoMode(VIDEO_HDMI2_WIN1, true, true);
+				logInfo("Host send VIDEO_HDMI2 cmd to serial port, and broadcast it.");
+				selectVideoMode(VIDEO_HDMI2, true, true);
 			}
 			else
 			{
-				selectVideoMode(VIDEO_HDMI2_WIN1, false, true);
+				logInfo("Only broadcast VIDEO_HDMI2 cmd in the channel.");
+				selectVideoMode(VIDEO_HDMI2, false, true);
 			}
 		}
-		else if (msg.pSender->GetName() == L"winmode1_hdmi3")
+		else if (msg.pSender->GetName() == L"hdmi3")
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
-				selectVideoMode(VIDEO_HDMI3_WIN1, true, true);
+				logInfo("Host send VIDEO_HDMI3 cmd to serial port, and broadcast it.");
+				selectVideoMode(VIDEO_HDMI3, true, true);
 			}
 			else
 			{
-				selectVideoMode(VIDEO_HDMI3_WIN1, false, true);
+				logInfo("Only broadcast VIDEO_HDMI3 cmd in the channel.");
+				selectVideoMode(VIDEO_HDMI3, false, true);
 			}
 		}
-		else if (msg.pSender->GetName() == L"winmode1_hdmi4")
+		else if (msg.pSender->GetName() == L"hdmi4")
 		{
 			if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 			{
-				selectVideoMode(VIDEO_HDMI4_WIN1, true, true);
+				logInfo("Host send VIDEO_HDMI4 cmd to serial port, and broadcast it.");
+				selectVideoMode(VIDEO_HDMI4, true, true);
 			}
 			else
 			{
-				selectVideoMode(VIDEO_HDMI4_WIN1, false, true);
+				logInfo("Only broadcast VIDEO_HDMI4 cmd in the channel.");
+				selectVideoMode(VIDEO_HDMI4, false, true);
 			}
 		}
 	}
@@ -427,7 +455,8 @@ void ParticipantsUI::onUserListUpdate(UINT *uids, UINT count)
 		{
 			string hostuid = to_string(CAgoraObject::GetAgoraObject()->GetSelfUID());
 			BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-			if (hostuid == participants[i]->getUserId() || !isRCEnable)
+			CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+			if (hostuid == participants[i]->getUserId() || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS"))
 			{
 				pRemoteBtn->SetVisible(false);
 			}
@@ -453,7 +482,6 @@ void ParticipantsUI::onUserListUpdate(UINT *uids, UINT count)
 			item_image_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(image_container_size)).c_str());
 			int remote_container_size = getResolutionSize(MAX_PARTICIPANTS_REMOTE_SIZE);
 			item_remote_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(remote_container_size)).c_str());
-			logInfo("remote btn size: " + to_string(remote_container_size));
 			pImageBtn->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(image_container_size)).c_str());
 			pImageBtn->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(image_container_size)).c_str());
 			pRemoteBtn->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(remote_container_size)).c_str());
@@ -565,7 +593,8 @@ Individual* ParticipantsUI::onUserJoined(UINT uid)
 	else
 	{
 		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-		if (CAgoraObject::GetAgoraObject()->GetSelfUID() == uid || !isRCEnable)
+		CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+		if (CAgoraObject::GetAgoraObject()->GetSelfUID() == uid || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS"))
 		{
 			pRemoteBtn->SetVisible(false);
 		}
@@ -721,7 +750,10 @@ void ParticipantsUI::updateParticipant(string rsp)
 
 void ParticipantsUI::updateUIForRemoteControl(UINT control_user, bool control)
 {
-	//m_video_remote_control->SetVisible(!control);
+	if (pictureDivider == 2)
+	{
+		m_video_2input_ctrl->SetVisible(!control);
+	}
 	m_bRemotingControling = control;
 	vector<Individual*> all_participants = m_clientsManager->getAllParticipants();	
 	for (int i = 0; i < all_participants.size(); i++)
@@ -800,6 +832,10 @@ void ParticipantsUI::updateUIForRemoteControl(UINT control_user, bool control)
 void ParticipantsUI::setRemoteControlling(bool isRemoteControlling)
 {
 	this->m_bRemotingControling = isRemoteControlling;
+	if (pictureDivider == 2)
+	{
+		m_video_2input_ctrl->SetVisible(!isRemoteControlling);
+	}
 }
 
 void ParticipantsUI::updateUIForAnnotation(bool startAnnotation)
@@ -880,6 +916,7 @@ Individual* ParticipantsUI::getParticipant(UINT uid)
 
 void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool broadcast)
 {
+	int win;
 	switch (type)
 	{
 	case VIDEO_HD1_MODE:
@@ -896,6 +933,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		m_pip_control_container->SetVisible(false);
 		if (trigger)
 		{
+			logInfo("Execute hd1 operation.");
 			VideoScreenControl::GetInstance()->sendHD1Op();
 		}
 		if (broadcast)
@@ -917,6 +955,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		m_pip_control_container->SetVisible(false);
 		if (trigger)
 		{
+			logInfo("Execute hd2 operation.");
 			VideoScreenControl::GetInstance()->sendHD2Op();
 		}
 		if (broadcast)
@@ -938,6 +977,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		m_pip_control_container->SetVisible(true);
 		if (trigger)
 		{
+			logInfo("Execute Pip operation.");
 			VideoScreenControl::GetInstance()->sendPipModeOp();
 		}
 		if (broadcast)
@@ -959,6 +999,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		m_pip_control_container->SetVisible(false);
 		if (trigger)
 		{
+			logInfo("Execute Pbyp operation.");
 			VideoScreenControl::GetInstance()->sendPbypModeOp();
 		}
 		if (broadcast)
@@ -980,6 +1021,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		m_pip_control_container->SetVisible(false);
 		if (trigger)
 		{
+			logInfo("Execute pup operation.");
 			VideoScreenControl::GetInstance()->sendPupModeOp();
 		}
 		if (broadcast)
@@ -990,6 +1032,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 	case VIDEO_PIP_SWAP:
 		if (trigger)
 		{
+			logInfo("Execute swap operation.");
 			VideoScreenControl::GetInstance()->sendSwapPortOp();
 		}
 		if (broadcast)
@@ -1000,6 +1043,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 	case VIDEO_PIP_PIC:
 		if (trigger)
 		{
+			logInfo("Execute Pic operation.");
 			VideoScreenControl::GetInstance()->sendPicSizeOp();
 		}
 		if (broadcast)
@@ -1010,6 +1054,7 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 	case VIDEO_PIP_ROTATE:
 		if (trigger)
 		{
+			logInfo("Execute Rotate operation.");
 			VideoScreenControl::GetInstance()->sendRotateOp();
 		}
 		if (broadcast)
@@ -1018,22 +1063,21 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE1:
-		m_winmode1_prop->SetVisible(true);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			if (selectedWin1HDIMode == VIDEO_HDMI1_WIN1)
-			{
-				enableRemoteControl(true);
-			}
-			else
-			{
-				enableRemoteControl(false);
-			}
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_push.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_normal.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_normal.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_normal.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_normal.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_normal.png'"));
+		activeHDMIRadios();
 		if (trigger)
 		{
+			logInfo("Execute Winmode1 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode1Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();			
 		}
 		if (broadcast)
 		{
@@ -1041,15 +1085,24 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE2:
-		m_winmode1_prop->SetVisible(false);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_normal.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_push.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_normal.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_normal.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_normal.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_normal.png'"));
+		activeHDMIRadios();
 		if (trigger)
 		{
+			logInfo("Execute Winmode2 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode2Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI22Op();
+			m_twoWinsQueueForWinMode2->reset();
 		}
 		if (broadcast)
 		{
@@ -1057,15 +1110,24 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE4:
-		m_winmode1_prop->SetVisible(false);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_normal.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_normal.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_push.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_normal.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_normal.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_normal.png'"));
+		activeHDMIRadios();
 		if (trigger)
 		{
+			logInfo("Execute Winmode4 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode4Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI22Op();
+			m_twoWinsQueueForWinMode4->reset();
 		}
 		if (broadcast)
 		{
@@ -1073,15 +1135,24 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE6:
-		m_winmode1_prop->SetVisible(false);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_normal.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_normal.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_normal.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_push.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_normal.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_normal.png'"));
+		activeHDMIRadios();
 		if (trigger)
 		{
+			logInfo("Execute Winmode6 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode6Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI22Op();
+			m_twoWinsQueueForWinMode6->reset();
 		}
 		if (broadcast)
 		{
@@ -1089,15 +1160,26 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE7:
-		m_winmode1_prop->SetVisible(false);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_normal.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_normal.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_normal.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_normal.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_push.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_normal.png'"));
+		activeHDMIRadios();
 		if (trigger)
 		{
+			logInfo("Execute Winmode7 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode7Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI22Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI33Op();
+			m_threeWinsQueueForWinMode7->reset();
 		}
 		if (broadcast)
 		{
@@ -1105,228 +1187,371 @@ void ParticipantsUI::selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool bro
 		}
 		break;
 	case VIDEO_WINMODE8:
-		m_winmode1_prop->SetVisible(false);
 		selectedWinMode = type;
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+		m_winmode1_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode1_normal.png'"));
+		m_winmode2_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode2_normal.png'"));
+		m_winmode4_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode4_normal.png'"));
+		m_winmode6_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode6_normal.png'"));
+		m_winmode7_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode7_normal.png'"));
+		m_winmode8_btn->SetNormalImage(string2LPCTSTR("file='res\\winmode8_push.png'"));
+		m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\disable_radio.png' dest='0,0,38,39'"));
+		m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\disable_radio.png' dest='0,0,38,39'"));
+		m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\disable_radio.png' dest='0,0,38,39'"));
+		m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\disable_radio.png' dest='0,0,38,39'"));
+		m_hdm1_btn->SetEnabled(false);
+		m_hdm2_btn->SetEnabled(false);
+		m_hdm3_btn->SetEnabled(false);
+		m_hdm4_btn->SetEnabled(false);
 		if (trigger)
 		{
+			logInfo("Execute Winmode8 operation.");
+			Sleep(200);
 			VideoScreenControl::GetInstance()->sendWinMode8Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI11Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI22Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI33Op();
+			Sleep(200);
+			VideoScreenControl::GetInstance()->sendHDMI44Op();
 		}
 		if (broadcast)
 		{
 			CommandManager::GetInstance()->sendVideoWinMode8CMD();
 		}
 		break;
-	case VIDEO_HDMI1_WIN1:
-		selectedWin1HDIMode = type;
-		m_winmode1_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_select.png' dest='1,8,14,21'")); 
-		m_winmode1_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
+	case VIDEO_HDMI1:
+		selectedHDMIMode = type;
+		m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\selected_radio.png' dest='0,0,38,39'")); 
+		m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		if (trigger)
 		{
-			if (selectedWinMode == VIDEO_WINMODE1)
+			switch (selectedWinMode)
 			{
-				enableRemoteControl(true);
-			}
-			else
+				case VIDEO_WINMODE1:
+					logInfo("Execute HDMI11 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI11Op();
+					break;
+				case VIDEO_WINMODE2:
+					win = m_twoWinsQueueForWinMode2->getWin();
+					if (win == 1)
+					{
+						logInfo("Execute HDMI11 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI11Op();					
+					}
+					else if (win == 2)
+					{
+						logInfo("Execute HDMI12 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI12Op();
+					}
+					break;
+				case VIDEO_WINMODE4:
+					win = m_twoWinsQueueForWinMode4->getWin();
+					if (win == 1)
+					{
+						logInfo("Execute HDMI11 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI11Op();
+					}
+					else if (win == 2)
+					{
+						logInfo("Execute HDMI12 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI12Op();
+					}
+					break;
+				case VIDEO_WINMODE6:
+					win = m_twoWinsQueueForWinMode6->getWin();
+					if (win == 1)
+					{
+						logInfo("Execute HDMI11 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI11Op();
+					}
+					else if (win == 2)
+					{
+						logInfo("Execute HDMI12 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI12Op();
+					}
+					break;
+				case VIDEO_WINMODE7:
+					win = m_threeWinsQueueForWinMode7->getWin();
+					if (win == 1)
+					{
+						logInfo("Execute HDMI11 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI11Op();
+					}
+					else if (win == 2)
+					{
+						logInfo("Execute HDMI12 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI12Op();
+					}
+					else if (win == 3)
+					{
+						logInfo("Execute HDMI13 operation.");
+						VideoScreenControl::GetInstance()->sendHDMI13Op();
+					}
+					break;
+			}			
+		}
+		if (broadcast)
+		{
+			CommandManager::GetInstance()->sendVideoHDMI1CMD();
+		}
+		break;
+	case VIDEO_HDMI2:
+		selectedHDMIMode = type;
+		m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\selected_radio.png' dest='0,0,38,39'"));
+		m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		if (trigger)
+		{
+			switch (selectedWinMode)
 			{
-				enableRemoteControl(false);
+			case VIDEO_WINMODE1:
+				logInfo("Execute HDMI21 operation.");
+				VideoScreenControl::GetInstance()->sendHDMI21Op();
+				break;
+			case VIDEO_WINMODE2:
+				win = m_twoWinsQueueForWinMode2->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI21 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI21Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI22 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI22Op();
+				}
+				break;
+			case VIDEO_WINMODE4:
+				win = m_twoWinsQueueForWinMode4->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI21 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI21Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI22 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI22Op();
+				}
+				break;
+			case VIDEO_WINMODE6:
+				win = m_twoWinsQueueForWinMode6->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI21 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI21Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI22 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI22Op();
+				}
+				break;
+			case VIDEO_WINMODE7:
+				win = m_threeWinsQueueForWinMode7->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI21 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI21Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI22 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI22Op();
+				}
+				else if (win == 3)
+				{
+					logInfo("Execute HDMI23 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI23Op();
+				}
+				break;
 			}
 		}
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI11Op();
-		}
 		if (broadcast)
 		{
-			CommandManager::GetInstance()->sendVideoHDMI11CMD();
+			CommandManager::GetInstance()->sendVideoHDMI2CMD();
 		}
 		break;
-	case VIDEO_HDMI2_WIN1:
-		selectedWin1HDIMode = type;
-		m_winmode1_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_select.png' dest='1,8,14,21'"));
-		m_winmode1_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+	case VIDEO_HDMI3:
+		selectedHDMIMode = type;
+		m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\selected_radio.png' dest='0,0,38,39'"));
+		m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
 		if (trigger)
 		{
-			VideoScreenControl::GetInstance()->sendHDMI21Op();
+			switch (selectedWinMode)
+			{
+			case VIDEO_WINMODE1:
+				logInfo("Execute HDMI31 operation.");
+				VideoScreenControl::GetInstance()->sendHDMI31Op();
+				break;
+			case VIDEO_WINMODE2:
+				win = m_twoWinsQueueForWinMode2->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI31 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI31Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI32 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI32Op();
+				}
+				break;
+			case VIDEO_WINMODE4:
+				win = m_twoWinsQueueForWinMode4->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI31 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI31Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI32 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI32Op();
+				}
+				break;
+			case VIDEO_WINMODE6:
+				win = m_twoWinsQueueForWinMode6->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI31 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI31Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI32 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI32Op();
+				}
+				break;
+			case VIDEO_WINMODE7:
+				win = m_threeWinsQueueForWinMode7->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI31 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI31Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI32 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI32Op();
+				}
+				else if (win == 3)
+				{
+					logInfo("Execute HDMI33 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI33Op();
+				}
+				break;
+			}
 		}
 		if (broadcast)
 		{
-			CommandManager::GetInstance()->sendVideoHDMI21CMD();
+			CommandManager::GetInstance()->sendVideoHDMI3CMD();
 		}
 		break;
-	case VIDEO_HDMI3_WIN1:
-		selectedWin1HDIMode = type;
-		m_winmode1_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_select.png' dest='1,8,14,21'"));
-		m_winmode1_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
+	case VIDEO_HDMI4:
+		selectedHDMIMode = type;
+		m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+		m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\selected_radio.png' dest='0,0,38,39'"));
 		if (trigger)
 		{
-			VideoScreenControl::GetInstance()->sendHDMI31Op();
+			switch (selectedWinMode)
+			{
+			case VIDEO_WINMODE1:
+				logInfo("Execute HDMI41 operation.");
+				VideoScreenControl::GetInstance()->sendHDMI41Op();
+				break;
+			case VIDEO_WINMODE2:
+				win = m_twoWinsQueueForWinMode2->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI41 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI41Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI42 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI42Op();
+				}
+				break;
+			case VIDEO_WINMODE4:
+				win = m_twoWinsQueueForWinMode4->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI41 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI41Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI42 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI42Op();
+				}
+				break;
+			case VIDEO_WINMODE6:
+				win = m_twoWinsQueueForWinMode6->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI41 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI41Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI42 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI42Op();
+				}
+				break;
+			case VIDEO_WINMODE7:
+				win = m_threeWinsQueueForWinMode7->getWin();
+				if (win == 1)
+				{
+					logInfo("Execute HDMI41 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI41Op();
+				}
+				else if (win == 2)
+				{
+					logInfo("Execute HDMI42 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI42Op();
+				}
+				else if (win == 3)
+				{
+					logInfo("Execute HDMI43 operation.");
+					VideoScreenControl::GetInstance()->sendHDMI43Op();
+				}
+				break;
+			}
 		}
 		if (broadcast)
 		{
-			CommandManager::GetInstance()->sendVideoHDMI31CMD();
-		}
-		break;
-	case VIDEO_HDMI4_WIN1:
-		selectedWin1HDIMode = type;
-		m_winmode1_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_non.png' dest='1,8,14,21'"));
-		m_winmode1_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\btn_radio_select.png' dest='1,8,14,21'"));
-		if (CAgoraObject::GetAgoraObject()->GetSelfHost())
-		{
-			enableRemoteControl(false);
-		}
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI41Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI41CMD();
-		}
-		break;
-	case VIDEO_HDMI1_WIN2:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI12Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI12CMD();
-		}
-		break;
-	case VIDEO_HDMI2_WIN2:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI22Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI22CMD();
-		}
-		break;
-	case VIDEO_HDMI3_WIN2:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI32Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI32CMD();
-		}
-		break;
-	case VIDEO_HDMI4_WIN2:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI42Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI42CMD();
-		}
-		break;
-	case VIDEO_HDMI1_WIN3:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI13Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI13CMD();
-		}
-		break;
-	case VIDEO_HDMI2_WIN3:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI23Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI23CMD();
-		}
-		break;
-	case VIDEO_HDMI3_WIN3:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI33Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI33CMD();
-		}
-		break;
-	case VIDEO_HDMI4_WIN3:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI43Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI43CMD();
-		}
-		break;
-	case VIDEO_HDMI1_WIN4:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI14Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI14CMD();
-		}
-		break;
-	case VIDEO_HDMI2_WIN4:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI24Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI24CMD();
-		}
-		break;
-	case VIDEO_HDMI3_WIN4:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI34Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI34CMD();
-		}
-		break;
-	case VIDEO_HDMI4_WIN4:
-		if (trigger)
-		{
-			VideoScreenControl::GetInstance()->sendHDMI44Op();
-		}
-		if (broadcast)
-		{
-			CommandManager::GetInstance()->sendVideoHDMI44CMD();
+			CommandManager::GetInstance()->sendVideoHDMI4CMD();
 		}
 		break;
 	}
 }
 
-void ParticipantsUI::restoreSelectedVideoMode()
+void ParticipantsUI::activeHDMIRadios()
+{
+	m_hdm1_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+	m_hdm2_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+	m_hdm3_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+	m_hdm4_btn->SetNormalImage(string2LPCTSTR("file='res\\non_selected_radio.png' dest='0,0,38,39'"));
+	m_hdm1_btn->SetEnabled(true);
+	m_hdm2_btn->SetEnabled(true);
+	m_hdm3_btn->SetEnabled(true);
+	m_hdm4_btn->SetEnabled(true);
+	m_hdm1_btn->Selected(false);
+	m_hdm2_btn->Selected(false);
+	m_hdm3_btn->Selected(false);
+	m_hdm4_btn->Selected(false);
+}
+void ParticipantsUI::resetSelectedVideoMode()
 {
 	int pictureDivider = CAGConfig::GetInstance()->GetPictureDivider();
 	if (pictureDivider == 2)
@@ -1374,19 +1599,19 @@ void ParticipantsUI::restoreSelectedVideoMode()
 			break;
 		}
 
-		switch (selectedWin1HDIMode)
+		switch (selectedHDMIMode)
 		{
-		case VIDEO_HDMI1_WIN1:
-			m_winmode1_hdm1_btn->Selected(false);
+		case VIDEO_HDMI1:
+			m_hdm1_btn->Selected(false);
 			break;
-		case VIDEO_HDMI2_WIN1:
-			m_winmode1_hdm2_btn->Selected(false);
+		case VIDEO_HDMI2:
+			m_hdm2_btn->Selected(false);
 			break;
-		case VIDEO_HDMI3_WIN1:
-			m_winmode1_hdm3_btn->Selected(false);
+		case VIDEO_HDMI3:
+			m_hdm3_btn->Selected(false);
 			break;
-		case VIDEO_HDMI4_WIN1:
-			m_winmode1_hdm4_btn->Selected(false);
+		case VIDEO_HDMI4:
+			m_hdm4_btn->Selected(false);
 			break;
 		}
 	}
@@ -1394,26 +1619,31 @@ void ParticipantsUI::restoreSelectedVideoMode()
 
 void ParticipantsUI::enableRemoteControl(bool enable)
 {
-	vector<Individual*> all_participants = m_clientsManager->getAllParticipants();
-	for (int i = 0; i < all_participants.size(); i++)
+	BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+	if (isRCEnable)
 	{
-		map<Individual*, CListContainerElementUI*>::iterator iter = m_model_ui_map.find(all_participants[i]);
-		CButtonUI *pRemoteBtn = NULL;
-		if (iter != m_model_ui_map.end())
+		vector<Individual*> all_participants = m_clientsManager->getAllParticipants();
+		for (int i = 0; i < all_participants.size(); i++)
 		{
-			CListContainerElementUI* pListItem = iter->second;
-			pRemoteBtn = static_cast<CButtonUI *>(pListItem->FindSubControl(_T("remote_ctrl_btn")));
-		}
-		if (pRemoteBtn != NULL)
-		{
-			//pRemoteBtn->SetEnabled(enable);
-			pRemoteBtn->SetVisible(enable);
-			string hostuid = to_string(CAgoraObject::GetAgoraObject()->GetSelfUID());
-			if (hostuid == all_participants[i]->getUserId())
+			map<Individual*, CListContainerElementUI*>::iterator iter = m_model_ui_map.find(all_participants[i]);
+			CButtonUI *pRemoteBtn = NULL;
+			if (iter != m_model_ui_map.end())
 			{
-				pRemoteBtn->SetVisible(false);
+				CListContainerElementUI* pListItem = iter->second;
+				pRemoteBtn = static_cast<CButtonUI *>(pListItem->FindSubControl(_T("remote_ctrl_btn")));
+			}
+			if (pRemoteBtn != NULL)
+			{
+				//pRemoteBtn->SetEnabled(enable);
+				pRemoteBtn->SetVisible(enable);
+				string hostuid = to_string(CAgoraObject::GetAgoraObject()->GetSelfUID());
+				if (hostuid == all_participants[i]->getUserId())
+				{
+					pRemoteBtn->SetVisible(false);
+				}
 			}
 		}
 	}
+	
 }
 

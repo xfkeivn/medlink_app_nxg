@@ -127,7 +127,8 @@ protected:
 	afx_msg LRESULT OnEIDUserOffline(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEIDConnectionLost(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEIDVideoDeviceChanged(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnRemoteVideoStat(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRemoteVideoStats(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnLocalVideoStats(WPARAM wParam, LPARAM lParam);
 
 	afx_msg LRESULT OnStartRecordingService(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStopRecordingService(WPARAM wParam, LPARAM lParam);

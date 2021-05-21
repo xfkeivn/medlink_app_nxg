@@ -97,7 +97,8 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_MESSAGE(WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), &CVideoDlg::OnEIDFirstRemoteFrameDecoded)
 	ON_MESSAGE(WM_MSGID(EID_USER_OFFLINE), &CVideoDlg::OnEIDUserOffline)
 	
-	ON_MESSAGE(WM_MSGID(EID_REMOTE_VIDEO_STAT), &CVideoDlg::OnRemoteVideoStat)
+	ON_MESSAGE(WM_MSGID(EID_REMOTE_VIDEO_STAT), &CVideoDlg::OnRemoteVideoStats)
+	ON_MESSAGE(WM_MSGID(EID_LOCAL_VIDEO_STAT), &CVideoDlg::OnLocalVideoStats)
 
 	ON_MESSAGE(WM_MSGID(EID_START_RCDSRV), &CVideoDlg::OnStartRecordingService)
 	ON_MESSAGE(WM_MSGID(EID_STOP_RCDSRV), &CVideoDlg::OnStopRecordingService)
@@ -685,7 +686,7 @@ void CVideoDlg::OnBnClickedBtnclose()
 	//m_bShowParticipantWnd = false;
 	m_ParticipantsUI->ShowWindow(false);
 	m_ParticipantsUI->setRemoteControlling(false);
-	m_ParticipantsUI->restoreSelectedVideoMode();
+	m_ParticipantsUI->resetSelectedVideoMode();
 	//m_btnParticipaent.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 	m_btnRemoteControl.ShowWindow(SW_HIDE);
 	m_btnEraser.ShowWindow(SW_HIDE);
@@ -1244,7 +1245,8 @@ LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 		{
 			logInfo("Host select VIDEO_WINMODE1 and VIDEO_HDMI1_WIN1, broadcast it in the channel.");
 			m_ParticipantsUI->selectVideoMode(VIDEO_WINMODE1, true, true);
-			m_ParticipantsUI->selectVideoMode(VIDEO_HDMI1_WIN1, true, true);
+			Sleep(20);
+			m_ParticipantsUI->selectVideoMode(VIDEO_HDMI1, true, true);
 		}
 	}
 	delete[] lpData->channel;
@@ -1462,12 +1464,39 @@ LRESULT CVideoDlg::OnEIDVideoDeviceChanged(WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
-
-LRESULT CVideoDlg::OnRemoteVideoStat(WPARAM wParam, LPARAM lParam)
+LRESULT CVideoDlg::OnLocalVideoStats(WPARAM wParam, LPARAM lParam)
+{
+	LPAGE_LOCAL_VIDEO_STAT lpData = (LPAGE_LOCAL_VIDEO_STAT)wParam;
+	if (!CAgoraObject::GetAgoraObject()->GetSelfHost())
+	{
+		if (lpData->sentFrameRate != 0 || lpData->sentBitrate != 0)
+		{
+			logError("=============OnLocalVideoStats:Client is sending local video stream. sentFramerate=" + to_string(lpData->sentFrameRate) + ",sentBitrate=" + to_string(lpData->sentBitrate) + "=============");
+		}
+	}
+	delete lpData;
+	lpData = NULL;
+	return 0;
+}
+LRESULT CVideoDlg::OnRemoteVideoStats(WPARAM wParam, LPARAM lParam)
 {
 	
 	LPAGE_REMOTE_VIDEO_STAT lpData = (LPAGE_REMOTE_VIDEO_STAT)wParam;
-	logInfo("=============OnRemoteVideoStat:Framerate=" + to_string(lpData->receivedFrameRate) + ",Bitrate=" + to_string(lpData->receivedBitrate) + "=============");
+	if (CAgoraObject::GetAgoraObject()->GetSelfHost())
+	{
+		if (lpData->receivedFrameRate != 0 || lpData->receivedBitrate != 0)
+		{
+			logError("Receive video stream(Framerate = " + to_string(lpData->receivedFrameRate) + ", Bitrate = " + to_string(lpData->receivedBitrate) + ") from client " + to_string(lpData->uid));
+		}
+	}
+	else
+	{
+		if (lpData->uid < 1000)
+		{
+			logError("Receive video stream(Framerate = " + to_string(lpData->receivedFrameRate) + ", Bitrate = " + to_string(lpData->receivedBitrate) + ") from client " + to_string(lpData->uid));
+		}
+	}
+	//logInfo("=============OnRemoteVideoStats:Framerate=" + to_string(lpData->receivedFrameRate) + ",Bitrate=" + to_string(lpData->receivedBitrate) + "=============");
 	POSITION posNext = m_listWndInfo.GetHeadPosition();
 
 	while (posNext != NULL) {
@@ -2329,12 +2358,8 @@ LRESULT CVideoDlg::OnRTMUserEvent(WPARAM wParam, LPARAM lParam)
 			event->msgtype == VIDEO_PBYP_MODE || event->msgtype == VIDEO_PUP_MODE || event->msgtype == VIDEO_PIP_SWAP ||
 			event->msgtype == VIDEO_PIP_PIC || event->msgtype == VIDEO_PIP_ROTATE || event->msgtype == VIDEO_WINMODE1 ||
 			event->msgtype == VIDEO_WINMODE2 || event->msgtype == VIDEO_WINMODE4 || event->msgtype == VIDEO_WINMODE6 ||
-			event->msgtype == VIDEO_WINMODE7 || event->msgtype == VIDEO_WINMODE8 || event->msgtype == VIDEO_HDMI1_WIN1 || 
-			event->msgtype == VIDEO_HDMI2_WIN1 || event->msgtype == VIDEO_HDMI3_WIN1 || event->msgtype == VIDEO_HDMI4_WIN1 ||
-			event->msgtype == VIDEO_HDMI1_WIN2 || event->msgtype == VIDEO_HDMI2_WIN2 || event->msgtype == VIDEO_HDMI3_WIN2 || 
-			event->msgtype == VIDEO_HDMI4_WIN2 || event->msgtype == VIDEO_HDMI1_WIN3 || event->msgtype == VIDEO_HDMI2_WIN3 || 
-			event->msgtype == VIDEO_HDMI3_WIN3 || event->msgtype == VIDEO_HDMI4_WIN3 || event->msgtype == VIDEO_HDMI1_WIN4 ||
-			event->msgtype == VIDEO_HDMI2_WIN4 || event->msgtype == VIDEO_HDMI3_WIN4 || event->msgtype == VIDEO_HDMI4_WIN4)
+			event->msgtype == VIDEO_WINMODE7 || event->msgtype == VIDEO_WINMODE8 || event->msgtype == VIDEO_HDMI1 || 
+			event->msgtype == VIDEO_HDMI2 || event->msgtype == VIDEO_HDMI3 || event->msgtype == VIDEO_HDMI4)
 		{
 			logInfo("Host receive video screen control cmd from client " + to_string(event->userId) + ", send the cmd to serial port.");
 			m_ParticipantsUI->selectVideoMode(event->msgtype, true, false);
@@ -2444,12 +2469,8 @@ LRESULT CVideoDlg::OnRTMUserEvent(WPARAM wParam, LPARAM lParam)
 			event->msgtype == VIDEO_PBYP_MODE || event->msgtype == VIDEO_PUP_MODE || event->msgtype == VIDEO_PIP_SWAP ||
 			event->msgtype == VIDEO_PIP_PIC || event->msgtype == VIDEO_PIP_ROTATE || event->msgtype == VIDEO_WINMODE1 ||
 			event->msgtype == VIDEO_WINMODE2 || event->msgtype == VIDEO_WINMODE4 || event->msgtype == VIDEO_WINMODE6 ||
-			event->msgtype == VIDEO_WINMODE7 || event->msgtype == VIDEO_WINMODE8 || event->msgtype == VIDEO_HDMI1_WIN1 ||
-			event->msgtype == VIDEO_HDMI2_WIN1 || event->msgtype == VIDEO_HDMI3_WIN1 || event->msgtype == VIDEO_HDMI4_WIN1 ||
-			event->msgtype == VIDEO_HDMI1_WIN2 || event->msgtype == VIDEO_HDMI2_WIN2 || event->msgtype == VIDEO_HDMI3_WIN2 ||
-			event->msgtype == VIDEO_HDMI4_WIN2 || event->msgtype == VIDEO_HDMI1_WIN3 || event->msgtype == VIDEO_HDMI2_WIN3 ||
-			event->msgtype == VIDEO_HDMI3_WIN3 || event->msgtype == VIDEO_HDMI4_WIN3 || event->msgtype == VIDEO_HDMI1_WIN4 ||
-			event->msgtype == VIDEO_HDMI2_WIN4 || event->msgtype == VIDEO_HDMI3_WIN4 || event->msgtype == VIDEO_HDMI4_WIN4)
+			event->msgtype == VIDEO_WINMODE7 || event->msgtype == VIDEO_WINMODE8 || event->msgtype == VIDEO_HDMI1 ||
+			event->msgtype == VIDEO_HDMI2 || event->msgtype == VIDEO_HDMI3 || event->msgtype == VIDEO_HDMI4)
 		{
 			logInfo("Client receive video screen control cmd from client " + to_string(event->userId) + ", only update button UI for essential.");
 			m_ParticipantsUI->selectVideoMode(event->msgtype, false, false);

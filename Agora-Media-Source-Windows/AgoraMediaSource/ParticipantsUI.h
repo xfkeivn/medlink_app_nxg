@@ -8,7 +8,84 @@
 #include "VideoScreenControl.h"
 using namespace DuiLib;
 
+class TwoWinsQueue
+{
+	//Win1 1
+	//Win2 2
+public:
+	TwoWinsQueue()
+	{
+		m_pointer = 0;
+		m_pQueue = new int[2];
+		for (int i = 0; i < 2; i++)
+		{
+			m_pQueue[i] = i + 1;
+		}
+	};
 
+	virtual ~TwoWinsQueue() {
+		delete[] m_pQueue;
+	};
+
+	int getWin()
+	{
+		if (m_pointer == 2)
+		{
+			m_pointer = 0;
+		}
+		int operation = m_pQueue[m_pointer];
+		m_pointer++;
+		return operation;
+	}
+
+	void reset()
+	{
+		m_pointer = 0;
+	}
+private:
+	int* m_pQueue;
+	int m_pointer;
+};
+
+class ThreeWinsQueue
+{
+	//Win1 1
+	//Win2 2
+	//Win3 3
+public:
+	ThreeWinsQueue()
+	{
+		m_pointer = 0;
+		m_pQueue = new int[3];
+		for (int i = 0; i < 3; i++)
+		{
+			m_pQueue[i] = i + 1;
+		}
+	};
+
+	virtual ~ThreeWinsQueue() {
+		delete[] m_pQueue;
+	};
+
+	int getWin()
+	{
+		if (m_pointer == 3)
+		{
+			m_pointer = 0;
+		}
+		int operation = m_pQueue[m_pointer];
+		m_pointer++;
+		return operation;
+	}
+
+	void reset()
+	{
+		m_pointer = 0;
+	}
+private:
+	int* m_pQueue;
+	int m_pointer;
+};
 class ParticipantsUI :
 	public CWindowWnd,
 	public INotifyUI
@@ -26,7 +103,7 @@ public:
 	wstring updateUIForDropOffline(UINT uid);
 	Individual* getParticipant(UINT uid);
 	void selectVideoMode(MSG_EVENT_TYPE type, bool trigger, bool broadcast);
-	void restoreSelectedVideoMode();
+	void resetSelectedVideoMode();
 public:
 	virtual LPCTSTR		GetWindowClassName() const { return _T("ParticipantsUI"); }
 	UINT GetClassStyle() const { return UI_CLASSSTYLE_FRAME | CS_DBLCLKS; };
@@ -60,15 +137,11 @@ private:
 	COptionUI* m_winmode6_btn;
 	COptionUI* m_winmode7_btn;
 	COptionUI* m_winmode8_btn;
-	CHorizontalLayoutUI* m_winmode1_prop;
-	COptionUI* m_winmode1_hdm1_btn;
-	COptionUI* m_winmode1_hdm2_btn;
-	COptionUI* m_winmode1_hdm3_btn;
-	COptionUI* m_winmode1_hdm4_btn;
-	CVerticalLayoutUI* m_winmode2_prop;
-	CVerticalLayoutUI* m_winmode4_prop;
-	CVerticalLayoutUI* m_winmode6_prop;
-	CVerticalLayoutUI* m_winmode7_prop;
+
+	COptionUI* m_hdm1_btn;
+	COptionUI* m_hdm2_btn;
+	COptionUI* m_hdm3_btn;
+	COptionUI* m_hdm4_btn;
 
 	map<Individual*, CListContainerElementUI*>              m_model_ui_map;
 	map<CButtonUI*, Individual*>      remoteMap;
@@ -76,12 +149,21 @@ private:
 	bool m_bRemotingControling;
 	MSG_EVENT_TYPE selectedVideoMode;
 	MSG_EVENT_TYPE selectedWinMode;
-	MSG_EVENT_TYPE selectedWin1HDIMode;
+	MSG_EVENT_TYPE selectedHDMIMode;
+
+	int pictureDivider;
+	TwoWinsQueue* m_twoWinsQueueForWinMode2;
+	TwoWinsQueue* m_twoWinsQueueForWinMode4;
+	TwoWinsQueue* m_twoWinsQueueForWinMode6;
+	ThreeWinsQueue* m_threeWinsQueueForWinMode7;
+
 private:
 	void onRequestParticipantInfo(string uid);
 	void updateParticipant(string resp);
 	void enableRemoteControl(bool enable);
+	void activeHDMIRadios();
 public:
 	static void handleParticipantInfo(string rsp, void * pParam);
 
 };
+

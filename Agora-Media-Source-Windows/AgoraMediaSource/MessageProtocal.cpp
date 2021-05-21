@@ -326,26 +326,26 @@ RTMMessagEvent parseMessage(std::string &message)
 		msgevent.msgtype = VIDEO_WINMODE1;
 		return msgevent;
 	}
-	else if (message.find(VIDEO_HDMI1_WIN1_CMD) == 0)
-	{
-		msgevent.msgtype = VIDEO_HDMI1_WIN1;
-		return msgevent;
-	}
-	else if (message.find(VIDEO_HDMI2_WIN1_CMD) == 0)
-	{
-		msgevent.msgtype = VIDEO_HDMI2_WIN1;
-		return msgevent;
-	}
-	else if (message.find(VIDEO_HDMI3_WIN1_CMD) == 0)
-	{
-		msgevent.msgtype = VIDEO_HDMI3_WIN1;
-		return msgevent;
-	}
-	else if (message.find(VIDEO_HDMI4_WIN1_CMD) == 0)
-	{
-		msgevent.msgtype = VIDEO_HDMI4_WIN1;
-		return msgevent;
-	}
+	//else if (message.find(VIDEO_HDMI1_WIN1_CMD) == 0)
+	//{
+	//	msgevent.msgtype = VIDEO_HDMI1_WIN1;
+	//	return msgevent;
+	//}
+	//else if (message.find(VIDEO_HDMI2_WIN1_CMD) == 0)
+	//{
+	//	msgevent.msgtype = VIDEO_HDMI2_WIN1;
+	//	return msgevent;
+	//}
+	//else if (message.find(VIDEO_HDMI3_WIN1_CMD) == 0)
+	//{
+	//	msgevent.msgtype = VIDEO_HDMI3_WIN1;
+	//	return msgevent;
+	//}
+	//else if (message.find(VIDEO_HDMI4_WIN1_CMD) == 0)
+	//{
+	//	msgevent.msgtype = VIDEO_HDMI4_WIN1;
+	//	return msgevent;
+	//}
 	else if (message.find(VIDEO_WINMODE2_CMD) == 0)
 	{
 		msgevent.msgtype = VIDEO_WINMODE2;
@@ -369,6 +369,26 @@ RTMMessagEvent parseMessage(std::string &message)
 	else if (message.find(VIDEO_WINMODE8_CMD) == 0)
 	{
 		msgevent.msgtype = VIDEO_WINMODE8;
+		return msgevent;
+	}
+	else if (message.find(VIDEO_HDMI1_CMD) == 0)
+	{
+		msgevent.msgtype = VIDEO_HDMI1;
+		return msgevent;
+	}
+	else if (message.find(VIDEO_HDMI2_CMD) == 0)
+	{
+		msgevent.msgtype = VIDEO_HDMI2;
+		return msgevent;
+	}
+	else if (message.find(VIDEO_HDMI3_CMD) == 0)
+	{
+		msgevent.msgtype = VIDEO_HDMI3;
+		return msgevent;
+	}
+	else if (message.find(VIDEO_HDMI4_CMD) == 0)
+	{
+		msgevent.msgtype = VIDEO_HDMI4;
 		return msgevent;
 	}
 	else if (message.find(QUERY_CLIENT_STATUS_CMD) == 0)
@@ -557,69 +577,85 @@ void CommandManager::sendVideoWinMode8CMD()
 {
 	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_WINMODE8_CMD);
 }
-void CommandManager::sendVideoHDMI11CMD()
+//void CommandManager::sendVideoHDMI11CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN1_CMD);
+//}
+//void CommandManager::sendVideoHDMI21CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN1_CMD);
+//}
+//void CommandManager::sendVideoHDMI31CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN1_CMD);
+//}
+//void CommandManager::sendVideoHDMI41CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN1_CMD);
+//}
+//void CommandManager::sendVideoHDMI12CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN2_CMD);
+//}
+//void CommandManager::sendVideoHDMI22CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN2_CMD);
+//}
+//void CommandManager::sendVideoHDMI32CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN2_CMD);
+//}
+//void CommandManager::sendVideoHDMI42CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN2_CMD);
+//}
+//void CommandManager::sendVideoHDMI13CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN3_CMD);
+//}
+//void CommandManager::sendVideoHDMI23CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN3_CMD);
+//}
+//void CommandManager::sendVideoHDMI33CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN3_CMD);
+//}
+//void CommandManager::sendVideoHDMI43CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN3_CMD);
+//}
+//void CommandManager::sendVideoHDMI14CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN4_CMD);
+//}
+//void CommandManager::sendVideoHDMI24CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN4_CMD);
+//}
+//void CommandManager::sendVideoHDMI34CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN4_CMD);
+//}
+//void CommandManager::sendVideoHDMI44CMD()
+//{
+//	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN4_CMD);
+//}
+void CommandManager::sendVideoHDMI1CMD()
 {
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN1_CMD);
+	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_CMD);
 }
-void CommandManager::sendVideoHDMI21CMD()
+void CommandManager::sendVideoHDMI2CMD()
 {
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN1_CMD);
+	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_CMD);
 }
-void CommandManager::sendVideoHDMI31CMD()
+void CommandManager::sendVideoHDMI3CMD()
 {
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN1_CMD);
+	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_CMD);
 }
-void CommandManager::sendVideoHDMI41CMD()
+void CommandManager::sendVideoHDMI4CMD()
 {
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN1_CMD);
-}
-void CommandManager::sendVideoHDMI12CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN2_CMD);
-}
-void CommandManager::sendVideoHDMI22CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN2_CMD);
-}
-void CommandManager::sendVideoHDMI32CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN2_CMD);
-}
-void CommandManager::sendVideoHDMI42CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN2_CMD);
-}
-void CommandManager::sendVideoHDMI13CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN3_CMD);
-}
-void CommandManager::sendVideoHDMI23CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN3_CMD);
-}
-void CommandManager::sendVideoHDMI33CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN3_CMD);
-}
-void CommandManager::sendVideoHDMI43CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN3_CMD);
-}
-void CommandManager::sendVideoHDMI14CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI1_WIN4_CMD);
-}
-void CommandManager::sendVideoHDMI24CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI2_WIN4_CMD);
-}
-void CommandManager::sendVideoHDMI34CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI3_WIN4_CMD);
-}
-void CommandManager::sendVideoHDMI44CMD()
-{
-	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_WIN4_CMD);
+	CAgoraObject::GetAgoraObject()->SendMessageToChannel(VIDEO_HDMI4_CMD);
 }
 void CommandManager::BroadcastAnnotationMouseMoveEvent(int w, int h, int x, int y) {
 	//logInfo("BroadcastAnnotationMouseMoveEvent:messageEvent.source_window_width=" + to_string(w)

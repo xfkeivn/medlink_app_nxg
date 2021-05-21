@@ -305,7 +305,7 @@ void VideoScreenControl::sendWinMode1Op()
 	cmd.push_back(0x0D);
 	cmd.push_back(0x0A);
 	std::copy(cmd.begin(), cmd.end(), operations);
-	writeData(operations, 10);
+	writeData(operations, 10);	
 }
 void VideoScreenControl::sendWinMode2Op()
 {
@@ -686,6 +686,7 @@ bool VideoScreenControl::testComPort(string com, int divided)
 		}
 		else
 		{
+			Close();
 			return false;
 		}
 		//读取串口返回值

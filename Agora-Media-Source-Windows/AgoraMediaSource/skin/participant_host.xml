@@ -71,30 +71,53 @@
           <Control />
         </HorizontalLayout>
       </VerticalLayout>
-      <VerticalLayout name="video_4input_ctrl" visible="false" height="300" inset="0,100,0,0" >
-        <HorizontalLayout childpadding="30">
+      <VerticalLayout name="video_4input_ctrl" visible="false" height="400" inset="0,50,0,0">
+        <HorizontalLayout childpadding="0">
           <Control />
-          <Option name="winmode1_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode1.png"/>
-          <Option name="winmode2_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode2.png"/>
-          <Option name="winmode4_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode4.png"/>
-          <Control />
-        </HorizontalLayout>
-        <HorizontalLayout childpadding="30">
-          <Control />
-          <Option name="winmode6_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode6.png"/>
-          <Option name="winmode7_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode7.png"/>
-          <Option name="winmode8_btn" group="4video_input" height="48" width="56" normalimage="res\\winmode8.png"/>
+          <Option name="winmode1_btn" group="4video_input" height="96" width="112" normalimage="res='winmode1_normal.png' restype='ZPIMGRES'"
+            disabledimage="winmode1_disable.png' restype='ZPIMGRES'"/>
+          <Option name="winmode2_btn" group="4video_input" height="96" width="112" normalimage="res='winmode2_normal.png' restype='ZPIMGRES'"
+            disabledimage="res='winmode2_disable.png' restype='ZPIMGRES'"/>
+          <Option name="winmode4_btn" group="4video_input" height="96" width="112" normalimage="res='winmode4_normal.png' restype='ZPIMGRES'"
+            disabledimage="res='winmode4_disable.png' restype='ZPIMGRES'"/>
           <Control />
         </HorizontalLayout>
-        <HorizontalLayout name="winmode1_prop" height="30" text="Properties" visible="false" childpadding="15">
+        <HorizontalLayout childpadding="0">
+          <Control />
+          <Option name="winmode6_btn" group="4video_input" height="96" width="112" normalimage="res='winmode6_normal.png' restype='ZPIMGRES'"
+            disabledimage="res='winmode6_disable.png' restype='ZPIMGRES'"/>
+          <Option name="winmode7_btn" group="4video_input" height="96" width="112" normalimage="res='winmode7_normal.png' restype='ZPIMGRES'"
+            disabledimage="res='winmode7_disable.png' restype='ZPIMGRES'"/>
+          <Option name="winmode8_btn" group="4video_input" height="96" width="112" normalimage="res='winmode8_normal.png' restype='ZPIMGRES'"
+            disabledimage="res='winmode8_disable.png' restype='ZPIMGRES'"/>
+          <Control />
+        </HorizontalLayout>
+        <VerticalLayout >
+          <HorizontalLayout height="39" >
+            <Control />
+            <Option name="hdmi1" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="1-SPY" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
+            <Control width="40" />
+            <Option name="hdmi2" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="2-内镜" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
+            <Control />
+          </HorizontalLayout>
+          <Control height="20" />
+          <HorizontalLayout height="39" >
+            <Control />
+            <Option name="hdmi3" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="3-X光" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
+            <Control width="40" />
+            <Option name="hdmi4" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="4-外景" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
+            <Control />
+          </HorizontalLayout>
+        </VerticalLayout>
+<!--        <HorizontalLayout  height="30" text="Properties"  childpadding="15">
 
-          <Label text="Input:" height="30" width="40" textcolor="#fff5f7f8" font="16"/>
+          <Label text="Input:" height="30" width="38" textcolor="#fff5f7f8" font="16"/>
           <Option name="winmode1_hdmi1" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI1" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
           <Option name="winmode1_hdmi2" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI2" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
           <Option name="winmode1_hdmi3" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI3" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
           <Option name="winmode1_hdmi4" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI4" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
 
-        </HorizontalLayout>
+        </HorizontalLayout> -->
   <!--      <VerticalLayout name="winmode2_prop" visible="false" >
           <HorizontalLayout >
             <Label text="Input1:" height="30" textcolor="#fff5f7f8" font="16"/>
