@@ -798,8 +798,8 @@ void CDrawLayerDlg::processRemoteAnnotationEvent(RTMMessagEvent &messageEvent)
 	RECT rect;
 	GetClientRect(&rect);
 	CPoint point;
-	logInfo("processRemoteAnnotationEvent:messageEvent.source_window_width=" + to_string(messageEvent.source_window_width)
-		+ ",messageEvent.source_window_height=" + to_string(messageEvent.source_window_height) + ",x=" + to_string(messageEvent.mouse_x) + ",y=" + to_string(messageEvent.mouse_y));
+	//logInfo("processRemoteAnnotationEvent:messageEvent.source_window_width=" + to_string(messageEvent.source_window_width)
+	//	+ ",messageEvent.source_window_height=" + to_string(messageEvent.source_window_height) + ",x=" + to_string(messageEvent.mouse_x) + ",y=" + to_string(messageEvent.mouse_y));
 	
 	
 	//point.x = SCALE(rect.right - rect.left, messageEvent.source_window_width,messageEvent.mouse_x);
@@ -809,14 +809,14 @@ void CDrawLayerDlg::processRemoteAnnotationEvent(RTMMessagEvent &messageEvent)
 
 	if (messageEvent.msgtype == MOUSE_MOVE)
 	{
-		logInfo("Process MOUSE_MOVE event.");
+		//logInfo("Process MOUSE_MOVE event.");
 		OnMouseMove(0, point);
 
 	}
 
 	else if (messageEvent.msgtype == MOUSE_LEFT_DOWN)
 	{
-		logInfo("Process MOUSE_LEFT_DOWN event.");
+		//logInfo("Process MOUSE_LEFT_DOWN event.");
 		OnLButtonDown(0,  point);
 
 		
@@ -824,7 +824,7 @@ void CDrawLayerDlg::processRemoteAnnotationEvent(RTMMessagEvent &messageEvent)
 
 	else if (messageEvent.msgtype == MOUSE_LEFT_UP)
 	{
-		logInfo("Process MOUSE_LEFT_UP event.");
+		//logInfo("Process MOUSE_LEFT_UP event.");
 		OnLButtonUp(0,  point);
 
 	}
