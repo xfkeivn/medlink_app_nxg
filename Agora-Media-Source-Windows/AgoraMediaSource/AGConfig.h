@@ -80,6 +80,8 @@ public:
 	vector<CString> GetExcludedCameraNames();
 	vector<CString> GetCOMDeviceName();
 	int GetPictureDivider();
+	void removeDeviceCom();
+	void removeVideoScreenCom();
 public:
 
 	static CAGConfig* GetInstance();

@@ -116,69 +116,90 @@ wstring DUIMgr::getDisplayName(string user_id)
 {
 	return loggedIn_ui->getDisplayName(user_id);
 }
-void DUIMgr::updateCOMPort()
-{
-	HDEVINFO hDevInfo = SetupDiGetClassDevs(NULL, NULL, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
-	if (hDevInfo == INVALID_HANDLE_VALUE)
-	{
-		logWarn("获取系统设备列表失败");
-		return;
-	}
-	SP_DEVINFO_DATA deviceInfoData;
-	deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
-	deviceInfoData.DevInst = 0;
-	deviceInfoData.Reserved = 0;
-	DWORD regDataType;
-	LPTSTR buffer = new TCHAR[200];
-	DWORD buffersize = 200;
-	LPTSTR bufferPortNum = new TCHAR[200];
-	DWORD buffersizePortNum = 200;
-	CString ComPort = L"";
-	vector<CString> comdevice_names = CAGConfig::GetInstance()->GetCOMDeviceName();
-	for (int i = 0; SetupDiEnumDeviceInfo(hDevInfo, i, &deviceInfoData); i++)
-	{
-		buffersize = 200;
-		SetupDiGetDeviceRegistryProperty(hDevInfo, &deviceInfoData, SPDRP_CLASS, &regDataType, (PBYTE)buffer, buffersize, &buffersize);
-		if (CString(buffer).MakeUpper() == L"PORTS")
-		{
-			buffersizePortNum = 200;
-			SetupDiGetDeviceRegistryProperty(hDevInfo, &deviceInfoData, SPDRP_FRIENDLYNAME, &regDataType, (PBYTE)bufferPortNum, buffersizePortNum, &buffersizePortNum);
-			CString comPortInfo = CString(bufferPortNum);
-			logInfo("COMPortName:" + cs2s(comPortInfo));
-			int comIndex = comPortInfo.MakeUpper().Find(_T("(COM")) + 1;
-			for (int j = 0; j < comdevice_names.size(); j++)
-			{
-				logInfo("com_device_name[" + to_string(j) + "]:" + cs2s(comdevice_names[j]));
-				int deviceIndex = comPortInfo.MakeUpper().Find(comdevice_names[j].MakeUpper());
-				if (comIndex > -1 && deviceIndex > -1)
-				{
-					int right = comPortInfo.Find(_T(")"));
-					ComPort = CString(bufferPortNum).Mid(comIndex, right - comIndex);
-					if (VideoScreenControl::GetInstance()->testComPort(cs2s(ComPort), CAGConfig::GetInstance()->GetPictureDivider()))
-					{
-						logInfo("Video Screen COM:" + cs2s(ComPort));
-						CAGConfig::GetInstance()->SetVideoScreenCom(ComPort);
-					}
-					else
-					{
-						logInfo("Device COM:" + cs2s(ComPort));
-						CAGConfig::GetInstance()->SetDeviceCom(ComPort);
-					}
-				}
-			}
-		}//end if ports
-	}// end for	
-	if (buffer != nullptr)
-	{
-		delete[] buffer;
-	}
-	if (bufferPortNum != nullptr)
-	{
-		delete[] bufferPortNum;
-	}
-	// 释放设备  
-	SetupDiDestroyDeviceInfoList(hDevInfo);
-}
+//void DUIMgr::updateCOMPort()
+//{
+//	HDEVINFO hDevInfo = SetupDiGetClassDevs(NULL, NULL, NULL, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+//	if (hDevInfo == INVALID_HANDLE_VALUE)
+//	{
+//		logWarn("Failed to get system devices list.");
+//		return;
+//	}
+//	SP_DEVINFO_DATA deviceInfoData;
+//	deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+//	deviceInfoData.DevInst = 0;
+//	deviceInfoData.Reserved = 0;
+//	DWORD regDataType;
+//	LPTSTR buffer = new TCHAR[200];
+//	DWORD buffersize = 200;
+//	LPTSTR bufferPortNum = new TCHAR[200];
+//	DWORD buffersizePortNum = 200;
+//	CString ComPort = L"";
+//	vector<CString> comdevice_names = CAGConfig::GetInstance()->GetCOMDeviceName();
+//	bool updateDeviceCom = true;
+//	bool updateVideoScreenCom = false;
+//	CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+//	if (equipment.MakeUpper() == _T("SPYGLASS"))
+//	{
+//		updateDeviceCom = false;
+//	}
+//	for (int i = 0; SetupDiEnumDeviceInfo(hDevInfo, i, &deviceInfoData); i++)
+//	{
+//		buffersize = 200;
+//		SetupDiGetDeviceRegistryProperty(hDevInfo, &deviceInfoData, SPDRP_CLASS, &regDataType, (PBYTE)buffer, buffersize, &buffersize);
+//		if (CString(buffer).MakeUpper() == L"PORTS")
+//		{
+//			buffersizePortNum = 200;
+//			SetupDiGetDeviceRegistryProperty(hDevInfo, &deviceInfoData, SPDRP_FRIENDLYNAME, &regDataType, (PBYTE)bufferPortNum, buffersizePortNum, &buffersizePortNum);
+//			CString comPortInfo = CString(bufferPortNum);
+//			logInfo("COMPortName:" + cs2s(comPortInfo));
+//			int comIndex = comPortInfo.MakeUpper().Find(_T("(COM")) + 1;
+//			for (int j = 0; j < comdevice_names.size(); j++)
+//			{
+//				logInfo("com_device_name[" + to_string(j) + "]:" + cs2s(comdevice_names[j]));
+//				int deviceIndex = comPortInfo.MakeUpper().Find(comdevice_names[j].MakeUpper());
+//				if (comIndex > -1 && deviceIndex > -1)
+//				{
+//					int right = comPortInfo.Find(_T(")"));
+//					ComPort = CString(bufferPortNum).Mid(comIndex, right - comIndex);
+//					if (CAGConfig::GetInstance()->GetPictureDivider() == 2 || CAGConfig::GetInstance()->GetPictureDivider() == 4)
+//					{
+//						if (VideoScreenControl::GetInstance()->testComPort(cs2s(ComPort), CAGConfig::GetInstance()->GetPictureDivider()))
+//						{
+//							logInfo("Video Screen COM:" + cs2s(ComPort));
+//							CAGConfig::GetInstance()->SetVideoScreenCom(ComPort);
+//						}
+//						else
+//						{
+//							if (updateDeviceCom)
+//							{
+//								logInfo("Device COM:" + cs2s(ComPort));
+//								CAGConfig::GetInstance()->SetDeviceCom(ComPort);
+//							}
+//						}
+//					}
+//					else if (CAGConfig::GetInstance()->GetPictureDivider() == 0)
+//					{
+//						if (updateDeviceCom)
+//						{
+//							logInfo("Device COM:" + cs2s(ComPort));
+//							CAGConfig::GetInstance()->SetDeviceCom(ComPort);
+//						}
+//					}
+//				}
+//			}
+//		}//end if ports
+//	}// end for	
+//	if (buffer != nullptr)
+//	{
+//		delete[] buffer;
+//	}
+//	if (bufferPortNum != nullptr)
+//	{
+//		delete[] bufferPortNum;
+//	}
+//	// 释放设备  
+//	SetupDiDestroyDeviceInfoList(hDevInfo);
+//}
 
 void DUIMgr::updateCOMPortandDisableCamera()
 {
@@ -206,6 +227,28 @@ void DUIMgr::updateCOMPortandDisableCamera()
 	CString ComPort = L"";
 	vector<CString> comdevice_names = CAGConfig::GetInstance()->GetCOMDeviceName();
 	vector<CString> excludedCameraNames = CAGConfig::GetInstance()->GetExcludedCameraNames();
+	CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+	BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+	int pictureDivider = CAGConfig::GetInstance()->GetPictureDivider();
+	bool updateDeviceCom = true;
+	if (equipment.MakeUpper() == _T("SPYGLASS"))
+	{
+		updateDeviceCom = false;
+		logInfo("This is SpyGlass equipment, no remote control line.");
+	}
+	if (!isRCEnable)
+	{
+		updateDeviceCom = false;
+		logInfo("RCEnable is set to false.");
+	}
+	if (!updateDeviceCom && !CAGConfig::GetInstance()->GetDeviceCom().IsEmpty())
+	{
+		CAGConfig::GetInstance()->removeDeviceCom();
+	}
+	if (pictureDivider != 2 && pictureDivider != 4 && !CAGConfig::GetInstance()->GetVideoScreenCom().IsEmpty())
+	{
+		CAGConfig::GetInstance()->removeVideoScreenCom();
+	}
 	for (int i = 0; SetupDiEnumDeviceInfo(hDevInfo, i, &deviceInfoData); i++)
 	{
 		buffersize = 200;
@@ -226,15 +269,29 @@ void DUIMgr::updateCOMPortandDisableCamera()
 				{
 					int right = comPortInfo.Find(_T(")"));
 					ComPort = CString(bufferPortNum).Mid(comIndex, right - comIndex);
-					if (VideoScreenControl::GetInstance()->testComPort(cs2s(ComPort), CAGConfig::GetInstance()->GetPictureDivider()))
+					if (pictureDivider == 2 || pictureDivider == 4)
 					{
-						logInfo("Video Screen COM:" + cs2s(ComPort));
-						CAGConfig::GetInstance()->SetVideoScreenCom(ComPort);
+						if (VideoScreenControl::GetInstance()->testComPort(cs2s(ComPort), CAGConfig::GetInstance()->GetPictureDivider()))
+						{
+							logInfo("Video Screen COM:" + cs2s(ComPort));
+							CAGConfig::GetInstance()->SetVideoScreenCom(ComPort);
+						}
+						else
+						{
+							if (updateDeviceCom)
+							{
+								logInfo("Device COM:" + cs2s(ComPort));
+								CAGConfig::GetInstance()->SetDeviceCom(ComPort);
+							}
+						}
 					}
-					else
+					else if (pictureDivider == 0)
 					{
-						logInfo("Device COM:" + cs2s(ComPort));
-						CAGConfig::GetInstance()->SetDeviceCom(ComPort);
+						if (updateDeviceCom)
+						{
+							logInfo("Device COM:" + cs2s(ComPort));
+							CAGConfig::GetInstance()->SetDeviceCom(ComPort);
+						}
 					}
 				}
 			}
@@ -302,14 +359,23 @@ void DUIMgr::updateCOMPortandDisableCamera()
 	}
 	// 释放设备  
 	SetupDiDestroyDeviceInfoList(hDevInfo);	
-	if (CAGConfig::GetInstance()->GetDeviceCom().IsEmpty())
+	CString deviceCOM = CAGConfig::GetInstance()->GetDeviceCom();
+	CString videoScreenCOM = CAGConfig::GetInstance()->GetVideoScreenCom();
+	if (deviceCOM.IsEmpty() && updateDeviceCom)
 	{
-		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-		if (isRCEnable)
-		{
-			logWarn("Can not get COM Port Number, please make sure the USB cable is connected between host and the Medical device!");
-			//::MessageBox(NULL, L"Can not get COM Port Number, please make sure the USB cable is connected between host and the Medical device!", L"Warn", MB_OK | MB_SYSTEMMODAL | MB_ICONWARNING);
-		}	
+		logError("Device com is empty, please check the device com line!");
+		::MessageBox(NULL, L"Device com is empty, please check the device com line!", L"Error", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+	}
+	if (videoScreenCOM.IsEmpty() && (pictureDivider == 2 || pictureDivider == 4))
+	{
+		logError("Video screen com is empty, please check the video screen com line!");
+		::MessageBox(NULL, L"Video screen com is empty, please check the video screen com line!", L"Error", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+	}
+	if (!deviceCOM.IsEmpty() && !videoScreenCOM.IsEmpty() && (deviceCOM == videoScreenCOM)
+		&& updateDeviceCom && (pictureDivider == 2 || pictureDivider == 4))
+	{
+		logError("The video screen com is the same with the device com.");
+		::MessageBox(NULL, L"The video screen com is the same with the device com, please check the two lines!", L"Error", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
 	}
 	if (!loggedIn_ui->isCameraDisabled())
 	{

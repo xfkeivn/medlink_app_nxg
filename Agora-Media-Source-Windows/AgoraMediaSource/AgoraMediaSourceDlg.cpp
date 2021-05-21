@@ -412,13 +412,19 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 	string url = "";
 	if (m_lpAgoraObject->GetSelfHost())
 	{ 
-		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-		if (isRCEnable)
+		//m_duimgr->updateCOMPort();	
+		if (CAGConfig::GetInstance()->GetPictureDivider() == 2 || CAGConfig::GetInstance()->GetPictureDivider() == 4)
 		{
-			m_duimgr->updateCOMPort();
+			logInfo("Init video screen com.");
+			VideoScreenControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetVideoScreenCom()));
 		}
-		HIDControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetDeviceCom()), CAGConfig::GetInstance()->GetBaudrate());
-		VideoScreenControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetVideoScreenCom()));
+		CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+		if (equipment.MakeUpper() != _T("SPYGLASS") && isRCEnable)
+		{
+			logInfo("Init device com.");
+			HIDControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetDeviceCom()), CAGConfig::GetInstance()->GetBaudrate());
+		}	
 		m_duimgr->setMeetingStatus(true);
 		url = "http://" + ip_str + "/api-meeting/ReportStartMeeting";
 		string uuid = UUIDGenerator::getInstance()->getUUID();

@@ -65,7 +65,7 @@ void CAGConfig::SetVideoScreenCom(CString com)
 CString CAGConfig::GetVideoScreenCom()
 {
 	CString comport;
-	::GetPrivateProfileString(_T("MedLinkConfig"), _T("VideoScreenCom"), _T("COM1"), comport.GetBuffer(MAX_PATH), MAX_PATH, m_szConfigFile);
+	::GetPrivateProfileString(_T("MedLinkConfig"), _T("VideoScreenCom"), _T(""), comport.GetBuffer(MAX_PATH), MAX_PATH, m_szConfigFile);
 
 	comport.ReleaseBuffer();
 
@@ -80,7 +80,7 @@ void CAGConfig::SetDeviceCom(CString com)
 CString CAGConfig::GetDeviceCom()
 {
 	CString comport;
-	::GetPrivateProfileString(_T("MedLinkConfig"), _T("DeviceCom"), _T("COM1"), comport.GetBuffer(MAX_PATH), MAX_PATH, m_szConfigFile);
+	::GetPrivateProfileString(_T("MedLinkConfig"), _T("DeviceCom"), _T(""), comport.GetBuffer(MAX_PATH), MAX_PATH, m_szConfigFile);
 
 	comport.ReleaseBuffer();
 
@@ -278,4 +278,14 @@ vector<CString> CAGConfig::GetExcludedCameraNames()
 		nPos_right = excludedCameraNamestr.Find(L"}");
 	}
 	return excludedCameraNames;
+}
+
+void CAGConfig::removeDeviceCom()
+{
+	::WritePrivateProfileString(_T("MedLinkConfig"), _T("DeviceCom"), NULL, m_szConfigFile);
+}
+
+void CAGConfig::removeVideoScreenCom()
+{
+	::WritePrivateProfileString(_T("MedLinkConfig"), _T("VideoScreenCom"), NULL, m_szConfigFile);
 }
