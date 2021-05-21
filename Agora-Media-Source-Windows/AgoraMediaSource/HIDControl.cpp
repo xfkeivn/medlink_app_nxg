@@ -80,7 +80,7 @@ BOOL HIDControl::Init(string comport, int baudrate)
 
 void HIDControl::sendMouseMoveEventToHID(int x, int y)
 {
-	logInfo("x=" + to_string(x) + ", y=" + to_string(y));
+	//logInfo("x=" + to_string(x) + ", y=" + to_string(y));
 	unsigned char arrMouse_rel[11];
 	vector<unsigned char> position;
 
@@ -243,7 +243,7 @@ void HIDControl::SendRelativeEventToHID(RTMMessagEvent& event)
 
 BOOL HIDControl::SendEventToHID(RTMMessagEvent& event)
 {
-	logInfo("SendEventToHID:x=" + to_string(event.mouse_x) + ",y=" + to_string(event.mouse_y));
+	//logInfo("SendEventToHID:x=" + to_string(event.mouse_x) + ",y=" + to_string(event.mouse_y));
 	auto type = event.msgtype;
 	vector<unsigned char> cmdMouse;
 	vector<unsigned char> cmdKey;
