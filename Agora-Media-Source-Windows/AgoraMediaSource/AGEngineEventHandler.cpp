@@ -219,6 +219,12 @@ void CAGEngineEventHandler::onApiCallExecuted(int err, const char* api, const ch
 
 void CAGEngineEventHandler::onLocalVideoStats(const LocalVideoStats& stats)
 {
+	LPAGE_LOCAL_VIDEO_STAT lpData = new AGE_LOCAL_VIDEO_STAT;
+	lpData->sentBitrate = stats.sentBitrate;
+	lpData->sentFrameRate = stats.sentFrameRate;
+
+	if (m_hMainWnd != NULL)
+		::PostMessage(m_hMainWnd, WM_MSGID(EID_LOCAL_VIDEO_STAT), (WPARAM)lpData, 0);
 }
 
 void CAGEngineEventHandler::onRemoteVideoStats(const RemoteVideoStats& stats)
