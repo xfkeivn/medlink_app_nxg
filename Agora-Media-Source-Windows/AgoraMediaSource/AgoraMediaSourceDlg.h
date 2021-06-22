@@ -72,7 +72,7 @@ protected:
 	afx_msg LRESULT OnLeaveChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnParticipantLeave(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnClientNetworkError(WPARAM wParam, LPARAM lParam);
+	//afx_msg LRESULT OnClientNetworkError(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnInvitationExpire(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 

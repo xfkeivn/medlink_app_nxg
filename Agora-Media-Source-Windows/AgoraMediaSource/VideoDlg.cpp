@@ -113,7 +113,7 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_MESSAGE(WM_GIVEBACK_REMOTE_CONTROL, &CVideoDlg::OnClientGiveBackRemoteControl)
 	ON_MESSAGE(WM_SHOW_PARTICIPANT, &CVideoDlg::OnShowParticipant)
 	ON_MESSAGE(WM_VK_ESCAPE, &CVideoDlg::OnEscapeKey)
-	ON_MESSAGE(WM_NETWORK_ERROR, &CVideoDlg::OnClientNetworkError)
+	ON_MESSAGE(WM_RECONNECTION_UI_CLOSE, &CVideoDlg::OnReconnectionUIClose)
 	ON_MESSAGE(WM_CLIENT_DROPED, &CVideoDlg::OnClientDroped)
 
 	ON_BN_CLICKED(IDC_BTNMIN_VIDEO, &CVideoDlg::OnBnClickedBtnmin)
@@ -536,8 +536,8 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 
 		//if (m_btnScrCap.GetSafeHwnd() != NULL)
 		//	m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
-		if (m_btnSetup.GetSafeHwnd() != NULL)
-			m_btnSetup.MoveWindow(cx / 2 + 11 * size / 2, cy - offset_y, size, size, TRUE);
+		//if (m_btnSetup.GetSafeHwnd() != NULL)
+		//	m_btnSetup.MoveWindow(cx / 2 + 11 * size / 2, cy - offset_y, size, size, TRUE);
 
 		//if (m_btnShow.GetSafeHwnd() != NULL)
 		//	m_btnShow.MoveWindow(cx - 72, cy - 48, 96, 96, TRUE);
@@ -567,8 +567,8 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 
 		//if (m_btnScrCap.GetSafeHwnd() != NULL)
 		//	m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
-		if (m_btnSetup.GetSafeHwnd() != NULL)
-			m_btnSetup.MoveWindow(cx / 2 + 264, cy - 60, 48, 48, TRUE);
+		//if (m_btnSetup.GetSafeHwnd() != NULL)
+		//	m_btnSetup.MoveWindow(cx / 2 + 264, cy - 60, 48, 48, TRUE);
 
 		if (m_btnShow.GetSafeHwnd() != NULL)
 			m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
@@ -877,7 +877,7 @@ void CVideoDlg::OnBnClickedBtnfullscr()
 	m_btnAudio.ShowWindow(nShowMode);
 	m_btnEndCall.ShowWindow(nShowMode);
 
-    m_btnSetup.ShowWindow(nShowMode);
+    //m_btnSetup.ShowWindow(nShowMode);
 	
 	m_btnShow.ShowWindow(nShowMode);
 
@@ -931,7 +931,7 @@ void CVideoDlg::ShowControlButton(BOOL bShow)
 	//m_btnScrCap.ShowWindow(nShowMode);
     //m_btnParticipaent.ShowWindow(nShowMode);
 	//m_btnRecording.ShowWindow(nShowMode);
-    m_btnSetup.ShowWindow(nShowMode);
+    //m_btnSetup.ShowWindow(nShowMode);
 	m_btnAudio.ShowWindow(nShowMode);
 	if(m_btnShow.GetSafeHwnd() != NULL)
 	{ 
@@ -1616,7 +1616,7 @@ void CVideoDlg::InitCtrls()
 	m_btnEndCall.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNENDCALL_VIDEO);
 
 	///m_btnScrCap.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCRCAP_VIDEO);
-    m_btnSetup.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSETUP_VIDEO);
+    //m_btnSetup.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSETUP_VIDEO);
 	m_btnRecording.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNRECORDING_VIDEO);
 	if (!CAgoraObject::GetAgoraObject()->GetSelfHost())
 	{
@@ -1648,7 +1648,7 @@ void CVideoDlg::InitCtrls()
 		m_btnRemoteControl.MoveWindow(rcClient.Width() / 2 - 180, rcClient.Height() - 84, size, size, TRUE);
 		m_btnAnnotation.MoveWindow(rcClient.Width() / 2 - 180, rcClient.Height() - 84, size, size, TRUE);
 		m_btnEraser.MoveWindow(rcClient.Width() / 2 - 144, rcClient.Height() - 84, size, size, TRUE);
-		m_btnSetup.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, size, size, TRUE);
+		//m_btnSetup.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, size, size, TRUE);
 		m_btnAudio.MoveWindow(rcClient.Width() / 2 + 24, rcClient.Height() - 84, size, size, TRUE);
 		m_btnRecording.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, size, size, TRUE);
 		m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, size, size, TRUE);
@@ -1663,7 +1663,7 @@ void CVideoDlg::InitCtrls()
 		m_btnAnnotation.MoveWindow(rcClient.Width() / 2 - 180, rcClient.Height() - 84, 48, 48, TRUE);
 
 		m_btnEraser.MoveWindow(rcClient.Width() / 2 - 144, rcClient.Height() - 84, 48, 48, TRUE);
-		m_btnSetup.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, 48, 48, TRUE);
+		//m_btnSetup.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, 48, 48, TRUE);
 		m_btnAudio.MoveWindow(rcClient.Width() / 2 + 24, rcClient.Height() - 84, 48, 48, TRUE);
 		m_btnRecording.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
 		m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, 48, 48, TRUE);
@@ -1703,8 +1703,8 @@ void CVideoDlg::InitCtrls()
 	m_btnRecording.EnableFrameEffect(FALSE);
 	m_btnEndCall.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnEndCall.EnableFrameEffect(FALSE);
-	m_btnSetup.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-	m_btnSetup.EnableFrameEffect(FALSE);
+	//m_btnSetup.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	//m_btnSetup.EnableFrameEffect(FALSE);
 	if (CAgoraObject::GetAgoraObject()->GetSelfHost())
 	{
 		m_btnEraser.SetBackImage(IDB_BTNERASER_96, RGB(0x26, 0x26, 0x26));
@@ -1713,7 +1713,7 @@ void CVideoDlg::InitCtrls()
 		m_btnAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO_96, RGB(0x26, 0x26, 0x26));
 		m_btnRecording.SetBackImage(IDB_BTNRECORD_96, RGB(0x26, 0x26, 0x26));
 		m_btnEndCall.SetBackImage(IDB_BTNENDCALL_VIDEO_96, RGB(0x26, 0x26, 0x26));
-		m_btnSetup.SetBackImage(IDB_BTN_SETTING_96, RGB(0x26, 0x26, 0x26));
+		//m_btnSetup.SetBackImage(IDB_BTN_SETTING_96, RGB(0x26, 0x26, 0x26));
 	}
 	else
 	{
@@ -1723,7 +1723,7 @@ void CVideoDlg::InitCtrls()
 		m_btnAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO_48, RGB(0x26, 0x26, 0x26));
 		m_btnRecording.SetBackImage(IDB_BTNRECORD_48, RGB(0x26, 0x26, 0x26));
 		m_btnEndCall.SetBackImage(IDB_BTNENDCALL_VIDEO_48, RGB(0x26, 0x26, 0x26));
-		m_btnSetup.SetBackImage(IDB_BTN_SETTING_48, RGB(0x26, 0x26, 0x26));
+		//m_btnSetup.SetBackImage(IDB_BTN_SETTING_48, RGB(0x26, 0x26, 0x26));
 	}
 
 	//m_btnMode.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
@@ -2475,6 +2475,10 @@ LRESULT CVideoDlg::OnRTMUserEvent(WPARAM wParam, LPARAM lParam)
 			logInfo("Client receive video screen control cmd from client " + to_string(event->userId) + ", only update button UI for essential.");
 			m_ParticipantsUI->selectVideoMode(event->msgtype, false, false);
 		}
+		else if (event->msgtype == BROADCAST_MEETING_ID)
+		{
+			this->m_client_meeting_id = event->meeting_id;
+		}
 	}
 
 
@@ -2838,10 +2842,33 @@ LRESULT CVideoDlg::OnRTMUserEvent(WPARAM wParam, LPARAM lParam)
 	 return 0;
  }
 
- LRESULT CVideoDlg::OnClientNetworkError(WPARAM wParam, LPARAM lParam)
+ LRESULT CVideoDlg::OnReconnectionUIClose(WPARAM wParam, LPARAM lParam)
  {
+	 bool m_self_reconnect = wParam;
+	 if (!m_self_reconnect && !CAgoraObject::GetAgoraObject()->GetSelfHost())
+	 {
+		 CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
+		 CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
+		 string ip_str = CT2A(ip.GetBuffer());
+		 if (port.GetLength() > 0)
+		 {
+			 CString c_ip_str = ip + ":" + port;
+			 ip_str = CT2A(c_ip_str);
+		 }
+		 string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + to_string(this->m_client_meeting_id);
+		 HttpClient::SendReq(url, NULL, handleHostLeftMeetingResponse, this);
+	 }
 	 OnBnClickedBtnclose();
 	 return 0;
+ }
+
+ void CVideoDlg::handleHostLeftMeetingResponse(string rsp, void* pParam)
+ {
+	 rapidjson::Document doc;
+	 if (!doc.Parse(rsp.data()).HasParseError())
+	 {
+		 logInfo("handleHostLeftMeetingResponse from webserver:" + rsp);
+	 }
  }
 
  LRESULT CVideoDlg::OnClientDroped(WPARAM wParam, LPARAM lParam)

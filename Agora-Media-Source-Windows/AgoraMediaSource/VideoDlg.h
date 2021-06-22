@@ -149,7 +149,7 @@ protected:
 	afx_msg LRESULT OnClientGiveBackRemoteControl(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowParticipant(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnConnectionStatusChanged(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnClientNetworkError(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnReconnectionUIClose(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientDroped(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
@@ -181,6 +181,7 @@ protected:
 	void onCloseReconnectingUI();
 	static DWORD WINAPI threadTiming(LPVOID lpParamter);
 	void removeThread(UINT user_id);
+	static void handleHostLeftMeetingResponse(string rsp, void* pParam);
 
 	private:
 	
@@ -265,4 +266,5 @@ private:	// data
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
 	HWND            m_AgoraMedaiSourceDlg_hwnd;
+	int             m_client_meeting_id;
 };

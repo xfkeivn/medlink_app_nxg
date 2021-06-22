@@ -296,7 +296,7 @@ void InitializationUI::onRequestMeetingAccount()
 	string department_str = CT2A(department.GetBuffer());
 	string url = "http://" + ip_str + "/api-meeting/RequestMeetingAccount/UUID/" + uuid + "?hospital=" + hospital_str + "&equipment=" + equip_str + "&department=" + department_str;
 	//string url = "http://" + ip_str + "/api-meeting/RequestMeetingAccount/UUID/cb253764-ef3c-4c2c-954b-52c5a53a294f";
-	//logInfo("Request url: " + url);
+	logInfo("Request url: " + url);
 	m_waitingMessage->SetText(L"Waiting Login result...");
 	HttpClient::SendReq(url, NULL, handleMeetingAccount, this);
 	

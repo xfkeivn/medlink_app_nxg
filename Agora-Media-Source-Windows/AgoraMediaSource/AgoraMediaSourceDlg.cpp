@@ -87,7 +87,7 @@ BEGIN_MESSAGE_MAP(CAgoraMediaSourceDlg, CDialogEx)
 	ON_MESSAGE(WM_LEAVECHANNEL_SUCCESS, &CAgoraMediaSourceDlg::OnLeaveChannelSuccess)
 	ON_MESSAGE(WM_CLIENT_JOIN_CHANNEL, &CAgoraMediaSourceDlg::OnClientJoinChannelSuccess)
 	ON_MESSAGE(WM_PARTICIPANT_LEAVE, &CAgoraMediaSourceDlg::OnParticipantLeave)
-	ON_MESSAGE(WM_NETWORK_ERROR, &CAgoraMediaSourceDlg::OnClientNetworkError)
+	//ON_MESSAGE(WM_NETWORK_ERROR, &CAgoraMediaSourceDlg::OnClientNetworkError)
 	ON_MESSAGE(WM_INVITATION_EXPIRE, &CAgoraMediaSourceDlg::OnInvitationExpire)
 END_MESSAGE_MAP()
 
@@ -935,6 +935,14 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	config.captureHeight = 1024;
 	lpRtcEngine->setCameraCapturerConfiguration(config);
 	lpAgoraObject->EnableVideo(TRUE);
+	//// 创建一个 EncryptionConfig 实例
+	//EncryptionConfig encryptionConfig;
+	//// 设置加密模式为国密 SM4 加密模式
+	//encryptionConfig.encryptionMode = SM4_128_ECB;
+	//// 设置加密密钥
+	//encryptionConfig.encryptionKey = "6666666666666666";
+	//// 启用内置加密
+	//lpRtcEngine->enableEncryption(true, encryptionConfig);
 	if (lpAgoraObject->GetSelfHost()) {
 		m_nVideoSolution = m_dlgSetup.GetVideoSolution();
 		double rate = CAGConfig::GetInstance()->GetRate();
@@ -975,12 +983,27 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	m_dlgVideo.ShowWindow(SW_HIDE);
 	//this->ShowWindow(SW_SHOW);
 	ShowWindow(SW_SHOWNORMAL);
+	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
+	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
+	string ip_str = CT2A(ip.GetBuffer());
+	if (port.GetLength() > 0)
+	{
+		CString c_ip_str = ip + ":" + port;
+		ip_str = CT2A(c_ip_str);
+	}
+	string url = "";
+	m_lpAgoraObject->setInChannel(false);
 	if (!m_lpAgoraObject->GetSelfHost())
 	{
 		m_client_user_struct->current_status = USER_STATUS_ENDMEETING;
 		PublishClientStatus();
 		m_client->onSwitchToJoinMeetingUI();
 		m_client_user_struct->current_status = USER_STATUS_LOGIN;
+		string client_id = m_client_user_struct->uid;
+		string channel_id = m_client_meeting_struct->meeting_channel;
+		url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
+		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
+		HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
 	}
 	else
 	{
@@ -989,17 +1012,9 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		m_duimgr->onSwitchToLoggedInUI();
 		m_duimgr->setMeetingStatus(false);
 		vector<Individual*> participants = ClientsManager::getInstance()->getAllParticipants();
-		//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-		//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-		CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-		CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-		string ip_str = CT2A(ip.GetBuffer());
-		if (port.GetLength() > 0)
-		{
-			CString c_ip_str = ip + ":" + port;
-			ip_str = CT2A(c_ip_str);
-		}
 		string meeting_id = to_string(m_duimgr->getMeetingID());
+		string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
+		HttpClient::SendReq(url, NULL, handleHostEndMeetingResponse, this);
 		string channel_id = m_duimgr->getChannelName();
 		for (int i = 0; i < participants.size(); i++)
 		{
@@ -1012,8 +1027,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 				HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
 			}
 		}
-	}
 
+	}
 	return 0;
 }
 
@@ -1201,14 +1216,15 @@ void CAgoraMediaSourceDlg::ExitApp()
 
 void CAgoraMediaSourceDlg::setMeetingID(int id)
 {
+	CommandManager::GetInstance()->broadcastMeetingID(id);
 	m_duimgr->setMeetingID(id);
 }
 
-LRESULT CAgoraMediaSourceDlg::OnClientNetworkError(WPARAM wParam, LPARAM lParam)
-{
-	OnBnClickedBtnclose();
-	return 0;
-}
+//LRESULT CAgoraMediaSourceDlg::OnClientNetworkError(WPARAM wParam, LPARAM lParam)
+//{
+//	OnBnClickedBtnclose();
+//	return 0;
+//}
 
 LRESULT CAgoraMediaSourceDlg::OnInvitationExpire(WPARAM wParam, LPARAM lParam)
 {

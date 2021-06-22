@@ -28,7 +28,7 @@ using namespace std;
 #define REMOTE_GIVEBACK_CMD "GIVEBACK_REMOTE"
 #define REMOTE_CONTROL_START_CMD "REMOTE_CONTROL_START"
 #define REMOTE_CONTROL_END_CMD "REMOTE_CONTROL_END"
-
+#define BROADCAST_MEETING_ID_CMD "BROADCAST_MEETING_ID"
 #define VIDEO_HD1_MODE_CMD "HD1_MODE"
 #define VIDEO_HD2_MODE_CMD "HD2_MODE"
 #define VIDEO_PIP_MODE_CMD "PIP_MODE"
@@ -138,7 +138,8 @@ typedef enum {
 	QUERY_STATUS_CMD,
 	UPDATE_STATUS,
 	INVITATION_EXPIRE,
-	CANCEL_INVITATION_CMD
+	CANCEL_INVITATION_CMD,
+	BROADCAST_MEETING_ID
 }
 MSG_EVENT_TYPE;
 
@@ -191,6 +192,7 @@ public:
 	BOOL IsKeyEvent();
 	UserStatus client_status;
 	std::string client_channel;
+	int meeting_id;
 	void fromRTMMessage(UINT uid, string& message);
 	RTMMessagEvent(MSG_EVENT_TYPE mt, int sww, int swh, int x, int y, int s)
 	{
@@ -297,5 +299,5 @@ public:
 	void cancelInvitaions();
 	void cancelInvitation(string user_id);
 	void sendInvitatonExpireEvent(string user_id);
-
+	void broadcastMeetingID(int meeting_id);
 };

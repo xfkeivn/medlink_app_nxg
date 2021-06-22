@@ -36,15 +36,7 @@ void ReconnectingUI::InitWindow()
 
 void ReconnectingUI::Notify(TNotifyUI& msg)
 {
-	if (msg.sType == _T("click"))
-	{
 
-		if (msg.pSender == m_exit_btn)
-		{
-			//PostQuitMessage(0);
-			::SendMessage(this->hwndParent, WM_NETWORK_ERROR, 0, 0);
-		}
-	}
 }
 
 void ReconnectingUI::OnFinalMessage(HWND hwnd)
@@ -95,7 +87,7 @@ LRESULT ReconnectingUI::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//m_exit_btn->SetVisible(true);
 			//m_time_label->SetVisible(false);
 			KillTimer(GetHWND(), 1);
-			::PostMessage(this->hwndParent, WM_NETWORK_ERROR, 0, 0);
+			::PostMessage(this->hwndParent, WM_RECONNECTION_UI_CLOSE, m_self_reconnect, 0);
 			Close();
 		}
 	}

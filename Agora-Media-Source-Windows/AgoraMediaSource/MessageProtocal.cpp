@@ -142,6 +142,11 @@ string packUpdateClientStatusEvent(UserStatus clientStatus)
 	return cmd;
 }
 
+string packBroadCastMeetingIDEvent(int id)
+{
+	string cmd = "BROADCAST_MEETING_ID," + to_string(id);
+	return cmd;
+}
 RTMMessagEvent parseMessage(std::string &message)
 {
 	RTMMessagEvent msgevent;
@@ -450,6 +455,14 @@ RTMMessagEvent parseMessage(std::string &message)
 		msgevent.msgtype = CANCEL_INVITATION_CMD;
 		return msgevent;
 	}
+	else if (message.find(BROADCAST_MEETING_ID_CMD) == 0)
+	{
+		msgevent.msgtype = BROADCAST_MEETING_ID;
+		vector<string> vs;
+		split(message, vs, ',');
+		msgevent.meeting_id = atoi(vs.at(1).c_str());
+		return msgevent;
+    }
 	else
 	{
 		msgevent.msgtype = INVALID;
@@ -688,6 +701,11 @@ void CommandManager::BroadcastAnnotationMouseRDownEvent(int w, int h, int x, int
 	CAgoraObject::GetAgoraObject()->SendMessageToChannel(messagestr);
 }
 
+void CommandManager::broadcastMeetingID(int meeting_id)
+{
+	logInfo("Broadcast the meeting id is " + to_string(meeting_id) + " in channel.");
+	CAgoraObject::GetAgoraObject()->SendMessageToChannel(packBroadCastMeetingIDEvent(meeting_id));
+}
 
 
 
