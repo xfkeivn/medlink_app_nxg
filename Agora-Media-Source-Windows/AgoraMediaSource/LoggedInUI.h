@@ -1,6 +1,6 @@
 #pragma once
 
-#include "httpclient.h"
+#include "CurlHttpClient.h"
 #include "clients_manager.h"
 #include "uuid.h"
 #include "Resource.h"
@@ -85,6 +85,6 @@ private:
 	void  onRequestHostClients();
 	void onClientsUpdate(string rsp);
 	void clearSelectedClients();
-	static void handleHostClients(string rsp, void* pParam);
+	void handleHostClients(string rsp);
 	string getStatusDestString();
 };

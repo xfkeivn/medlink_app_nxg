@@ -181,7 +181,7 @@ protected:
 	void onCloseReconnectingUI();
 	static DWORD WINAPI threadTiming(LPVOID lpParamter);
 	void removeThread(UINT user_id);
-	static void handleHostLeftMeetingResponse(string rsp, void* pParam);
+	void handleHostLeftMeetingResponse(string rsp);
 
 	private:
 	

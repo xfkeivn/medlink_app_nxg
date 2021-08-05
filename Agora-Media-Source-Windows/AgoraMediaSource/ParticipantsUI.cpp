@@ -456,7 +456,9 @@ void ParticipantsUI::onUserListUpdate(UINT *uids, UINT count)
 			string hostuid = to_string(CAgoraObject::GetAgoraObject()->GetSelfUID());
 			BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
 			CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-			if (hostuid == participants[i]->getUserId() || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS"))
+			int divider = CAGConfig::GetInstance()->GetPictureDivider();
+			if (hostuid == participants[i]->getUserId() || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS")
+				|| (divider == 2 && this->selectedVideoMode != VIDEO_HD1_MODE))
 			{
 				pRemoteBtn->SetVisible(false);
 			}
@@ -594,7 +596,9 @@ Individual* ParticipantsUI::onUserJoined(UINT uid)
 	{
 		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
 		CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-		if (CAgoraObject::GetAgoraObject()->GetSelfUID() == uid || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS"))
+		int divider = CAGConfig::GetInstance()->GetPictureDivider();
+		if (CAgoraObject::GetAgoraObject()->GetSelfUID() == uid || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS")
+			|| (divider == 2 && this->selectedVideoMode != VIDEO_HD1_MODE))
 		{
 			pRemoteBtn->SetVisible(false);
 		}
@@ -707,13 +711,13 @@ void ParticipantsUI::onRequestParticipantInfo(string uid)
 	{
 		url = "http://" + ip_str + "/api-meeting/getClient/" + uid;
 	}
-	HttpClient::SendReq(url, NULL, handleParticipantInfo, this);
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	handleParticipantInfo(response);
 }
 
-void ParticipantsUI::handleParticipantInfo(string rsp, void * pParam)
+void ParticipantsUI::handleParticipantInfo(string rsp)
 {
-	ParticipantsUI *participantsUI = (ParticipantsUI *)pParam;
-	participantsUI->updateParticipant(rsp);
+	updateParticipant(rsp);
 }
 
 void ParticipantsUI::updateParticipant(string rsp)
@@ -1574,6 +1578,7 @@ void ParticipantsUI::resetSelectedVideoMode()
 			m_pbyp_btn->Selected(false);
 			break;
 		}
+		selectedVideoMode = INVALID;
 	}
 	else if (pictureDivider == 4)
 	{
@@ -1598,7 +1603,7 @@ void ParticipantsUI::resetSelectedVideoMode()
 			m_winmode8_btn->Selected(false);
 			break;
 		}
-
+		selectedWinMode = INVALID;
 		switch (selectedHDMIMode)
 		{
 		case VIDEO_HDMI1:
@@ -1614,6 +1619,7 @@ void ParticipantsUI::resetSelectedVideoMode()
 			m_hdm4_btn->Selected(false);
 			break;
 		}
+		selectedHDMIMode = INVALID;
 	}
 }
 

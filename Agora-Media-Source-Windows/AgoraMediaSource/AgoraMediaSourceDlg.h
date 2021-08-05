@@ -13,6 +13,7 @@
 #include <set>
 #include "HostDUIMgr.h"
 #include "VideoScreenControl.h"
+#include "CurlHttpClient.h"
 // CAgoraVideoCallDlg dialog
 class CAgoraMediaSourceDlg : public CDialogEx
 {
@@ -85,11 +86,11 @@ protected:
 	void PublishClientStatus();
 	void onClientShowJoinMeetingUI();
 	
-	static void handleHostStartMeetingResponse(string rsp, void* pParam);
-	static void handleHostEndMeetingResponse(string rsp, void* pParam);
-	static void handleClientJoinMeetingResponse(string rsp, void* pParam);
-	static void handleParticipantExitMeetingResponse(string rsp, void* pParam);
-	static void handleRequestAppIDResponse(string rsp, void* pParam);
+	void handleHostStartMeetingResponse(string rsp);
+	void handleHostEndMeetingResponse(string rsp);
+	void handleClientJoinMeetingResponse(string rsp);
+	void handleParticipantExitMeetingResponse(string rsp);
+	void handleRequestAppIDResponse(string rsp);
 private:
 	CAGButton		m_btnMin;
 	CAGButton		m_btnClose;

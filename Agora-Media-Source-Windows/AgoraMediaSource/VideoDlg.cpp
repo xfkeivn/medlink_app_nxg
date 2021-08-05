@@ -2856,13 +2856,14 @@ LRESULT CVideoDlg::OnRTMUserEvent(WPARAM wParam, LPARAM lParam)
 			 ip_str = CT2A(c_ip_str);
 		 }
 		 string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + to_string(this->m_client_meeting_id);
-		 HttpClient::SendReq(url, NULL, handleHostLeftMeetingResponse, this);
+		 string response = CurlHttpClient::SendGetReq(url.c_str());
+		 handleHostLeftMeetingResponse(response);
 	 }
 	 OnBnClickedBtnclose();
 	 return 0;
  }
 
- void CVideoDlg::handleHostLeftMeetingResponse(string rsp, void* pParam)
+ void CVideoDlg::handleHostLeftMeetingResponse(string rsp)
  {
 	 rapidjson::Document doc;
 	 if (!doc.Parse(rsp.data()).HasParseError())

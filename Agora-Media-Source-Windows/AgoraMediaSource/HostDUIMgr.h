@@ -1,6 +1,5 @@
 #pragma once
 
-#include "httpclient.h"
 #include "InitializationUI.h"
 #include "VideoScreenControl.h"
 #include "LoggedInUI.h"

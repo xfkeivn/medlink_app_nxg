@@ -228,8 +228,9 @@ void ClientLoginUI::DoLoginBtnClick()
 	}
 	//string url = "http://106.14.97.27/api-meeting/RequestLogin/ClientLogin?user=" + userName + "&pwd=" + userPwd;
 	string url = "http://" + ip_str +"/api-meeting/RequestLogin/ClientLogin?user=" + userName + "&pwd=" + userPwd;
+	string response = CurlHttpClient::SendGetReq(url.c_str());
 	//logInfo("Request url:" + url);
-	HttpClient::SendReq(url, "RequestLogin", handleHttpLoginRes, this);
+	handleHttpLoginRes(response);
 }
 
 
@@ -266,14 +267,13 @@ ClientLoginUIMgr* ClientLoginUI::GetInitAuthLoginUIMgr()
 
 //RequestLogin:
 //{"Result":"True/False", "Error":"0", Clients:[{"DisplayName":"Mr. Fang"}]}
-void ClientLoginUI::handleHttpLoginRes(string rsp, void* pParam)
+void ClientLoginUI::handleHttpLoginRes(string rsp)
 {
 	printf("handleHttpLoginRes: %s", rsp);
 	rapidjson::Document doc;
-
+	logInfo("Receive handleHttpLoginRes:" + rsp);
 	if (!doc.Parse(rsp.data()).HasParseError())
 	{
-		ClientLoginUI* loginUI = (ClientLoginUI *)pParam;
 		if (doc.HasMember("Result") && doc["Result"].IsBool())
 		{
 			string log = "Client login response:";
@@ -312,8 +312,8 @@ void ClientLoginUI::handleHttpLoginRes(string rsp, void* pParam)
 					}
 					logInfo(log);
 				}
-				loginUI->UpdateConfig(true);
-				::PostMessage(loginUI->GetInitAuthLoginUIMgr()->GetParentHWND(), WM_CLIENTLOGTORTMSERVICE, (WPARAM)&userInfoStruct, 0);
+				UpdateConfig(true);
+				::PostMessage(GetInitAuthLoginUIMgr()->GetParentHWND(), WM_CLIENTLOGTORTMSERVICE, (WPARAM)&userInfoStruct, 0);
 
 			}
 			else //result is False
@@ -333,8 +333,8 @@ void ClientLoginUI::handleHttpLoginRes(string rsp, void* pParam)
 					OutputDebugStringA(szlog);
 				}
 
-				loginUI->UpdateConfig(true);
-				loginUI->ShowLoginErrorMessage(L"Login failed! Please check the name and password.");
+				UpdateConfig(true);
+				ShowLoginErrorMessage(L"Login failed! Please check the name and password.");
 			}
 		}
 		else

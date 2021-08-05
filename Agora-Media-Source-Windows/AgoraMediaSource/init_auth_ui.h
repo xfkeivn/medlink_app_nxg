@@ -3,10 +3,9 @@
 #include "resource.h"
 #include "client_common.h"
 #include "string_util.h"
-#include "httpclient.h"
 #include "AGConfig.h"
 #include "AGMessage.h"
-
+#include "CurlHttpClient.h"
 
 /////////////////////////
 class ClientLoginUIMgr;
@@ -25,7 +24,7 @@ public:
 	void CheckNetwork();
 	void UpdateConfig(bool loginResult);
 	ClientLoginUIMgr* GetInitAuthLoginUIMgr();
-	static void handleHttpLoginRes(string rsp, void* pParam);
+	void handleHttpLoginRes(string rsp);
 
 	virtual void onLogout() {};
 	virtual void onZoomIdentityExpired() {};

@@ -9,10 +9,9 @@ typedef struct _CLIENT_PARAM {
 	string user_id;
 }CLIENT_PARAM, *PCLIENT_PARAM;
 
-void LoggedInUI::handleHostClients(string rsp, void* pParam)
+void LoggedInUI::handleHostClients(string rsp)
 {
-	LoggedInUI *loggedInUI = (LoggedInUI *)pParam;
-	loggedInUI->onClientsUpdate(rsp);
+	onClientsUpdate(rsp);
 }
 
 LoggedInUI::LoggedInUI(HWND hwnd, string channnel)
@@ -429,7 +428,8 @@ void LoggedInUI::onRequestHostClients()
 	string url = "http://" + ip_str + "/api-meeting/RequestHostClients/ServiceClients/" + uuid;
 	logInfo("Request url:" + url);
 	//string url = "http://" + ip_str +"/api-meeting/RequestHostClients/ServiceClients/cb253764-ef3c-4c2c-954b-52c5a53a294f";
-	HttpClient::SendReq(url, "RequestHostClients", handleHostClients, this);
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	handleHostClients(response);
 }
 string LoggedInUI::getStatusDestString()
 {

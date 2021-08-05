@@ -1,6 +1,5 @@
 #pragma once
 
-#include "httpclient.h"
 #include "Resource.h"
 #include <WinInet.h>
 #include "stringbuffer.h"
@@ -11,6 +10,7 @@
 #include "HospitalsInfo.h"
 #include "string_util.h"
 #include "../duilib/includes/UIlib.h"
+#include "CurlHttpClient.h"
 using namespace DuiLib;
 #pragma comment(lib, "Wininet.lib")
 
@@ -70,8 +70,8 @@ private:
 	void InitAllControls();
 
 public:
-	static void handleMeetingAccount(string rsp, void * pParam);
-	static void onReceiveHospitalInfos(string rsp, void* pParam);
+	void handleMeetingAccount(string rsp);
+	void onReceiveHospitalInfos(string rsp);
 
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "httpclient.h"
+#include "CurlHttpClient.h"
 #include "AGConfig.h"
 #include "clients_manager.h"
 #include "Resource.h"
@@ -162,8 +162,7 @@ private:
 	void updateParticipant(string resp);
 	void enableRemoteControl(bool enable);
 	void activeHDMIRadios();
-public:
-	static void handleParticipantInfo(string rsp, void * pParam);
+	void handleParticipantInfo(string rsp);
 
 };
 

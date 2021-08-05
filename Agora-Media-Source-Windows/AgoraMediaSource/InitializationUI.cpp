@@ -3,10 +3,9 @@
 #include <cstring>
 #include "AGConfig.h"
 
-void InitializationUI::handleMeetingAccount(string rsp, void* pParam)
+void InitializationUI::handleMeetingAccount(string rsp)
 {
 	rapidjson::Document doc;
-	InitializationUI *ui = (InitializationUI *)pParam;
 	if (!doc.Parse(rsp.data()).HasParseError())
 	{
 		string log = "Receive host meeting account response:";
@@ -23,7 +22,7 @@ void InitializationUI::handleMeetingAccount(string rsp, void* pParam)
 						if (!is_enable)
 						{
 							logInfo(log + "is_enable=false, Current device is not available");
-							ui->showInitializationError(L"Current device is not available, please contact the administrator.");
+							showInitializationError(L"Current device is not available, please contact the administrator.");
 							return;
 						}
 					}
@@ -106,7 +105,7 @@ void InitializationUI::handleMeetingAccount(string rsp, void* pParam)
 						}
 					}
 					logInfo(log);
-					ui->logToRTMService(userid, channelname);
+					logToRTMService(userid, channelname);
 				}
 			}
 			else
@@ -115,7 +114,7 @@ void InitializationUI::handleMeetingAccount(string rsp, void* pParam)
 				{
 					string error = doc["Error"].GetString();
 					logError(error);
-					ui->showInitializationError(StringUtil::StringToWstring(error).c_str());
+					showInitializationError(StringUtil::StringToWstring(error).c_str());
 				}
 			}
 		}
@@ -123,16 +122,15 @@ void InitializationUI::handleMeetingAccount(string rsp, void* pParam)
 	else
 	{
 		logError("Error in parsing host meeting account response:" + rsp);
-		ui->showInitializationError(L"Can't get host messages from webserver.");
+		showInitializationError(L"Can't get host messages from webserver.");
 	}
 
 }
 
-void InitializationUI::onReceiveHospitalInfos(string rsp, void* pParam)
+void InitializationUI::onReceiveHospitalInfos(string rsp)
 {
 	rapidjson::Document doc;
-	InitializationUI *ui = (InitializationUI *)pParam;
-	ui->handlerHospitalInfos(rsp);
+	handlerHospitalInfos(rsp);
 
 }
 void InitializationUI::handlerHospitalInfos(string rsp)
@@ -298,7 +296,8 @@ void InitializationUI::onRequestMeetingAccount()
 	//string url = "http://" + ip_str + "/api-meeting/RequestMeetingAccount/UUID/cb253764-ef3c-4c2c-954b-52c5a53a294f";
 	logInfo("Request url: " + url);
 	m_waitingMessage->SetText(L"Waiting Login result...");
-	HttpClient::SendReq(url, NULL, handleMeetingAccount, this);
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	handleMeetingAccount(response);
 	
 }
 
@@ -315,7 +314,8 @@ void InitializationUI::onRequestHospitalInfos()
 	string url = "http://" + ip_str + "/api-meeting/getHostInitialInfo";
 	logInfo("Request url: " + url);
 	m_waitingMessage->SetText(L"Loading Infos...");
-	HttpClient::SendReq(url, NULL, onReceiveHospitalInfos, this);
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	onReceiveHospitalInfos(response);
 }
 
 

@@ -322,8 +322,8 @@ BOOL CAgoraMediaSourceDlg::OnInitDialog()
 		ip_str = CT2A(c_ip_str);
 	}
 	string url = "http://" + ip_str + "/api-meeting/RequestAppID";
-	HttpClient::SendReq(url, NULL, handleRequestAppIDResponse, this);
-
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	handleRequestAppIDResponse(response);
 	//ModifyStyleEx(WS_EX_CLIENTEDGE, NULL, SWP_DRAWFRAME);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -430,8 +430,8 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		string uuid = UUIDGenerator::getInstance()->getUUID();
 		string host_id = to_string(m_duimgr->getUserId());
 		string req_param = "uuid=" + uuid + "&host_id=" + host_id;
-		//url = "http://" + ip_str + "/api-meeting/ReportStartMeeting/HostID/" + to_string(m_duimgr->getUserId());
-		HttpClient::SendReq(url, req_param.c_str(), handleHostStartMeetingResponse, this);
+		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+		handleHostStartMeetingResponse(response);
 	}
 	else
 	{
@@ -445,7 +445,8 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		string client_id = m_client_user_struct->uid;
 		string channel_id = m_client_meeting_struct->meeting_channel;
 		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
-		HttpClient::SendReq(url, req_param.c_str(), handleClientJoinMeetingResponse, this);
+		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+		handleClientJoinMeetingResponse(response);
 	}
 	
 	return 0;
@@ -479,8 +480,8 @@ LRESULT CAgoraMediaSourceDlg::OnClientJoinChannelSuccess(WPARAM wParam, LPARAM l
 	{
 		req_param = "client_id=" + client_id + "&host_id=" + host_id + "&uuid=" + uuid + "&is_init=True&channel_id=" + channel_id;
 	}
-	//string url = "http://" + ip_str + "/api-meeting/ReportJoinMeeting/ClientJoinMeeting?client_id=" + client_id + "&meeting_id=" + meeting_id;
-	HttpClient::SendReq(url, req_param.c_str(), handleClientJoinMeetingResponse, this);
+	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+	handleClientJoinMeetingResponse(response);
 	return 0;
 }
 
@@ -502,7 +503,8 @@ LRESULT CAgoraMediaSourceDlg::OnParticipantLeave(WPARAM wParam, LPARAM lParam)
 	string channel_id = m_duimgr->getChannelName();
 	string url = "http://" + ip_str + "/api-meeting/ReportExitMeeting/ClientExitMeeting";
 	string req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&channel_id=" + channel_id;
-	HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
+	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+	handleParticipantExitMeetingResponse(response);
 	return 0;
 }
 
@@ -526,7 +528,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannelSuccess(WPARAM wParam, LPARAM lParam
 	{
 		string meeting_id = to_string(m_duimgr->getMeetingID());
 		url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
-		HttpClient::SendReq(url, NULL, handleHostEndMeetingResponse, this);
+		string response = CurlHttpClient::SendGetReq(url.c_str());
+		handleHostEndMeetingResponse(url.c_str());
 	}
 	else
 	{
@@ -534,13 +537,14 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannelSuccess(WPARAM wParam, LPARAM lParam
 		string channel_id = m_client_meeting_struct->meeting_channel;
 		url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
 		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
-		HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
+		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+		handleParticipantExitMeetingResponse(response);
 	}
 	
 	return 0;
 }
 
-void CAgoraMediaSourceDlg::handleHostStartMeetingResponse(string rsp, void* pParam)
+void CAgoraMediaSourceDlg::handleHostStartMeetingResponse(string rsp)
 {
 	rapidjson::Document doc;
 	if (!doc.Parse(rsp.data()).HasParseError())
@@ -555,15 +559,14 @@ void CAgoraMediaSourceDlg::handleHostStartMeetingResponse(string rsp, void* pPar
 					const rapidjson::Value& meeting = doc["Meeting"];
 					int id = meeting["id"].GetInt();
 					logInfo("meeting id is " + to_string(id));
-					CAgoraMediaSourceDlg* dlg = (CAgoraMediaSourceDlg*)pParam;
-					dlg->setMeetingID(id);
+					setMeetingID(id);
 				}
 			}
 		}
 	}
 }
 
-void CAgoraMediaSourceDlg::handleHostEndMeetingResponse(string rsp, void* pParam)
+void CAgoraMediaSourceDlg::handleHostEndMeetingResponse(string rsp)
 {
 	rapidjson::Document doc;
 	if (!doc.Parse(rsp.data()).HasParseError())
@@ -571,7 +574,7 @@ void CAgoraMediaSourceDlg::handleHostEndMeetingResponse(string rsp, void* pParam
 		logInfo("ReportEndMeetingResponse from webserver:" + rsp);
 	}
 }
-void CAgoraMediaSourceDlg::handleClientJoinMeetingResponse(string rsp, void* pParam)
+void CAgoraMediaSourceDlg::handleClientJoinMeetingResponse(string rsp)
 {
 	rapidjson::Document doc;
 	if (!doc.Parse(rsp.data()).HasParseError())
@@ -580,7 +583,7 @@ void CAgoraMediaSourceDlg::handleClientJoinMeetingResponse(string rsp, void* pPa
 	}
 }
 
-void CAgoraMediaSourceDlg::handleParticipantExitMeetingResponse(string rsp, void* pParam)
+void CAgoraMediaSourceDlg::handleParticipantExitMeetingResponse(string rsp)
 {
 	rapidjson::Document doc;
 	if (!doc.Parse(rsp.data()).HasParseError())
@@ -589,19 +592,21 @@ void CAgoraMediaSourceDlg::handleParticipantExitMeetingResponse(string rsp, void
 	}
 }
 
-void CAgoraMediaSourceDlg::handleRequestAppIDResponse(string rsp, void* pParam)
+void CAgoraMediaSourceDlg::handleRequestAppIDResponse(string rsp)
 {
 	//rapidjson::Document doc;
-	CAgoraMediaSourceDlg *dlg = (CAgoraMediaSourceDlg *)pParam;
 	logInfo("Receive request AppId response:" + rsp);
-	string s = "\"";
-	string::size_type index = rsp.find(s);
-	while (index != string::npos)
+	if (rsp.length() > 0)
 	{
-		rsp.replace(index, 1, "");
-		index = rsp.find(s);
+		string s = "\"";
+		string::size_type index = rsp.find(s);
+		while (index != string::npos)
+		{
+			rsp.replace(index, 1, "");
+			index = rsp.find(s);
+		}
+		InitDialog(StringUtil::StringToWstring(rsp).c_str());
 	}
-	dlg->InitDialog(StringUtil::StringToWstring(rsp).c_str());
 }
 void CAgoraMediaSourceDlg::InitDialog(CString strAppid)
 {
@@ -1003,7 +1008,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		string channel_id = m_client_meeting_struct->meeting_channel;
 		url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
 		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
-		HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
+		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+		handleParticipantExitMeetingResponse(response);
 	}
 	else
 	{
@@ -1014,7 +1020,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		vector<Individual*> participants = ClientsManager::getInstance()->getAllParticipants();
 		string meeting_id = to_string(m_duimgr->getMeetingID());
 		string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
-		HttpClient::SendReq(url, NULL, handleHostEndMeetingResponse, this);
+		string response = CurlHttpClient::SendGetReq(url.c_str());
+		handleHostEndMeetingResponse(response);
 		string channel_id = m_duimgr->getChannelName();
 		for (int i = 0; i < participants.size(); i++)
 		{
@@ -1024,7 +1031,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 				string client_id = participants[i]->getUserId();
 				string url = "http://" + ip_str + "/api-meeting/ReportExitMeeting/ClientExitMeeting";
 				string req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&channel_id=" + channel_id;
-				HttpClient::SendReq(url, req_param.c_str(), handleParticipantExitMeetingResponse, this);
+				string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+				handleParticipantExitMeetingResponse(response);
 			}
 		}
 
