@@ -65,14 +65,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
@@ -88,7 +88,8 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)</Command>
+      <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)
+if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -103,7 +104,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -112,7 +113,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\libYUV\Release;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\Release;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
@@ -128,7 +129,8 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)</Command>
+      <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)
+if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -163,6 +165,7 @@
     <ClInclude Include="commonFun.h" />
     <ClInclude Include="CReconnectingDlg.h" />
     <ClInclude Include="CTipDlg.h" />
+    <ClInclude Include="CurlHttpClient.h" />
     <ClInclude Include="display_cc_ui.h" />
     <ClInclude Include="DShowHelper.h" />
     <ClInclude Include="DskcapsetDlg.h" />
@@ -183,7 +186,6 @@
     <ClInclude Include="HIDControl.h" />
     <ClInclude Include="HospitalsInfo.h" />
     <ClInclude Include="HostDUIMgr.h" />
-    <ClInclude Include="httpclient.h" />
     <ClInclude Include="IAGDShowDevice.h" />
     <ClInclude Include="incoming_call_ui.h" />
     <ClInclude Include="Individual.h" />
@@ -197,7 +199,6 @@
     <ClInclude Include="MessageProtocal.h" />
     <ClInclude Include="MissedCallDialog.h" />
     <ClInclude Include="MissedCallUi.h" />
-    <ClInclude Include="mongoose.h" />
     <ClInclude Include="ParticipantsUI.h" />
     <ClInclude Include="ParticipantWnd.h" />
     <ClInclude Include="ReconnectingUI.h" />
@@ -209,10 +210,12 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UIFriends.hpp" />
     <ClInclude Include="UIListCommonDefine.hpp" />
+    <ClInclude Include="utility_socket.h" />
     <ClInclude Include="uuid.h" />
     <ClInclude Include="VideoDlg.h" />
     <ClInclude Include="VideoScreenControl.h" />
     <ClInclude Include="video_preprocessing_plugin.h" />
+    <ClInclude Include="WebSocketClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGButton.cpp" />
@@ -240,6 +243,7 @@
     <ClCompile Include="commonFun.cpp" />
     <ClCompile Include="CReconnectingDlg.cpp" />
     <ClCompile Include="CTipDlg.cpp" />
+    <ClCompile Include="CurlHttpClient.cpp" />
     <ClCompile Include="display_cc_ui.cpp" />
     <ClCompile Include="DShowHelper.cpp" />
     <ClCompile Include="DskcapsetDlg.cpp" />
@@ -263,7 +267,6 @@
     </ClCompile>
     <ClCompile Include="HospitalsInfo.cpp" />
     <ClCompile Include="HostDUIMgr.cpp" />
-    <ClCompile Include="httpclient.cpp" />
     <ClCompile Include="incoming_call_ui.cpp" />
     <ClCompile Include="Individual.cpp" />
     <ClCompile Include="InitializationUI.cpp" />
@@ -277,7 +280,6 @@
     <ClCompile Include="AGRTMEventHandle.cpp" />
     <ClCompile Include="MissedCallDialog.cpp" />
     <ClCompile Include="MissedCallUI.cpp" />
-    <ClCompile Include="mongoose.c" />
     <ClCompile Include="ParticipantsUI.cpp" />
     <ClCompile Include="ParticipantWnd.cpp" />
     <ClCompile Include="ReconnectingUI.cpp" />
@@ -293,6 +295,7 @@
     <ClCompile Include="VideoDlg.cpp" />
     <ClCompile Include="VideoScreenControl.cpp" />
     <ClCompile Include="video_preprocessing_plugin.cpp" />
+    <ClCompile Include="WebSocketClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AgoraMediaSource.rc2" />

@@ -119,6 +119,7 @@ using namespace agora::rtm;
 #define RCENABLE _T("RCEnable")
 #define WEBSERVERIP _T("WebServerIP")
 #define WEBSERVERPORT _T("WebServerPort")
+#define WEBSOCKETPORT _T("WebSocketPort")
 #define USEREMAIL _T("UserEmail")
 #define USERPASSWORD _T("UserPassword")
 namespace SingleDesc
@@ -169,6 +170,7 @@ namespace SingleDesc
 		WM_CLIENTLOGTORTMSERVICE,
 		WM_CLINETONLINESTATUSCHANGE,
 		WM_JOINCHANNEL_SUCCESS,
+		WM_REJOINCHANNEL_SUCCESS,
 		WM_CLIENT_JOIN_CHANNEL,
 		WM_NETWORK_QUALITY,
 		WM_CLEANSCREEN_CMD,

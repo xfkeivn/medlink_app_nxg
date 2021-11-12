@@ -1259,7 +1259,11 @@ LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = (LPAGE_REJOINCHANNEL_SUCCESS)wParam;
-
+	if (CAgoraObject::GetAgoraObject()->GetSelfHost() && m_AgoraMedaiSourceDlg_hwnd != NULL)
+	{
+		logInfo("Rebuild the socket connection for rejoining channel.");
+		::SendMessage(m_AgoraMedaiSourceDlg_hwnd, WM_REJOINCHANNEL_SUCCESS, wParam, lParam);
+	}
 	if (m_reconnectingUI && ::IsWindowVisible(m_reconnectingUI->GetHWND()))
 	{
 		onCloseReconnectingUI();

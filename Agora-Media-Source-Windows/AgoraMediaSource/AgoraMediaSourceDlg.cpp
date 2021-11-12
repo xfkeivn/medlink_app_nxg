@@ -15,7 +15,6 @@
 // CAgoraVideoCallDlg dialog
 
 
-
 CAgoraMediaSourceDlg::CAgoraMediaSourceDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAgoraMediaSourceDlg::IDD, pParent)
 {
@@ -27,11 +26,13 @@ CAgoraMediaSourceDlg::CAgoraMediaSourceDlg(CWnd* pParent /*=NULL*/)
 	m_lpRtcEngine = NULL;
 
 	m_nLastmileQuality = 0;
+	m_duimgr = NULL; 
 	m_client = NULL;
-	m_duimgr = NULL;
+	//m_websocket = new websocket_endpoint();
 	m_client_user_struct = new USER_INFO_STRUCT;
 	m_client_meeting_struct = new MEETING_INFO_STRUCT;
 	appID = L"";
+	socketID = -1;
 }
 
 void CAgoraMediaSourceDlg::DoDataExchange(CDataExchange* pDX)
@@ -84,6 +85,7 @@ BEGIN_MESSAGE_MAP(CAgoraMediaSourceDlg, CDialogEx)
 	ON_MESSAGE(WM_LoginSuccess, &CAgoraMediaSourceDlg::OnLoginSuccess)
 	ON_MESSAGE(WM_CLINETONLINESTATUSCHANGE, &CAgoraMediaSourceDlg::OnClientOnlineStatusChange)
 	ON_MESSAGE(WM_JOINCHANNEL_SUCCESS, &CAgoraMediaSourceDlg::OnJoinChannelSucces)
+	ON_MESSAGE(WM_REJOINCHANNEL_SUCCESS, &CAgoraMediaSourceDlg::OnReJoinChannelSucces)
 	ON_MESSAGE(WM_LEAVECHANNEL_SUCCESS, &CAgoraMediaSourceDlg::OnLeaveChannelSuccess)
 	ON_MESSAGE(WM_CLIENT_JOIN_CHANNEL, &CAgoraMediaSourceDlg::OnClientJoinChannelSuccess)
 	ON_MESSAGE(WM_PARTICIPANT_LEAVE, &CAgoraMediaSourceDlg::OnParticipantLeave)
@@ -397,18 +399,62 @@ LRESULT CAgoraMediaSourceDlg::OnClientOnlineStatusChange(WPARAM wParam, LPARAM l
 	return 0;
 }
 
+void CAgoraMediaSourceDlg::terminateHeartBeatThread()
+{
+	if (heartbeatThread != NULL)   //线程正在运行
+	{
+		TerminateThread(heartbeatThread, 0);
+		if (heartbeatThread != NULL)
+		{
+			CloseHandle(heartbeatThread);   //关闭线程句柄，可能线程已结束，但句柄还没释放
+			heartbeatThread = NULL;
+		}
+		logInfo("Terminate the heartbeat thread.");
+	}
+}
+
+DWORD WINAPI CAgoraMediaSourceDlg::threadTiming(LPVOID lpParamter)
+{
+	if (!lpParamter)
+		return 0;
+
+	CAgoraMediaSourceDlg* instance = (CAgoraMediaSourceDlg*)lpParamter;
+
+	while (instance->getCurrentSocketStatus() != "Open") {
+		Sleep(500);
+	}
+	logInfo("Start to send heart beat.");
+	while (instance->getCurrentSocketStatus() == "Open")
+	{
+		instance->sent_heart_beat();
+		Sleep(60000);
+	}
+	logInfo("Socket is closed, exit the heart beat thread.");
+	return 0;
+}
+string CAgoraMediaSourceDlg::getCurrentSocketStatus()
+{
+	return endpoint.get_current_status();
+}
+void CAgoraMediaSourceDlg::sent_heart_beat()
+{
+	endpoint.send(socketID, to_string(m_duimgr->getMeetingID()));
+}
 LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 {
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
 	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
 	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
+	CString socket_port = readRegKey(WEBSOCKETPORT, APP_REG_DIR);
 	string ip_str = CT2A(ip.GetBuffer());
+	string socket_ip = ip_str;
 	if (port.GetLength() > 0)
 	{
 		CString c_ip_str = ip + ":" + port;
+		CString c_socket_ip = ip + ":" + socket_port;
 		ip_str = CT2A(c_ip_str);
+		socket_ip = CT2A(c_socket_ip);
 	}
+	websocket_uri = "ws://" + socket_ip + "/ws/keepMeeting";
 	string url = "";
 	if (m_lpAgoraObject->GetSelfHost())
 	{ 
@@ -432,6 +478,10 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		string req_param = "uuid=" + uuid + "&host_id=" + host_id;
 		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
 		handleHostStartMeetingResponse(response);
+
+		socketID = endpoint.connect(websocket_uri);
+		terminateHeartBeatThread();
+		heartbeatThread = CreateThread(NULL, 0, threadTiming, (void*)this, 0, NULL);
 	}
 	else
 	{
@@ -452,6 +502,18 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT CAgoraMediaSourceDlg::OnReJoinChannelSucces(WPARAM wParam, LPARAM lParam)
+{
+	if (m_lpAgoraObject->GetSelfHost())
+	{
+		logInfo("Reconnect socket connection for rejoining channel.");
+		//socketID = m_websocket->connect(websocket_uri, to_string(m_duimgr->getMeetingID()));
+		socketID = endpoint.connect(websocket_uri);
+		terminateHeartBeatThread();
+		heartbeatThread = CreateThread(NULL, 0, threadTiming, (void*)this, 0, NULL);
+	}	
+	return 0;
+}
 LRESULT CAgoraMediaSourceDlg::OnClientJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_USER_JOINED data = (LPAGE_USER_JOINED)wParam;
@@ -1035,7 +1097,11 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 				handleParticipantExitMeetingResponse(response);
 			}
 		}
-
+		logInfo("Meeting is end, close current socket connection.");
+		//m_websocket->close(socketID, websocketpp::close::status::normal, "Meeting is End.");
+		endpoint.close(socketID, websocketpp::close::status::normal, "Meeting is End.");
+		socketID = -1;
+		terminateHeartBeatThread();
 	}
 	return 0;
 }
@@ -1215,10 +1281,6 @@ void CAgoraMediaSourceDlg::ExitApp()
 		m_client_user_struct->current_status = USER_STATUS_LOGOUT;
 		PublishClientStatus();
 		Sleep(100);
-	}
-	else
-	{
-		//HIDControl::GetInstance()->Close();
 	}
 }
 

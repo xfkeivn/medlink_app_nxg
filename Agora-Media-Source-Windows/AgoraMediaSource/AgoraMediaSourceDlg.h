@@ -14,6 +14,9 @@
 #include "HostDUIMgr.h"
 #include "VideoScreenControl.h"
 #include "CurlHttpClient.h"
+#include "utility_socket.h"
+
+//#include "WebSocketClient.h"
 // CAgoraVideoCallDlg dialog
 class CAgoraMediaSourceDlg : public CDialogEx
 {
@@ -70,6 +73,7 @@ protected:
 	afx_msg LRESULT OnLoginSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientOnlineStatusChange(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnJoinChannelSucces(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnReJoinChannelSucces(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnLeaveChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnParticipantLeave(WPARAM wParam, LPARAM lParam);
@@ -91,6 +95,11 @@ protected:
 	void handleClientJoinMeetingResponse(string rsp);
 	void handleParticipantExitMeetingResponse(string rsp);
 	void handleRequestAppIDResponse(string rsp);
+	string getCurrentSocketStatus();
+	void sent_heart_beat();
+	static DWORD WINAPI threadTiming(LPVOID lpParamter);
+	void terminateHeartBeatThread();
+
 private:
 	CAGButton		m_btnMin;
 	CAGButton		m_btnClose;
@@ -106,6 +115,9 @@ private:
 	CFont       m_ftDes;
 	CFont		m_ftPhone;
 	CImageList	m_imgNetQuality;
+	//websocket_endpoint  *m_websocket;
+	websocket_endpoint endpoint;
+	HANDLE heartbeatThread;
 
 private:
 	CVideoDlg		m_dlgVideo;
@@ -118,6 +130,9 @@ private:	// data
 
 	int     m_nLastmileQuality;
 	CString appID;
+	string  websocket_uri;
+	int     socketID;
+
 private:
 	Client*                     m_client;
 	set<UINT>                   m_hostset;

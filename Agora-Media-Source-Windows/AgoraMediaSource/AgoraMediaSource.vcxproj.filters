@@ -72,12 +72,6 @@
     <ClCompile Include="HospitalsInfo.cpp">
       <Filter>Host</Filter>
     </ClCompile>
-    <ClCompile Include="httpclient.cpp">
-      <Filter>http</Filter>
-    </ClCompile>
-    <ClCompile Include="mongoose.c">
-      <Filter>http</Filter>
-    </ClCompile>
     <ClCompile Include="uuid.cpp">
       <Filter>Host</Filter>
     </ClCompile>
@@ -99,6 +93,10 @@
     <ClCompile Include="MissedCallDialog.cpp" />
     <ClCompile Include="MissedCallUI.cpp">
       <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlHttpClient.cpp" />
+    <ClCompile Include="WebSocketClient.cpp">
+      <Filter>websocket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +176,6 @@
     <ClInclude Include="HospitalsInfo.h">
       <Filter>Host</Filter>
     </ClInclude>
-    <ClInclude Include="httpclient.h">
-      <Filter>http</Filter>
-    </ClInclude>
-    <ClInclude Include="mongoose.h">
-      <Filter>http</Filter>
-    </ClInclude>
     <ClInclude Include="uuid.h">
       <Filter>Host</Filter>
     </ClInclude>
@@ -208,6 +200,13 @@
     <ClInclude Include="MissedCallDialog.h" />
     <ClInclude Include="MissedCallUi.h">
       <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="CurlHttpClient.h" />
+    <ClInclude Include="WebSocketClient.h">
+      <Filter>websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="utility_socket.h">
+      <Filter>websocket</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -404,9 +403,6 @@
     <Filter Include="Host">
       <UniqueIdentifier>{5511c371-edb9-49db-9c31-5815477cf999}</UniqueIdentifier>
     </Filter>
-    <Filter Include="http">
-      <UniqueIdentifier>{648e9b7c-4b5f-4a2e-96fc-9b83d7513b50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Host\skin">
       <UniqueIdentifier>{e23e8917-24b3-48a2-ab49-361674139f99}</UniqueIdentifier>
     </Filter>
@@ -415,6 +411,9 @@
     </Filter>
     <Filter Include="common">
       <UniqueIdentifier>{cdaa8745-81d0-43ab-a457-a327356505c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="websocket">
+      <UniqueIdentifier>{175675a5-4297-4f85-af95-f98ac5944317}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
