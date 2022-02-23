@@ -107,6 +107,7 @@ using namespace agora::rtm;
 #define CLIENT_UID_BASE 100
 #define DB_CLIENT_ID_TO_UID(CLIENT_ID) (CLIENT_ID + CLIENT_UID_BASE)
 #define APP_NAME _T("MedLink.exe")
+#define APP_NAME_LOWER _T("medlink.exe")
 #define APP_REG_DIR _T("SOFTWARE\\MedLink\\Properties")
 #define IS_HOST_APP _T("IsHost")
 #define HOSPITAL_ID _T("Hospital_id")
