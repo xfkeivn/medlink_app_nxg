@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AGConfig.h"
+#include "commonFun.h"
 
 CAGConfig* CAGConfig::m_agConfigInstance = nullptr;
 
@@ -7,8 +8,15 @@ CAGConfig::CAGConfig()
 {
 	::GetModuleFileName(NULL, m_szConfigFile.GetBuffer(MAX_PATH), MAX_PATH);
 	m_szConfigFile.ReleaseBuffer();
-	
 	 int pos = m_szConfigFile.Find(APP_NAME);
+	 if (pos = -1)
+	 {
+		 pos = m_szConfigFile.MakeLower().Find(APP_NAME_LOWER);
+		 if (pos == -1)
+		 {
+			 logError(cs2s(m_szConfigFile) + " does not contain " + cs2s(APP_NAME) + " or " + cs2s(APP_NAME_LOWER));
+		 }
+	 }
 	 CString newstr = m_szConfigFile.Left(pos);
 	 newstr += _T("MedLinkConfig.ini");
 	 m_szConfigFile = newstr;
@@ -178,7 +186,6 @@ CString CAGConfig::GetVersion()
 	::GetPrivateProfileString(_T("MedLinkConfig"), _T("Version"), _T(""), version_str.GetBuffer(MAX_PATH), MAX_PATH, m_szConfigFile);
 
 	version_str.ReleaseBuffer();
-
 	return version_str;
 }
 
