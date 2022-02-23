@@ -92,7 +92,7 @@ void InitializationUI::handleMeetingAccount(string rsp)
 							CString cs_name(StringUtil::StringToWstring(name).c_str());
 							//CAGConfig::GetInstance()->SetEquipmentName(cs_name);
 							writeRegKey(EQUIPMENT_NAME, cs_name, APP_REG_DIR);
-							if (cs_name.MakeUpper() == L"ILAB")
+							if (cs_name.MakeUpper() == L"ILAB" || cs_name.MakeUpper() == L"RHYTHMIA")
 							{
 								//CAGConfig::GetInstance()->setRelativeMousePos(TRUE);
 								writeRegKey(RELATIVE_MOUSE_POS, L"True", APP_REG_DIR);
