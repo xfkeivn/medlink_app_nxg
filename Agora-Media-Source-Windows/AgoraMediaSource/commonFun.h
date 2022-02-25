@@ -36,6 +36,7 @@ int getResolutionFontSize(int size);
 long long getTimeStamp();
 int r(double a);
 bool isNetworkConnected();
+void split(const string& s, vector<string>& tokens, const char& delim = ' ');
 typedef enum eTagLogType
 {
 	LogType_NULL = -1,
