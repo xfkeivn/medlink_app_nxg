@@ -36,7 +36,16 @@ void ClientIncomingCallUI::InitWindow(CPaintManagerUI& ui_mgr, ClientIncomingCal
 	m_gitAccept = static_cast<CGifAnimUI*>(ui_mgr.FindControl(_T("gif_accept")));
 	m_incomingCallUIMgr = main_frame_;
 	answered = false;
-	const char* fromStr = m_incomingCallUIMgr->GetMeetingInvitation()->getContent();
+	const char* content = m_incomingCallUIMgr->GetMeetingInvitation()->getContent();
+	logInfo("Host invitation content is:" + string(content));
+	vector<string> vs;
+	split(content, vs, ',');
+	string fromStr = content;
+	if (vs.size() == 2)
+	{
+		fromStr = vs.at(0);
+		CAgoraObject::GetAgoraObject()->SetHostEquipment(vs.at(1));
+	}
 	wstring wstr = StringUtil::utf8string2wstring(fromStr);
 	wstring from = L"Calling from " + wstr + L"...";
 

@@ -627,7 +627,7 @@ void CAgoraObject::RTMLogin()
 
 void CAgoraObject::Invite(UINT uid, string channel)
 {
-	CString message = readRegKey(HOSPITAL_NAME, APP_REG_DIR) + readRegKey(DEPARTMENT_NAME, APP_REG_DIR);
+	CString message = readRegKey(HOSPITAL_NAME, APP_REG_DIR) + readRegKey(DEPARTMENT_NAME, APP_REG_DIR) + L"," + readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
 	std::string callFrom = StringUtil::wstring2utf8string(message.GetBuffer());
 	m_lpAgoraRTMInstance->SendInvitationPeer(uid, channel, callFrom);
 }

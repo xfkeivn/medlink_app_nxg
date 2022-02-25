@@ -70,6 +70,8 @@ public:
 
 	void SetSelfHost(bool isHost) { m_bHost = isHost; };
 	BOOL GetSelfHost() { return m_bHost; }
+	void SetHostEquipment(string equipment) { m_hostEquipment = equipment; }
+	string GetHostEquipment() { return m_hostEquipment; }
 
 	BOOL EnableVideo(BOOL bEnable = TRUE);
 	BOOL IsVideoEnabled();
@@ -146,6 +148,7 @@ private:
 
 	BOOL		m_bHost;
 	string      m_hostUID;
+	string      m_hostEquipment;
 
 	CString     m_strAccountName;
 
