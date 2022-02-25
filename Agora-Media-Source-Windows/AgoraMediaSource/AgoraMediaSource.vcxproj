@@ -113,7 +113,7 @@ if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\Release;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\Release;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib;$(SolutionDir)\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>
       </AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
@@ -215,7 +215,6 @@ if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="VideoDlg.h" />
     <ClInclude Include="VideoScreenControl.h" />
     <ClInclude Include="video_preprocessing_plugin.h" />
-    <ClInclude Include="WebSocketClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGButton.cpp" />
@@ -295,7 +294,6 @@ if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
     <ClCompile Include="VideoDlg.cpp" />
     <ClCompile Include="VideoScreenControl.cpp" />
     <ClCompile Include="video_preprocessing_plugin.cpp" />
-    <ClCompile Include="WebSocketClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AgoraMediaSource.rc2" />
