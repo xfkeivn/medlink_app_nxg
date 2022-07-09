@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window>
+    <Font name="微软雅黑" size="12" bold="false" italic="false" default="true" />
+    <Font name="微软雅黑" size="12" bold="true" italic="false" />
+	<Font id="0" name="宋体" size="17" bold="true"  />
+    <Default name="VScrollBar" value="button1normalimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;0,0,16,16&apos;&quot; button1hotimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;16,0,32,16,16&apos;&quot; button1pushedimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;32,0,48,16&apos;&quot; button2normalimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;0,32,16,48&apos;&quot; button2hotimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;16,32,32,48&apos;&quot; button2pushedimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;32,32,48,48&apos;&quot; thumbnormalimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;0,48,16,64&apos; corner=&apos;0,2,0,2&apos;&quot; thumbhotimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;16,48,32,64&apos; corner=&apos;0,2,0,2&apos;&quot; thumbpushedimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;32,48,48,64&apos; corner=&apos;0,2,0,2&apos;&quot; bknormalimage=&quot;file=&apos;scrollbar.png&apos; source=&apos;0,16,16,32&apos;&quot;" />
+    <VerticalLayout width="400" height="248" bkcolor="#FF262626" inset="2,2,2,2">
+        <Label name="listtitle" text="参会者" height="50" textcolor="#fff5f7f8" disabledtextcolor="#fff5f7f8" padding="10,0,0,0" font="0"/>
+        <!-- <FriendList bkimage="file=&apos;list_bk.png&apos;" header="hidden" itemshowhtml="true" name="friends" vscrollbar="true" /> -->
+		<List name ="participants" width="400" itembkcolor="#FF262626" itemselectedbkcolor="#FF262626"  itemhotbkcolor="#FF262626" inset="0,0,5,0" childpadding="5" vscrollbar="true">
+		</List>  
+    </VerticalLayout>
+</Window>
