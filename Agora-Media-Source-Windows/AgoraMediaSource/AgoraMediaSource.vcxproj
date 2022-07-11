@@ -89,7 +89,8 @@
     </ResourceCompile>
     <PostBuildEvent>
       <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)
-if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
+if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)
+if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -130,7 +131,8 @@ if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>if exist ..\sdk (copy ..\sdk\dll\*.dll ..\$(Configuration)\) else if exist ..\..\..\sdk (copy ..\..\..\sdk\dll\*.dll ..\$(Configuration)\)
-if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)</Command>
+if exist ..\libcurl (copy ..\libcurl\lib\*.dll ..\$(Configuration)\)
+if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

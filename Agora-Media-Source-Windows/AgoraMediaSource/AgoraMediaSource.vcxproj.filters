@@ -36,7 +36,6 @@
     <ClCompile Include="DeviceDlg.cpp" />
     <ClCompile Include="EnterChannelDlg.cpp" />
     <ClCompile Include="FileIO.cpp" />
-    <ClCompile Include="HIDControl.cpp" />
     <ClCompile Include="LanguageSet.cpp" />
     <ClCompile Include="LogoDlg.cpp" />
     <ClCompile Include="MessageProtocal.cpp" />
@@ -89,12 +88,17 @@
     </ClCompile>
     <ClCompile Include="ReconnectingUI.cpp" />
     <ClCompile Include="CReconnectingDlg.cpp" />
-    <ClCompile Include="VideoScreenControl.cpp" />
     <ClCompile Include="MissedCallDialog.cpp" />
     <ClCompile Include="MissedCallUI.cpp">
       <Filter>Client</Filter>
     </ClCompile>
     <ClCompile Include="CurlHttpClient.cpp" />
+    <ClCompile Include="HIDControl.cpp">
+      <Filter>serial port</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoScreenControl.cpp">
+      <Filter>serial port</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AGButton.h" />
@@ -134,7 +138,6 @@
     <ClInclude Include="DeviceDlg.h" />
     <ClInclude Include="EnterChannelDlg.h" />
     <ClInclude Include="FileIO.h" />
-    <ClInclude Include="HIDControl.h" />
     <ClInclude Include="IAGDShowDevice.h" />
     <ClInclude Include="LanguageSet.h" />
     <ClInclude Include="LogoDlg.h" />
@@ -193,7 +196,6 @@
     </ClInclude>
     <ClInclude Include="ReconnectingUI.h" />
     <ClInclude Include="CReconnectingDlg.h" />
-    <ClInclude Include="VideoScreenControl.h" />
     <ClInclude Include="MissedCallDialog.h" />
     <ClInclude Include="MissedCallUi.h">
       <Filter>Client</Filter>
@@ -201,6 +203,12 @@
     <ClInclude Include="CurlHttpClient.h" />
     <ClInclude Include="utility_socket.h">
       <Filter>websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="HIDControl.h">
+      <Filter>serial port</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoScreenControl.h">
+      <Filter>serial port</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +416,9 @@
     </Filter>
     <Filter Include="websocket">
       <UniqueIdentifier>{175675a5-4297-4f85-af95-f98ac5944317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="serial port">
+      <UniqueIdentifier>{e012df83-a315-4a11-bd97-9c7cd67d5e2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
