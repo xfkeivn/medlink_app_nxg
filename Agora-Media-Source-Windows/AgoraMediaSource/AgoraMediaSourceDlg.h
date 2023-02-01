@@ -23,7 +23,7 @@ class CAgoraMediaSourceDlg : public CDialogEx
 	// Construction
 public:
 	CAgoraMediaSourceDlg(CWnd* pParent = NULL);	// standard constructor
-
+	~CAgoraMediaSourceDlg();
 // Dialog Data
 	enum { IDD = IDD_OPENVIDEOCALL_DIALOG };
 

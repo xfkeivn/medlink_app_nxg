@@ -39,7 +39,7 @@ CAgoraMediaSourceApp::~CAgoraMediaSourceApp()
 {
 
     CLanguageSet::GetInstance()->CloseInstance();
-    CAgoraObject::GetAgoraObject()->CloseAgoraObject();
+    CAgoraObject::GetAgoraObject()->CloseAgoraObject();	
 }
 // The one and only CAgoraVideoCallApp object
 
