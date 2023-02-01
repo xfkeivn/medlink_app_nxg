@@ -1324,6 +1324,6 @@ LRESULT CAgoraMediaSourceDlg::OnInvitationExpire(WPARAM wParam, LPARAM lParam)
 
 CAgoraMediaSourceDlg::~CAgoraMediaSourceDlg()
 {
-	delete this->m_client_user_struct;
-	delete this->m_client_meeting_struct;
+	//delete this->m_client_user_struct;
+	//delete this->m_client_meeting_struct;
 }
