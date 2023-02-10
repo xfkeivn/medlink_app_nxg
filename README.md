@@ -7,7 +7,9 @@
 ### 5. Complie and generate the installation.
 ## DevOps information
 #### Prod Management System https://47.116.77.151:8888/#/meetings/currentMeeting, user:bscadmin,password,bscadmin
+Prod env use the appid a7947e910b78485f96d63e890017d067
 #### Dev Management System https://47.116.77.151:5555/#/meetings/currentMeeting, user:bscadmin,password,bscadmin
+Dev env use the appid b158865ce08b43f788e909aceda9fb7f
 #### the ALIYUN SERVER SSH user:lihao, pwd: qwe123
 ### the mysql database, user:root,pwd:admin,port:3306, there is both medlink and medlink_dev for prod and dev.
 ### to update the database, use ssh tunnel, as above.
