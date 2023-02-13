@@ -21,8 +21,8 @@ DisableProgramGroupPage=yes
 DisableDirPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 PrivilegesRequired=lowest
-OutputDir=MDLink Output
-OutputBaseFilename=MedLink_Client_Setup.{#MyAppVersion}
+OutputDir= {#OutputDir}
+OutputBaseFilename=MedLink_Host_dev_Setup.{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -39,9 +39,11 @@ Source: "{#OutputDir}\Release\*"; DestDir: "{app}"; Flags: ignoreversion recurse
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
-Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "IsHost"; ValueData: "False"
+Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "IsHost"; ValueData: "True"
 Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "WebServerIP"; ValueData: "47.116.77.151"
-Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "WebServerPort"; ValueData: "9999"
+Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "WebServerPort"; ValueData: "7777"
+Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "WebSocketPort"; ValueData: "24388"
+Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName: "RCEnable"; ValueData: "False"
 Root: HKLM; Subkey: "SOFTWARE\{#MyAppName}\Properties"; ValueType: string; ValueName:"InstallPath";ValueData:"{app}";
 
 [Code]
@@ -64,7 +66,7 @@ begin
     FSWbemLocator := Unassigned;
 end;
 
-// 安装时判断Med_Link是否已安装
+// 安装时判断MedLink是否已安装
 function InitializeSetup(): Boolean;
 var 
   isHost:String;

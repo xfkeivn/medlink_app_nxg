@@ -6,6 +6,7 @@
 #define MyAppPublisher ""
 #define MyAppExeName "Medlink_Start.exe"
 #define MyAppLauncherName "Medlink_Start.exe"
+#define OutputDir  "D:\Workspace\Medlink\remote_case_support_app\InnoSetup\MDLink Output"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
