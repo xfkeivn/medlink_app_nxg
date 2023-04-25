@@ -444,9 +444,11 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 			logInfo("Init video screen com.");
 			VideoScreenControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetVideoScreenCom()));
 		}
-		CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-		if (equipment.MakeUpper() != _T("SPYGLASS") && isRCEnable)
+		string equipment = RegConfig::Instance()->getEquipmentTypeName();
+		//CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+		bool isRCEnable = RegConfig::Instance()->getRCEnable();
+		//BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+		if (CString(equipment.c_str()).MakeUpper() != _T("SPYGLASS") && isRCEnable)
 		{
 			logInfo("Init device com.");
 			HIDControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetDeviceCom()), CAGConfig::GetInstance()->GetBaudrate());
@@ -471,8 +473,8 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		PJoinChannelAudioMuted pdata = new JoinChannelAudioMuted;
 		pdata->audiomuted = m_client_meeting_struct->audiomuted;
 		::PostMessage(m_dlgVideo.GetSafeHwnd(),WM_JOINCHANNEL_AUDIO, (WPARAM)pdata, 0);
-		
-		int meeting_id = BackendCommImpl::Instance()->reportClientJoinMeeting(m_client_user_struct->uid);
+		string channel_id = m_client_meeting_struct->meeting_channel;
+		int meeting_id = BackendCommImpl::Instance()->reportClientJoinMeeting(m_client_user_struct->uid,channel_id);
 	}
 	
 	return 0;

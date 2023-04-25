@@ -71,34 +71,10 @@
     <ClCompile Include="VideoScreenControl.cpp">
       <Filter>serial port</Filter>
     </ClCompile>
-    <ClCompile Include="AGButton.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGComboBox.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
     <ClCompile Include="AGConfig.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
-    <ClCompile Include="AGDesktopCaptureDlg.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGEdit.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
     <ClCompile Include="AGEngineEventHandler.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGHyperLink.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGLinkCtrl.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AgoraAudInputManager.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AgoraCameraManager.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
     <ClCompile Include="AgoraMediaSource.cpp">
@@ -110,9 +86,6 @@
     <ClCompile Include="AgoraObject.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
-    <ClCompile Include="AgoraPlayoutManager.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
     <ClCompile Include="AgoraRTMInstance.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
@@ -122,16 +95,7 @@
     <ClCompile Include="AGRTMEventHandle.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
-    <ClCompile Include="AGScreenCaptureDlg.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGSliderCtrl.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
     <ClCompile Include="AgVideoBuffer.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGVideoTestWnd.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
     <ClCompile Include="AGVideoWnd.cpp">
@@ -145,6 +109,42 @@
     </ClCompile>
     <ClCompile Include="CurlHttpClient.cpp">
       <Filter>Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="AGButton.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AGComboBox.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AGEdit.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AGHyperLink.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AGLinkCtrl.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AGSliderCtrl.cpp">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraAudInputManager.cpp">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraCameraManager.cpp">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraPlayoutManager.cpp">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AGDesktopCaptureDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="AGScreenCaptureDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="AGVideoTestWnd.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -225,37 +225,13 @@
     <ClInclude Include="VideoScreenControl.h">
       <Filter>serial port</Filter>
     </ClInclude>
-    <ClInclude Include="AGButton.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGComboBox.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
     <ClInclude Include="AGConfig.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGDesktopCaptureDlg.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGEdit.h">
       <Filter>Agora</Filter>
     </ClInclude>
     <ClInclude Include="AGEngineEventHandler.h">
       <Filter>Agora</Filter>
     </ClInclude>
-    <ClInclude Include="AGHyperLink.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGLinkCtrl.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
     <ClInclude Include="AGMessage.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AgoraAudInputManager.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AgoraCameraManager.h">
       <Filter>Agora</Filter>
     </ClInclude>
     <ClInclude Include="AgoraMediaSource.h">
@@ -267,9 +243,6 @@
     <ClInclude Include="AgoraObject.h">
       <Filter>Agora</Filter>
     </ClInclude>
-    <ClInclude Include="AgoraPlayoutManager.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
     <ClInclude Include="AgoraRTMInstance.h">
       <Filter>Agora</Filter>
     </ClInclude>
@@ -279,16 +252,7 @@
     <ClInclude Include="AGRTMEventHandler.h">
       <Filter>Agora</Filter>
     </ClInclude>
-    <ClInclude Include="AGScreenCaptureDlg.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGSliderCtrl.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
     <ClInclude Include="AgVideoBuffer.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGVideoTestWnd.h">
       <Filter>Agora</Filter>
     </ClInclude>
     <ClInclude Include="AGVideoWnd.h">
@@ -305,6 +269,42 @@
     </ClInclude>
     <ClInclude Include="CurlHttpClient.h">
       <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="AGButton.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AGComboBox.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AGEdit.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AGHyperLink.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AGLinkCtrl.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AGSliderCtrl.h">
+      <Filter>Agora\AgoraControl</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraAudInputManager.h">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraCameraManager.h">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraPlayoutManager.h">
+      <Filter>Agora\AgoraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AGDesktopCaptureDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="AGScreenCaptureDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="AGVideoTestWnd.h">
+      <Filter>Agora\AgoraDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -787,6 +787,15 @@
     </Filter>
     <Filter Include="Communication">
       <UniqueIdentifier>{4db26acd-874c-4142-9295-2a46d3c55909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Agora\AgoraControl">
+      <UniqueIdentifier>{85402341-d902-4c9d-b9dc-d7c87c5d5edd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Agora\AgoraManager">
+      <UniqueIdentifier>{ed5d9255-2fa8-4cd0-a5e6-ef9d5b58dab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Agora\AgoraDlg">
+      <UniqueIdentifier>{5ba270ea-cecb-48ba-976b-7a5491cbeabc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

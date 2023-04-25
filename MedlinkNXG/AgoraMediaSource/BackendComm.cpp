@@ -79,16 +79,13 @@ bool BackendCommImpl::reportEndMeeting(string meetingId)
 {
 	return true;
 }
-bool BackendCommImpl::reportClientJoinMeeting(string user_id, int channel_id)
+bool BackendCommImpl::reportClientJoinMeeting(string user_id, string channel_id)
 {
 	string ip = RegConfig::Instance()->getWebServerIP();
 	string port = RegConfig::Instance()->getWebServerPort();
 	string ip_str = ip + ":" + port;
 	string url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientJoinMeeting";
-	char temp[100];
-	itoa(channel_id, temp, 10);
-	string channel_id_str = temp;
-	string req_param = "client_id=" + user_id + "&channel_id=" + channel_id_str;
+	string req_param = "client_id=" + user_id + "&channel_id=" + channel_id;
 	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
 	rapidjson::Document doc;
 	if (!doc.Parse(response.data()).HasParseError())

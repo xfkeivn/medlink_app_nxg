@@ -9,7 +9,7 @@ public:
 	virtual int reportStartMeeting(string host_id) = 0;
 	virtual bool requestAppID(string &appid) = 0;
 	virtual bool reportEndMeeting(string meetingId) = 0;
-	virtual bool reportClientJoinMeeting(int user_id, int meeting_id) = 0;
+	virtual bool reportClientJoinMeeting(string user_id, string meeting_id) = 0;
 	virtual bool requestMeetingAccount(string uuid, string hospital, string department, string equipment) = 0;
 	virtual bool requestHostInitialInfo() = 0;
 	virtual bool requestServiceClients(string uuid,vector<std::shared_ptr<Individual>> &clients) = 0;
@@ -24,7 +24,7 @@ public:
 	virtual bool requestAppID(string &appid);
 	virtual int reportStartMeeting(string host_id);
 	virtual bool reportEndMeeting(string meetingId);
-	virtual bool reportClientJoinMeeting(string user_id, int meeting_id);
+	virtual bool reportClientJoinMeeting(string user_id, string meeting_id);
 	virtual bool requestMeetingAccount(string uuid, string hospital, string department, string equipment);
 	virtual bool requestHostInitialInfo();
 	virtual bool requestServiceClients(string uuid, vector<std::shared_ptr<Individual>> &clients);
