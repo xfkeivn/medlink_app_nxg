@@ -1,0 +1,802 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CDrawLayerDlg.cpp" />
+    <ClCompile Include="commonFun.cpp" />
+    <ClCompile Include="CTipDlg.cpp" />
+    <ClCompile Include="display_cc_ui.cpp" />
+    <ClCompile Include="DskcapsetDlg.cpp" />
+    <ClCompile Include="ExtendVideoFrameObserver.cpp" />
+    <ClCompile Include="ChatDlg.cpp" />
+    <ClCompile Include="DeviceDlg.cpp" />
+    <ClCompile Include="FileIO.cpp" />
+    <ClCompile Include="LanguageSet.cpp" />
+    <ClCompile Include="LogoDlg.cpp" />
+    <ClCompile Include="MessageProtocal.cpp" />
+    <ClCompile Include="ParticipantsUI.cpp" />
+    <ClCompile Include="ParticipantWnd.cpp" />
+    <ClCompile Include="SetupDlg.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="string_util.cpp" />
+    <ClCompile Include="UIFriends.cpp" />
+    <ClCompile Include="UIListCommonDefine.cpp" />
+    <ClCompile Include="VideoDlg.cpp" />
+    <ClCompile Include="video_preprocessing_plugin.cpp" />
+    <ClCompile Include="log_util.cpp" />
+    <ClCompile Include="clients_manager.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="HostDUIMgr.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="Individual.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="InitializationUI.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggedInUI.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="HardDriveSerialNumer.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="HospitalsInfo.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="uuid.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="incoming_call_ui.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="init_auth_ui.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="join_meeting_ui.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="ReconnectingUI.cpp" />
+    <ClCompile Include="CReconnectingDlg.cpp" />
+    <ClCompile Include="MissedCallDialog.cpp" />
+    <ClCompile Include="MissedCallUI.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="HIDControl.cpp">
+      <Filter>serial port</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoScreenControl.cpp">
+      <Filter>serial port</Filter>
+    </ClCompile>
+    <ClCompile Include="AGButton.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGComboBox.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGConfig.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGDesktopCaptureDlg.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGEdit.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGEngineEventHandler.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGHyperLink.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGLinkCtrl.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraAudInputManager.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraCameraManager.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraMediaSource.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraMediaSourceDlg.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraObject.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraPlayoutManager.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgoraRTMInstance.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGResourceVisitor.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGRTMEventHandle.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGScreenCaptureDlg.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGSliderCtrl.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AgVideoBuffer.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGVideoTestWnd.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="AGVideoWnd.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigCenter.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="BackendComm.cpp">
+      <Filter>Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlHttpClient.cpp">
+      <Filter>Communication</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CColorStatic.h" />
+    <ClInclude Include="CDrawLayerDlg.h" />
+    <ClInclude Include="commonFun.h" />
+    <ClInclude Include="CTipDlg.h" />
+    <ClInclude Include="display_cc_ui.h" />
+    <ClInclude Include="DskcapsetDlg.h" />
+    <ClInclude Include="ExtendVideoFrameObserver.h" />
+    <ClInclude Include="ChatDlg.h" />
+    <ClInclude Include="DeviceDlg.h" />
+    <ClInclude Include="FileIO.h" />
+    <ClInclude Include="IAGDShowDevice.h" />
+    <ClInclude Include="LanguageSet.h" />
+    <ClInclude Include="LogoDlg.h" />
+    <ClInclude Include="MessageProtocal.h" />
+    <ClInclude Include="ParticipantsUI.h" />
+    <ClInclude Include="ParticipantWnd.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SetupDlg.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="string_util.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="UIFriends.hpp" />
+    <ClInclude Include="UIListCommonDefine.hpp" />
+    <ClInclude Include="VideoDlg.h" />
+    <ClInclude Include="video_preprocessing_plugin.h" />
+    <ClInclude Include="log_util.h" />
+    <ClInclude Include="clients_manager.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="HostDUIMgr.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="Individual.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="InitializationUI.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggedInUI.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="HardDriveSerialNumer.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="HospitalsInfo.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="uuid.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="client_common.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="incoming_call_ui.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="init_auth_ui.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="join_meeting_ui.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="ReconnectingUI.h" />
+    <ClInclude Include="CReconnectingDlg.h" />
+    <ClInclude Include="MissedCallDialog.h" />
+    <ClInclude Include="MissedCallUi.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="HIDControl.h">
+      <Filter>serial port</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoScreenControl.h">
+      <Filter>serial port</Filter>
+    </ClInclude>
+    <ClInclude Include="AGButton.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGComboBox.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGConfig.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGDesktopCaptureDlg.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGEdit.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGEngineEventHandler.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGHyperLink.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGLinkCtrl.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGMessage.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraAudInputManager.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraCameraManager.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraMediaSource.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraMediaSourceDlg.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraObject.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraPlayoutManager.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgoraRTMInstance.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGResourceVisitor.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGRTMEventHandler.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGScreenCaptureDlg.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGSliderCtrl.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AgVideoBuffer.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGVideoTestWnd.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="AGVideoWnd.h">
+      <Filter>Agora</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigCenter.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="BackendComm.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="utility_socket.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="CurlHttpClient.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="skin\group_individual_item.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\Group_item.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\Individual_item.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\InitializationUI.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\LoggedInUI.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_incoming_call.xml">
+      <Filter>Client</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_join_meeting.xml">
+      <Filter>Client</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_login_frame.xml">
+      <Filter>Client</Filter>
+    </Xml>
+    <Xml Include="skin\participant_client.xml">
+      <Filter>Client</Filter>
+    </Xml>
+    <Xml Include="skin\participant_item_client.xml">
+      <Filter>Client</Filter>
+    </Xml>
+    <Xml Include="skin\participant_host.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\participant_item_host.xml">
+      <Filter>Host\skin</Filter>
+    </Xml>
+    <Xml Include="skin\reconnectingUI.xml">
+      <Filter>common</Filter>
+    </Xml>
+    <Xml Include="skin\missed_call_ui.xml">
+      <Filter>Client</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\AgoraMediaSource.ico">
+      <Filter>Agora</Filter>
+    </Image>
+    <Image Include="res\8.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\9.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\10.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\accept.gif">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\bk_email.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\bk_email_password.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\bk_meeting_id.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\bk_meeting_password.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\bsc_image.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_accept_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_accept_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_accept_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_join_disabled.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_join_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_join_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_join_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_login_disabled.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_login_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_login_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_login_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_logout_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_logout_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_logout_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_reject_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_reject_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_reject_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_retry_hover.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_retry_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\button_retry_press.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\draw.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\group.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd2_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd1_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd1_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd1_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd2_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\hd2_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BACKGROUND_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNAUDIO_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNCLOSE.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNENDCALL_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNENDCALL_VIDEO_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNENDCALL_VIDEO_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNFULLSCR_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMAUDIO_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMAUDIO_VIDEO_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMAUDIO_VIDEO_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMAX.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMIN.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMORE_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNMSG_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNNORSCR_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNRESTORE.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNSCRCAP_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNSETUP_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNTIP_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_BTNVIDEO_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_CMBBTN.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_CMBSEL.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_DESKTOPSHARE_VIDEO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_DLG_LOGO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_DLG_MAIN.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_DRAW_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_DRAW_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_ERASER.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_ERASER_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_ERASER_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_IN_REMOTE_CONTROL_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_IN_REMOTE_CONTROL_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_LOGO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_MENU_DEVICE.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_MENU_FILTER.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_MENU_INFO.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_MENU_MORE.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_NETWORK_QUALITY.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_NETWORK_QUALITY_30.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_RECORD_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_RECORD_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_SETTING_48.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_SETTING_96.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_SLD_HOVER.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\IDB_SLD_NORMAL.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\in_remot.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\info.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\checkbox_bk.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_bsc_logo.ico">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_bsc_logo.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_bsc_logo_narrow.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_icon_audio_mute.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_icon_audio_unmute.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_icon_video_mute.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\mlink_icon_video_unmute.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\normal_checkbox.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\participant.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pbyp_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pbyp_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pbyp_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pic_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pic_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pic_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pip_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pip_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pip_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pup_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pup_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pup_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\record.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\remote.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\remote1.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\ripple.gif">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\rotate_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\rotate_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\rotate_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\selected_checkbox.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\setup.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\start_meeting_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\start_meeting_hot.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\start_meeting_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\start_meeting_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\swap_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\swap_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\swap_push.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\waiting.gif">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\waiting_big.gif">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\warning.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\录制.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\设置.bmp">
+      <Filter>images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\AgoraMediaSource.rc2">
+      <Filter>Agora</Filter>
+    </None>
+    <None Include="res\bin00001.bin">
+      <Filter>images</Filter>
+    </None>
+    <None Include="res\bin00002.bin">
+      <Filter>images</Filter>
+    </None>
+    <None Include="res\xml1.bin">
+      <Filter>images</Filter>
+    </None>
+    <None Include="res\zpimgres.bin">
+      <Filter>images</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Host">
+      <UniqueIdentifier>{5511c371-edb9-49db-9c31-5815477cf999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Host\skin">
+      <UniqueIdentifier>{e23e8917-24b3-48a2-ab49-361674139f99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{681b2a5e-88ed-4734-a5e3-08380aa098cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{cdaa8745-81d0-43ab-a457-a327356505c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="serial port">
+      <UniqueIdentifier>{e012df83-a315-4a11-bd97-9c7cd67d5e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Agora">
+      <UniqueIdentifier>{0cf8cb31-5e13-4954-9a9e-ddac8c2e49f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="images">
+      <UniqueIdentifier>{39788168-5b31-441c-9323-b49a56afb3df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{7e408cb5-4dbb-4261-9bb2-cadd9161aa80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{0b2b2c96-ecc4-4cef-be05-bf225733d356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Communication">
+      <UniqueIdentifier>{4db26acd-874c-4142-9295-2a46d3c55909}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AgoraMediaSource.rc">
+      <Filter>Agora</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\ID_TEST_AUDIO.wav">
+      <Filter>sound</Filter>
+    </Media>
+  </ItemGroup>
+</Project>
