@@ -12,8 +12,8 @@
 #include "HIDControl.h"
 #include <mmsystem.h>
 #include "CTipDlg.h"
-
 #pragma comment(lib, "WINMM.LIB")
+#include "VideoSourceMgr.h"
 extern RTMMemberStatusEvent G_RTM_MEMBER_STATUS_EVENT;
 
 

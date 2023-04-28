@@ -19,7 +19,11 @@ BackendCommImpl::BackendCommImpl()
 }
 bool BackendCommImpl::requestAppID(string &appid)
 {
-	
+	//
+	appid = "b158865ce08b43f788e909aceda9fb7f";
+	return true;
+
+
 	string ip = RegConfig::Instance()->getWebServerIP();
 	string port = RegConfig::Instance()->getWebServerPort();
 	
@@ -75,11 +79,44 @@ int BackendCommImpl::reportStartMeeting(string host_id)
 	return -1;
 }
 
-bool BackendCommImpl::reportEndMeeting(string meetingId)
+bool BackendCommImpl::reportEndMeeting(string meeting_id)
 {
+	string ip = RegConfig::Instance()->getWebServerIP();
+	string port = RegConfig::Instance()->getWebServerPort();
+	string ip_str = ip + ":" + port;	
+	string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
+	string response = CurlHttpClient::SendGetReq(url.c_str());
+	rapidjson::Document doc;
+	if (!doc.Parse(response.data()).HasParseError())
+	{
+		logInfo("ReportEndMeetingResponse from webserver:" + response);
+	}
+
 	return true;
 }
-bool BackendCommImpl::reportClientJoinMeeting(string user_id, string channel_id)
+bool BackendCommImpl::reportClientJoinMeeting2(string client_id,string meeting_id, string host_id,string channel_id){
+	string ip = RegConfig::Instance()->getWebServerIP();
+	string port = RegConfig::Instance()->getWebServerPort();
+	string uuid = UUIDGenerator::getInstance()->getUUID();
+	string url = "http://" + ip+":"+port + "/api-meeting/ReportJoinMeeting/ClientJoinMeeting";
+	string req_param = "";
+	if (meeting_id.length() > 0)
+	{
+		req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&host_id=" + host_id + "&uuid=" + uuid + "&is_init=False&channel_id=" + channel_id;
+	}
+	else
+	{
+		req_param = "client_id=" + client_id + "&host_id=" + host_id + "&uuid=" + uuid + "&is_init=True&channel_id=" + channel_id;
+	}
+	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+	rapidjson::Document doc;
+	if (!doc.Parse(response.data()).HasParseError())
+	{
+		logInfo("ClientJoinMeetingResponse from webserver:" + response);
+	}
+	return TRUE;
+}
+bool BackendCommImpl::reportClientJoinMeeting1(string user_id, string channel_id)
 {
 	string ip = RegConfig::Instance()->getWebServerIP();
 	string port = RegConfig::Instance()->getWebServerPort();
@@ -106,4 +143,39 @@ bool BackendCommImpl::requestHostInitialInfo()
 bool BackendCommImpl::requestServiceClients(string uuid, vector<std::shared_ptr<Individual>> &clients)
 {
 	return true;
+}
+
+bool BackendCommImpl::reportClientExitMeeting(string client_id, string meeting_id, string channel_id)
+{
+
+	string ip = RegConfig::Instance()->getWebServerIP();
+	string port = RegConfig::Instance()->getWebServerPort();
+	string ip_str = ip + ":" + port;
+	
+	string url = "http://" + ip_str + "/api-meeting/ReportExitMeeting/ClientExitMeeting";
+	string req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&channel_id=" + channel_id;
+	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+	rapidjson::Document doc;
+	if (!doc.Parse(response.data()).HasParseError())
+	{
+		logInfo("ClientExitMeetingResponse from webserver:" + response);
+	}
+	return TRUE;
+
+}
+bool  BackendCommImpl::reportActiveLogClientExitMeeting(string client_id, string channel_id)
+{
+	string ip = RegConfig::Instance()->getWebServerIP();
+	string port = RegConfig::Instance()->getWebServerPort();
+	string ip_str = ip + ":" + port;
+
+	string url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
+	string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
+	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
+	rapidjson::Document doc;
+	if (!doc.Parse(response.data()).HasParseError())
+	{
+		logInfo("ClientExitMeetingResponse from webserver:" + response);
+	}
+	return TRUE;
 }

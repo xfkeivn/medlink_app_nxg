@@ -54,10 +54,8 @@ using namespace Gdiplus;
 #pragma comment(lib,"../SDK/lib/agora_rtm_sdk.lib")
 #pragma comment(lib, "../SDK/lib/agora_rtc_sdk.lib")
 using namespace agora::rtm;
-
 #pragma comment(lib,"../log4cpp/lib/log4cppD.lib")
 #pragma comment(lib,"../log4cpp/lib/log4cppLIB.lib")
-
 #define REMOTE_CONTROL_TARGET_SIZE_WIDTH 1280
 #define REMOTE_CONTROL_TARGET_SIZE_HEIGHT 1024
 #define REMTOE_CONTROL_TARGET_WIDTH_HEIGHT_RATIO (1.25)

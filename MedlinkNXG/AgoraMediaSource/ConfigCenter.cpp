@@ -94,6 +94,7 @@ bool    RegConfig::getRCEnable() {
 	return m_rc_enable;
 }
 bool    RegConfig::getIsHost() {
+	return true;
 	return m_is_host;
 }
 string    RegConfig::getUserEmail() {

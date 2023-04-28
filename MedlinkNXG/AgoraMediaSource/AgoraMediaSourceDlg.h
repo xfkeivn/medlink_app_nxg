@@ -15,7 +15,7 @@
 #include "utility_socket.h"
 #include <set>
 
-
+class websocket_endpoint;
 class CAgoraMediaSourceDlg : public CDialogEx
 {
 	// Construction
@@ -85,11 +85,7 @@ protected:
 	void PublishClientStatus();
 	void onClientShowJoinMeetingUI();
 	
-	void handleHostStartMeetingResponse(string rsp);
-	void handleHostEndMeetingResponse(string rsp);
-	void handleClientJoinMeetingResponse(string rsp);
-	void handleParticipantExitMeetingResponse(string rsp);
-	void handleRequestAppIDResponse(string rsp);
+	
 	string getCurrentSocketStatus();
 	void sent_heart_beat();
 	static DWORD WINAPI threadTiming(LPVOID lpParamter);
@@ -110,7 +106,6 @@ private:
 	CFont       m_ftDes;
 	CFont		m_ftPhone;
 	CImageList	m_imgNetQuality;
-	//websocket_endpoint  *m_websocket;
 	websocket_endpoint endpoint;
 	HANDLE heartbeatThread;
 

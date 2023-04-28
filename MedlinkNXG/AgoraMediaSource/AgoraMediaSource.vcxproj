@@ -65,16 +65,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h;D:\Workspace\Medlink\remote_case_support_app\MedlinkNXG\nxg\debug</AdditionalIncludeDirectories>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib;D:\Workspace\Medlink\remote_case_support_app\MedlinkNXG\nxg\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MedlinkNXG.lib</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <Midl>
@@ -105,9 +104,10 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;$(SolutionDir)SDK\include;DShow;libYUV;$(SolutionDir)log4cpp\h;$(SolutionDir)NXG\MedlinkNXG</AdditionalIncludeDirectories>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,8 +115,7 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\Release;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib;$(SolutionDir)\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>MelinkNXG.lib</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <Midl>
@@ -156,7 +155,7 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="AgoraPlayoutManager.h" />
     <ClInclude Include="AgoraObject.h" />
     <ClInclude Include="AgoraRTMInstance.h" />
-    <ClInclude Include="AgVideoBuffer.h" />
+    <ClInclude Include="AGVideoWnd.h" />
     <ClInclude Include="BackendComm.h" />
     <ClInclude Include="CColorStatic.h" />
     <ClInclude Include="CDrawLayerDlg.h" />
@@ -170,14 +169,12 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="CurlHttpClient.h" />
     <ClInclude Include="display_cc_ui.h" />
     <ClInclude Include="DskcapsetDlg.h" />
-    <ClInclude Include="ExtendVideoFrameObserver.h" />
     <ClInclude Include="AgoraMediaSource.h" />
     <ClInclude Include="AgoraMediaSourceDlg.h" />
     <ClInclude Include="AGResourceVisitor.h" />
     <ClInclude Include="AGScreenCaptureDlg.h" />
     <ClInclude Include="AGSliderCtrl.h" />
     <ClInclude Include="AGVideoTestWnd.h" />
-    <ClInclude Include="AGVideoWnd.h" />
     <ClInclude Include="ChatDlg.h" />
     <ClInclude Include="DeviceDlg.h" />
     <ClInclude Include="FileIO.h" />
@@ -229,7 +226,7 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClCompile Include="AgoraPlayoutManager.cpp" />
     <ClCompile Include="AgoraObject.cpp" />
     <ClCompile Include="AgoraRTMInstance.cpp" />
-    <ClCompile Include="AgVideoBuffer.cpp" />
+    <ClCompile Include="AGVideoWnd.cpp" />
     <ClCompile Include="BackendComm.cpp" />
     <ClCompile Include="CDrawLayerDlg.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -241,14 +238,12 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClCompile Include="CurlHttpClient.cpp" />
     <ClCompile Include="display_cc_ui.cpp" />
     <ClCompile Include="DskcapsetDlg.cpp" />
-    <ClCompile Include="ExtendVideoFrameObserver.cpp" />
     <ClCompile Include="AgoraMediaSource.cpp" />
     <ClCompile Include="AgoraMediaSourceDlg.cpp" />
     <ClCompile Include="AGResourceVisitor.cpp" />
     <ClCompile Include="AGScreenCaptureDlg.cpp" />
     <ClCompile Include="AGSliderCtrl.cpp" />
     <ClCompile Include="AGVideoTestWnd.cpp" />
-    <ClCompile Include="AGVideoWnd.cpp" />
     <ClCompile Include="ChatDlg.cpp" />
     <ClCompile Include="DeviceDlg.cpp" />
     <ClCompile Include="FileIO.cpp" />

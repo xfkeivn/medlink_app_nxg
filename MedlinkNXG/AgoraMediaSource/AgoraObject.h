@@ -6,7 +6,7 @@
 #include "../SDK/include/IAgoraRtmCallManager.h"
 #include "AGEngineEventHandler.h"
 #include "commonFun.h"
-#include "ExtendVideoFrameObserver.h"
+//#include "ExtendVideoFrameObserver.h"
 #include "AGConfig.h"
 #define AVC_VER _T("V1.13.0, Build234, 09/11/2017, SDK1.13.0")
 

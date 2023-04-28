@@ -6,7 +6,6 @@
     <ClCompile Include="CTipDlg.cpp" />
     <ClCompile Include="display_cc_ui.cpp" />
     <ClCompile Include="DskcapsetDlg.cpp" />
-    <ClCompile Include="ExtendVideoFrameObserver.cpp" />
     <ClCompile Include="ChatDlg.cpp" />
     <ClCompile Include="DeviceDlg.cpp" />
     <ClCompile Include="FileIO.cpp" />
@@ -95,12 +94,6 @@
     <ClCompile Include="AGRTMEventHandle.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
-    <ClCompile Include="AgVideoBuffer.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
-    <ClCompile Include="AGVideoWnd.cpp">
-      <Filter>Agora</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigCenter.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -146,6 +139,9 @@
     <ClCompile Include="AGVideoTestWnd.cpp">
       <Filter>Agora\AgoraDlg</Filter>
     </ClCompile>
+    <ClCompile Include="AGVideoWnd.cpp">
+      <Filter>Agora</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CColorStatic.h" />
@@ -154,7 +150,6 @@
     <ClInclude Include="CTipDlg.h" />
     <ClInclude Include="display_cc_ui.h" />
     <ClInclude Include="DskcapsetDlg.h" />
-    <ClInclude Include="ExtendVideoFrameObserver.h" />
     <ClInclude Include="ChatDlg.h" />
     <ClInclude Include="DeviceDlg.h" />
     <ClInclude Include="FileIO.h" />
@@ -252,19 +247,10 @@
     <ClInclude Include="AGRTMEventHandler.h">
       <Filter>Agora</Filter>
     </ClInclude>
-    <ClInclude Include="AgVideoBuffer.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
-    <ClInclude Include="AGVideoWnd.h">
-      <Filter>Agora</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigCenter.h">
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="BackendComm.h">
-      <Filter>Communication</Filter>
-    </ClInclude>
-    <ClInclude Include="utility_socket.h">
       <Filter>Communication</Filter>
     </ClInclude>
     <ClInclude Include="CurlHttpClient.h">
@@ -305,6 +291,12 @@
     </ClInclude>
     <ClInclude Include="AGVideoTestWnd.h">
       <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="utility_socket.h">
+      <Filter>Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="AGVideoWnd.h">
+      <Filter>Agora</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

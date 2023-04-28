@@ -8,6 +8,7 @@
 #include "CTipDlg.h"
 #include "BackendComm.h"
 #include "ConfigCenter.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -474,7 +475,7 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		pdata->audiomuted = m_client_meeting_struct->audiomuted;
 		::PostMessage(m_dlgVideo.GetSafeHwnd(),WM_JOINCHANNEL_AUDIO, (WPARAM)pdata, 0);
 		string channel_id = m_client_meeting_struct->meeting_channel;
-		int meeting_id = BackendCommImpl::Instance()->reportClientJoinMeeting(m_client_user_struct->uid,channel_id);
+		int meeting_id = BackendCommImpl::Instance()->reportClientJoinMeeting1(m_client_user_struct->uid,channel_id);
 	}
 	
 	return 0;
@@ -495,56 +496,23 @@ LRESULT CAgoraMediaSourceDlg::OnReJoinChannelSucces(WPARAM wParam, LPARAM lParam
 LRESULT CAgoraMediaSourceDlg::OnClientJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_USER_JOINED data = (LPAGE_USER_JOINED)wParam;
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
 	string client_id = to_string(data->uid);
 	string meeting_id = to_string(m_duimgr->getMeetingID());
 	string uuid = UUIDGenerator::getInstance()->getUUID();
 	string host_id = to_string(m_duimgr->getUserId());
 	string channel_id = m_duimgr->getChannelName();
-	string url = "http://" + ip_str + "/api-meeting/ReportJoinMeeting/ClientJoinMeeting";
-	string req_param = "";
-	if (meeting_id.length() > 0)
-	{
-		req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&host_id=" + host_id + "&uuid=" + uuid + "&is_init=False&channel_id=" + channel_id;
-	}
-	else
-	{
-		req_param = "client_id=" + client_id + "&host_id=" + host_id + "&uuid=" + uuid + "&is_init=True&channel_id=" + channel_id;
-	}
-	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
-	handleClientJoinMeetingResponse(response);
+	BackendCommImpl::Instance()->reportClientJoinMeeting2(client_id, meeting_id, host_id, channel_id);
 	return 0;
 }
 
 LRESULT CAgoraMediaSourceDlg::OnParticipantLeave(WPARAM wParam, LPARAM lParam)
 {
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
+
 	PParticipant_Left pdata = (PParticipant_Left)wParam;
 	string client_id = to_string(pdata->uid);
 	string meeting_id = to_string(m_duimgr->getMeetingID());
 	string channel_id = m_duimgr->getChannelName();
-	string url = "http://" + ip_str + "/api-meeting/ReportExitMeeting/ClientExitMeeting";
-	string req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&channel_id=" + channel_id;
-	string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
-	handleParticipantExitMeetingResponse(response);
+	BackendCommImpl::Instance()->reportClientExitMeeting(client_id, meeting_id, channel_id);
 	return 0;
 }
 
@@ -552,85 +520,25 @@ LRESULT CAgoraMediaSourceDlg::OnParticipantLeave(WPARAM wParam, LPARAM lParam)
 LRESULT CAgoraMediaSourceDlg::OnLeaveChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	logInfo("=====================OnLeaveChannelSuccess====================");
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
-	string url = "";
 	m_lpAgoraObject->setInChannel(false);
 	if (m_lpAgoraObject->GetSelfHost())
 	{
 		string meeting_id = to_string(m_duimgr->getMeetingID());
-		url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
-		string response = CurlHttpClient::SendGetReq(url.c_str());
-		handleHostEndMeetingResponse(url.c_str());
+		BackendCommImpl::Instance()->reportEndMeeting(meeting_id);
 	}
 	else
 	{
+		string meeting_id = to_string(m_duimgr->getMeetingID());
 		string client_id = m_client_user_struct->uid;
 		string channel_id = m_client_meeting_struct->meeting_channel;
-		url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
-		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
-		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
-		handleParticipantExitMeetingResponse(response);
+		
+		BackendCommImpl::Instance()->reportClientExitMeeting(client_id, meeting_id,channel_id);
 	}
 	
 	return 0;
 }
 
-void CAgoraMediaSourceDlg::handleHostStartMeetingResponse(string rsp)
-{
-	rapidjson::Document doc;
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		logInfo("Start meeting, receive meeting infos from webserver:" + rsp);
-		if (doc.HasMember("Result") && doc["Result"].IsBool())
-		{
-			if (doc["Result"].GetBool())
-			{
-				if (doc.HasMember("Meeting") && doc["Meeting"].IsObject())
-				{
-					const rapidjson::Value& meeting = doc["Meeting"];
-					int id = meeting["id"].GetInt();
-					logInfo("meeting id is " + to_string(id));
-					
-				}
-			}
-		}
-	}
-}
 
-void CAgoraMediaSourceDlg::handleHostEndMeetingResponse(string rsp)
-{
-	rapidjson::Document doc;
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		logInfo("ReportEndMeetingResponse from webserver:" + rsp);
-	}
-}
-void CAgoraMediaSourceDlg::handleClientJoinMeetingResponse(string rsp)
-{
-	rapidjson::Document doc;
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		logInfo("ClientJoinMeetingResponse from webserver:" + rsp);
-	}
-}
-
-void CAgoraMediaSourceDlg::handleParticipantExitMeetingResponse(string rsp)
-{
-	rapidjson::Document doc;
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		logInfo("ClientExitMeetingResponse from webserver:" + rsp);
-	}
-}
 
 
 void CAgoraMediaSourceDlg::InitDialog(CString strAppid)
@@ -641,7 +549,7 @@ void CAgoraMediaSourceDlg::InitDialog(CString strAppid)
 		::PostQuitMessage(0);
 	}
 	appID = strAppid;
-	BOOL isHost = CString2BOOL(readRegKey(IS_HOST_APP, APP_REG_DIR));//CAGConfig::GetInstance()->IsHost();
+	BOOL isHost = RegConfig::Instance()->getIsHost();
 	m_lpAgoraObject = CAgoraObject::GetAgoraObject(strAppid);
 	m_lpRtcEngine = CAgoraObject::GetEngine(); 
 
@@ -986,15 +894,7 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	m_dlgVideo.ShowWindow(SW_HIDE);
 	//this->ShowWindow(SW_SHOW);
 	ShowWindow(SW_SHOWNORMAL);
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
-	string url = "";
+	
 	m_lpAgoraObject->setInChannel(false);
 	if (!m_lpAgoraObject->GetSelfHost())
 	{
@@ -1004,10 +904,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		m_client_user_struct->current_status = USER_STATUS_LOGIN;
 		string client_id = m_client_user_struct->uid;
 		string channel_id = m_client_meeting_struct->meeting_channel;
-		url = "http://" + ip_str + "/api-meeting/ClientActiveLog/ClientExitMeeting";
-		string req_param = "client_id=" + client_id + "&channel_id=" + channel_id;
-		string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
-		handleParticipantExitMeetingResponse(response);
+		BackendCommImpl::Instance()->reportActiveLogClientExitMeeting(client_id, channel_id);
+		
 	}
 	else
 	{
@@ -1017,9 +915,7 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		m_duimgr->setMeetingStatus(false);
 		vector<Individual*> participants = ClientsManager::getInstance()->getAllParticipants();
 		string meeting_id = to_string(m_duimgr->getMeetingID());
-		string url = "http://" + ip_str + "/api-meeting/ReportEndMeeting/MeetingID/" + meeting_id;
-		string response = CurlHttpClient::SendGetReq(url.c_str());
-		handleHostEndMeetingResponse(response);
+		BackendCommImpl::Instance()->reportEndMeeting(meeting_id);
 		string channel_id = m_duimgr->getChannelName();
 		for (int i = 0; i < participants.size(); i++)
 		{
@@ -1027,10 +923,8 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 			if (id < 1000)
 			{
 				string client_id = participants[i]->getUserId();
-				string url = "http://" + ip_str + "/api-meeting/ReportExitMeeting/ClientExitMeeting";
-				string req_param = "client_id=" + client_id + "&meeting_id=" + meeting_id + "&channel_id=" + channel_id;
-				string response = CurlHttpClient::SendPostReq(url.c_str(), req_param.c_str());
-				handleParticipantExitMeetingResponse(response);
+				BackendCommImpl::Instance()->reportClientExitMeeting(client_id, meeting_id, channel_id);
+				
 			}
 		}
 		logInfo("Meeting is end, close current socket connection.");
