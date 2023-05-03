@@ -54,8 +54,8 @@ using namespace Gdiplus;
 #pragma comment(lib,"../SDK/lib/agora_rtm_sdk.lib")
 #pragma comment(lib, "../SDK/lib/agora_rtc_sdk.lib")
 using namespace agora::rtm;
-#pragma comment(lib,"../log4cpp/lib/log4cppD.lib")
-#pragma comment(lib,"../log4cpp/lib/log4cppLIB.lib")
+#pragma comment(lib,"../ThirdParty/log4cpp/lib/log4cppD.lib")
+#pragma comment(lib,"../ThirdParty/log4cpp/lib/log4cppLIB.lib")
 #define REMOTE_CONTROL_TARGET_SIZE_WIDTH 1280
 #define REMOTE_CONTROL_TARGET_SIZE_HEIGHT 1024
 #define REMTOE_CONTROL_TARGET_WIDTH_HEIGHT_RATIO (1.25)
@@ -190,6 +190,7 @@ namespace SingleDesc
 		WM_ImageMessageDownloadResult,
 		WM_MediaUploadingProgress = 270,
 		WM_MediaDownloadingProgress,
+		WM_HOST_DIRECT_START_MEETING = 0x1000,
 		WM_UNKWOWN = WM_USER + 0xfff
 	};
 
@@ -481,22 +482,23 @@ extern CFileIO gLogSignal;
 
 
 #include <ObjBase.h>
-#include "../duilib/includes/UIlib.h"
+#include "../ThirdParty/duilib/includes/UIlib.h"
+#include <afxcontrolbars.h>
 #include <afxcontrolbars.h>
 using namespace DuiLib;
 //#pragma comment(lib, "../duilib/lib/DuiLib_2017.lib")
 
 #ifdef _DEBUG
 #   ifdef _UNICODE
-#       pragma comment(lib, "../duilib/lib/DuiLib_ud.lib")
+#       pragma comment(lib, "../ThirdParty/duilib/lib/DuiLib_ud.lib")
 #   else
-#       pragma comment(lib, "../duilib/lib/DuiLib_d.lib")
+#       pragma comment(lib, "../ThirdParty/duilib/lib/DuiLib_d.lib")
 #   endif
 #else
 #   ifdef _UNICODE
-#       pragma comment(lib, "../duilib/lib/DuiLib_u.lib")
+#       pragma comment(lib, "../ThirdParty/duilib/lib/DuiLib_u.lib")
 #   else
-#       pragma comment(lib, "../duilib/lib/DuiLib.lib")
+#       pragma comment(lib, "../ThirdParty/duilib/lib/DuiLib.lib")
 #   endif
 #endif
 

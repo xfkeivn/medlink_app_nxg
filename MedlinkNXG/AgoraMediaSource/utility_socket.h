@@ -1,14 +1,13 @@
-#pragma once
-#include <config/asio_no_tls_client.hpp>
-#include <client.hpp>
+#ifndef WEBSOCKETAPP
+#define WEBSOCKETAPP
 
-#include <common/thread.hpp>
-#include <common/memory.hpp>
-
+#include "websocketpp/client.hpp"
+#include "websocketpp/config/asio_no_tls_client.hpp"
 #include <iostream>
 #include <string>
 #include "log_util.h"
-
+#include "websocketpp/common/thread.hpp"
+#include "websocketpp/common/memory.hpp"
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
 class connection_metadata {
@@ -85,8 +84,14 @@ private:
 	std::string m_error_reason;
 	std::vector<std::string> m_messages;
 };
+typedef std::map<int, connection_metadata::ptr> con_list;
 
 class websocket_endpoint {
+private:
+	client m_endpoint;
+	websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
+	con_list m_connection_list;
+	int m_next_id;
 public:
 	websocket_endpoint() : m_next_id(0) {
 		m_endpoint.clear_access_channels(websocketpp::log::alevel::all);
@@ -211,12 +216,6 @@ public:
 			return metadata_it->second;
 		}
 	}
-private:
-	typedef std::map<int, connection_metadata::ptr> con_list;
 
-	client m_endpoint;
-	websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
-
-	con_list m_connection_list;
-	int m_next_id;
 };
+#endif

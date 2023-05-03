@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LoggedInUI.h"
 #include "CTipDlg.h"
-
+#include "BackendComm.h"
 extern bool compareWithStatusAndName(CListContainerElementUI * item1, CListContainerElementUI * item2);
 
 typedef struct _CLIENT_PARAM {
@@ -9,9 +9,86 @@ typedef struct _CLIENT_PARAM {
 	string user_id;
 }CLIENT_PARAM, *PCLIENT_PARAM;
 
-void LoggedInUI::handleHostClients(string rsp)
+void LoggedInUI::handleHostClients(vector<Individual*> &clients)
 {
-	onClientsUpdate(rsp);
+	m_clientslist->RemoveAll();
+	m_model_ui_map.clear();
+	m_listElements.clear();
+	for (int i = 0; i < clients.size(); i++)
+	{
+		Individual* individual = dynamic_cast<Individual*>(clients[i]);
+		CommandManager::GetInstance()->sendQueryClientStatus(atoi(individual->getUserId().c_str()));
+		CDialogBuilder builder;
+		CListContainerElementUI* pListItem;
+
+		STRINGorID individual_xml(GetIndividualRes());
+		pListItem = static_cast<CListContainerElementUI *>(builder.Create(individual_xml, _T("xml"), 0, &m_PaintManager));
+		CControlUI* item_left = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_left")));
+		CControlUI* item_space1 = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_space1")));
+		CControlUI* item_space2 = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_space2")));
+		CVerticalLayoutUI* item_check_container = static_cast<CVerticalLayoutUI*>(pListItem->FindSubControl(_T("item_check_container")));
+		CVerticalLayoutUI* item_status_container = static_cast<CVerticalLayoutUI*>(pListItem->FindSubControl(_T("item_status_container")));
+		CLabelUI *pNameLab = static_cast<CLabelUI *>(pListItem->FindSubControl(_T("name_label")));
+		CLabelUI *pTelLab = static_cast<CLabelUI *>(pListItem->FindSubControl(_T("telephone_label")));
+		CButtonUI *pStatus = static_cast<CButtonUI *>(pListItem->FindSubControl(_T("status_btn")));
+		CCheckBoxUI *checkbox = static_cast<CCheckBoxUI *>(pListItem->FindSubControl(_T("checkbox")));
+
+		pListItem->SetName(string2LPCTSTR(individual->getUserId()));
+		int listitem_height = getResolutionHeight(MAX_CLIENT_LISTITEM_HEIGHT);
+		pListItem->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(listitem_height)).c_str());
+
+		int space = getResolutionWidth(MAX_ITEM_SPACE);
+		item_left->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
+		item_space1->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
+		item_space2->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
+
+		int check_size = getResolutionSize(MAX_CHECKBOX_SIZE);
+		item_check_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(check_size)).c_str());
+		checkbox->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(check_size)).c_str());
+		checkbox->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(check_size)).c_str());
+
+		icon_size = getResolutionSize(MAX_STATUS_BUTTON_SIZE);
+		status_size = getResolutionSize(MAX_STATUS_SIZE);
+		item_status_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
+		pStatus->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
+		pStatus->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
+
+
+		checkMap.insert(map<CCheckBoxUI*, Individual*>::value_type(checkbox, individual));
+		pNameLab->SetText(individual->getWName().c_str());
+		pTelLab->SetText(string2LPCTSTR(individual->getTelephone()));
+		int size = getResolutionFontSize(MAX_TITLE_SIZE);
+		pNameLab->SetFont(size);
+		pTelLab->SetFont(size);
+		if (individual->getImagePath() != "")
+		{
+			string s = "file='" + individual->getImagePath() + "'";
+			pStatus->SetBkImage(string2LPCTSTR(s));
+		}
+		m_clientslist->Add(pListItem);
+		m_listElements.push_back(pListItem);
+		m_model_ui_map.insert(map<Individual*, CListContainerElementUI*>::value_type(clients[i], pListItem));
+	}
+	if (m_model_ui_map.size() > 0)
+	{
+
+		const char* peerIds[100];
+		map<Individual*, CListContainerElementUI*>::iterator iter;
+		iter = m_model_ui_map.begin();
+		int i = 0;
+		while (iter != m_model_ui_map.end())
+		{
+			if (!iter->first->isGroup())
+			{
+				Individual* individual = dynamic_cast<Individual*>(iter->first);
+
+				peerIds[i] = individual->getUserId().c_str();
+				i++;
+			}
+			iter++;
+		}
+		CommandManager::GetInstance()->subscribePeersOnlineStatus(peerIds, i);
+	}
 }
 
 LoggedInUI::LoggedInUI(HWND hwnd, string channnel)
@@ -73,6 +150,12 @@ void LoggedInUI::InitWindow()
 	m_btnStartMeeting->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(button_width)).c_str());
 	m_btnStartMeeting->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(button_height)).c_str());
 
+	m_btnDirectStartMeeting = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("btn_directStartMeeting")));
+	m_btnDirectStartMeeting->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(button_width)).c_str());
+	m_btnDirectStartMeeting->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(button_height)).c_str());
+
+
+
 	if (!CAGConfig::GetInstance()->GetVersion().IsEmpty())
 	{
 		CLabelUI* version_label = static_cast<CLabelUI*>(m_PaintManager.FindControl(_T("version_label")));
@@ -95,6 +178,7 @@ void LoggedInUI::InitWindow()
 	//pListVerticalScrollBar->SetAttribute(_T("width"), _T("48"));
 	pListVerticalScrollBar->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(scrollbar_width)).c_str());
 	m_btnStartMeeting->SetEnabled(false);
+	m_btnDirectStartMeeting->SetEnabled(true);
 	onRequestHostClients();
 }
 
@@ -140,6 +224,10 @@ void LoggedInUI::Notify(TNotifyUI& msg)
 {
 	if (msg.sType == _T("click"))
 	{
+		if (msg.pSender == m_btnDirectStartMeeting)
+		{
+			::PostMessage(hwndParent, WM_HOST_DIRECT_START_MEETING, NULL, NULL);
+		}
 
 		if (msg.pSender == m_btnStartMeeting)
 		{
@@ -315,90 +403,6 @@ void LoggedInUI::clearSelectedClients()
 	}
 	clients_manager->clearInvitedClients();
 }
-void LoggedInUI::onClientsUpdate(string rsp)
-{
-	vector<Individual*> clients = clients_manager->getClients(rsp);
-	m_clientslist->RemoveAll();
-	m_model_ui_map.clear();
-	m_listElements.clear();
-	for (int i = 0; i < clients.size(); i++)
-	{
-		Individual* individual = dynamic_cast<Individual*>(clients[i]);
-		CommandManager::GetInstance()->sendQueryClientStatus(atoi(individual->getUserId().c_str()));
-		CDialogBuilder builder;
-		CListContainerElementUI* pListItem;
-
-		STRINGorID individual_xml(GetIndividualRes());
-		pListItem = static_cast<CListContainerElementUI *>(builder.Create(individual_xml, _T("xml"), 0, &m_PaintManager));
-		CControlUI* item_left = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_left")));
-		CControlUI* item_space1 = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_space1")));
-		CControlUI* item_space2 = static_cast<CControlUI*>(pListItem->FindSubControl(_T("item_space2")));
-		CVerticalLayoutUI* item_check_container = static_cast<CVerticalLayoutUI*>(pListItem->FindSubControl(_T("item_check_container")));
-		CVerticalLayoutUI* item_status_container = static_cast<CVerticalLayoutUI*>(pListItem->FindSubControl(_T("item_status_container")));
-		CLabelUI *pNameLab = static_cast<CLabelUI *>(pListItem->FindSubControl(_T("name_label")));
-		CLabelUI *pTelLab = static_cast<CLabelUI *>(pListItem->FindSubControl(_T("telephone_label")));
-		CButtonUI *pStatus = static_cast<CButtonUI *>(pListItem->FindSubControl(_T("status_btn")));
-		CCheckBoxUI *checkbox = static_cast<CCheckBoxUI *>(pListItem->FindSubControl(_T("checkbox")));
-
-		pListItem->SetName(string2LPCTSTR(individual->getUserId()));
-		int listitem_height = getResolutionHeight(MAX_CLIENT_LISTITEM_HEIGHT);
-		pListItem->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(listitem_height)).c_str());
-
-		int space = getResolutionWidth(MAX_ITEM_SPACE);
-		item_left->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
-		item_space1->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
-		item_space2->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(space)).c_str());
-			
-		int check_size = getResolutionSize(MAX_CHECKBOX_SIZE);
-		item_check_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(check_size)).c_str());			
-		checkbox->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(check_size)).c_str());
-		checkbox->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(check_size)).c_str());
-
-		icon_size = getResolutionSize(MAX_STATUS_BUTTON_SIZE);
-		status_size = getResolutionSize(MAX_STATUS_SIZE);
-		item_status_container->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
-		pStatus->SetAttribute(_T("width"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
-		pStatus->SetAttribute(_T("height"), StringUtil::StringToWstring(to_string(icon_size)).c_str());
-			
-
-		checkMap.insert(map<CCheckBoxUI*, Individual*>::value_type(checkbox, individual));
-		pNameLab->SetText(individual->getWName().c_str());
-		pTelLab->SetText(string2LPCTSTR(individual->getTelephone()));
-		int size = getResolutionFontSize(MAX_TITLE_SIZE);
-		pNameLab->SetFont(size);
-		pTelLab->SetFont(size);
-		if (individual->getImagePath() != "")
-		{
-			string s = "file='" + individual->getImagePath() + "'";
-			pStatus->SetBkImage(string2LPCTSTR(s));
-		}
-		m_clientslist->Add(pListItem);
-		m_listElements.push_back(pListItem);
-		m_model_ui_map.insert(map<Individual*, CListContainerElementUI*>::value_type(clients[i], pListItem));
-	}
-	if (m_model_ui_map.size() > 0)
-	{
-
-		const char* peerIds[100];
-		map<Individual*, CListContainerElementUI*>::iterator iter;
-		iter = m_model_ui_map.begin();
-		int i = 0;
-		while (iter != m_model_ui_map.end())
-		{
-			if (!iter->first->isGroup())
-			{
-				Individual* individual = dynamic_cast<Individual*>(iter->first);
-				
-				peerIds[i] = individual->getUserId().c_str();
-				i++;
-			}
-			iter++;
-		}	
-		CommandManager::GetInstance()->subscribePeersOnlineStatus(peerIds, i);
-	}
-
-}
-
 
 LPCTSTR LoggedInUI::string2LPCTSTR(string str)
 {
@@ -413,23 +417,9 @@ LPCTSTR LoggedInUI::string2LPCTSTR(string str)
 
 void LoggedInUI::onRequestHostClients()
 {
-	logInfo("Host request clients infos from webserver.");
-	string uuid = UUIDGenerator::getInstance()->getUUID();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
-	string url = "http://" + ip_str + "/api-meeting/RequestHostClients/ServiceClients/" + uuid;
-	logInfo("Request url:" + url);
-	//string url = "http://" + ip_str +"/api-meeting/RequestHostClients/ServiceClients/cb253764-ef3c-4c2c-954b-52c5a53a294f";
-	string response = CurlHttpClient::SendGetReq(url.c_str());
-	handleHostClients(response);
+	vector<Individual*> clients;
+	BackendCommImpl::Instance()->requestHostClients(clients_manager, clients);
+	handleHostClients(clients);
 }
 string LoggedInUI::getStatusDestString()
 {

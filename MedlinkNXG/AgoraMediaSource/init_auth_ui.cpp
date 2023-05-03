@@ -2,6 +2,8 @@
 #include "init_auth_ui.h"
 #include "../rapidjson/document.h"
 #pragma comment(lib,"Wininet.lib")
+#include "ConfigCenter.h"
+#include "BackendComm.h"
 USER_INFO_STRUCT userInfoStruct;
 
 ClientLoginUI::ClientLoginUI()
@@ -125,16 +127,14 @@ void ClientLoginUI::SwitchToLoginPage()
 	else
 	{
 		m_chkRememberMe->SetCheck(true);
-		//CString email = CAGConfig::GetInstance()->GetEmail();
-		CString email = readRegKey(USEREMAIL, APP_REG_DIR);
-		if (!email.IsEmpty())
+		string useremail = RegConfig::Instance()->getUserEmail();
+		if (!useremail.empty())
 		{
-			m_editName->SetText(email.GetString());
-			//CString password = CAGConfig::GetInstance()->GetPassword();
-			CString password = readRegKey(USERPASSWORD, APP_REG_DIR);
-			if (!password.IsEmpty())
+			m_editName->SetText(StringUtil::utf8string2wstring(useremail).c_str());
+			string password = RegConfig::Instance()->getUserPassword();
+			if (!password.empty())
 			{
-				m_editPassword->SetText(password.GetString());
+				m_editPassword->SetText(StringUtil::utf8string2wstring(password).c_str());
 			}
 		}
 	}
@@ -150,34 +150,10 @@ void ClientLoginUI::SwitchToLoginPage()
 void ClientLoginUI::UpdateConfig(bool loginResult)
 {
 	bool isRememberMe = m_chkRememberMe->GetCheck();
-	if (isRememberMe)
-	{
-		CAGConfig::GetInstance()->SetRememberMe(_T("True"));
-		wstring email = m_editName->GetText().GetData();
-		CString emailCstr(email.c_str());
-		writeRegKey(USEREMAIL, emailCstr, APP_REG_DIR);
-		//CAGConfig::GetInstance()->SetEmail(emailCstr);
-		if (loginResult)
-		{
-			wstring password = m_editPassword->GetText().GetData();
-			CString passwordCstr(password.c_str());
-			//CAGConfig::GetInstance()->SetPassword(passwordCstr);
-			writeRegKey(USERPASSWORD, passwordCstr, APP_REG_DIR);
-		}
-		else
-		{
-			//CAGConfig::GetInstance()->SetPassword(_T(""));
-			writeRegKey(USERPASSWORD, _T(""), APP_REG_DIR);
-		}
-	}
-	else
-	{
-		CAGConfig::GetInstance()->SetRememberMe(_T("False"));
-		//CAGConfig::GetInstance()->SetEmail(_T(""));
-		//CAGConfig::GetInstance()->SetPassword(_T(""));
-		writeRegKey(USEREMAIL, _T(""), APP_REG_DIR);
-		writeRegKey(USERPASSWORD, _T(""), APP_REG_DIR);
-	}
+	wstring password = m_editPassword->GetText().GetData();
+	wstring email = m_editName->GetText().GetData();
+	RegConfig::Instance()->updateClientLoginAuth(isRememberMe, email, password, loginResult);
+
 }
 
 void ClientLoginUI::Notify(TNotifyUI& msg)
@@ -210,27 +186,23 @@ void ClientLoginUI::DoLoginBtnClick()
 		ShowLoginErrorMessage(_T("Error: Email or Password can not be empty!"));
 		return;
 	}
-
 	ZeroMemory(&userInfoStruct, sizeof(userInfoStruct));
 	userInfoStruct.login_name = userName.c_str();
 	userInfoStruct.login_pwd = userName.c_str();
-
-	//logInfo("Input username:" + userName + ",password:" + userPwd + ", login to webserver...");
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
+	string error_string;
+	bool result = BackendCommImpl::Instance()->clientAuth(userName, userPwd, userInfoStruct, error_string);
+	if (result)
 	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
+		UpdateConfig(true);
+		::PostMessage(GetInitAuthLoginUIMgr()->GetParentHWND(), WM_CLIENTLOGTORTMSERVICE, (WPARAM)&userInfoStruct, 0);
 	}
-	//string url = "http://106.14.97.27/api-meeting/RequestLogin/ClientLogin?user=" + userName + "&pwd=" + userPwd;
-	string url = "http://" + ip_str +"/api-meeting/RequestLogin/ClientLogin?user=" + userName + "&pwd=" + userPwd;
-	string response = CurlHttpClient::SendGetReq(url.c_str());
-	//logInfo("Request url:" + url);
-	handleHttpLoginRes(response);
+	else
+	{
+		UpdateConfig(true);
+		ShowLoginErrorMessage(L"Login failed! Please check the name and password.");
+	}
+	
+	
 }
 
 
@@ -263,85 +235,6 @@ void ClientLoginUI::LogOut()
 ClientLoginUIMgr* ClientLoginUI::GetInitAuthLoginUIMgr()
 {
 	return m_initMgr;
-}
-
-//RequestLogin:
-//{"Result":"True/False", "Error":"0", Clients:[{"DisplayName":"Mr. Fang"}]}
-void ClientLoginUI::handleHttpLoginRes(string rsp)
-{
-	printf("handleHttpLoginRes: %s", rsp);
-	rapidjson::Document doc;
-	logInfo("Receive handleHttpLoginRes:" + rsp);
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		if (doc.HasMember("Result") && doc["Result"].IsBool())
-		{
-			string log = "Client login response:";
-			if (doc["Result"].GetBool())
-			{
-				if (doc.HasMember("Client") && doc["Client"].IsObject())
-				{
-					const rapidjson::Value& client = doc["Client"];
-					if (client.HasMember("id") && client["id"].IsInt())
-					{
-						userInfoStruct.uid = to_string(client["id"].GetInt());
-						log = log + "id=" + userInfoStruct.uid;
-					}
-					if (client.HasMember("display_name") && client["display_name"].IsString())
-					{
-						wstring wname = StringUtil::utf8string2wstring(client["display_name"].GetString());
-						userInfoStruct.display_name = wname;
-						log = log + " display_name=" + StringUtil::WStringToString(wname);
-					}
-					if (client.HasMember("host_list") && client["host_list"].IsArray())
-					{
-						const rapidjson::Value& array = client["host_list"];
-						size_t len = array.Size();
-						log = log + " host_ids{";
-						for (size_t i = 0; i < len; i++)
-						{
-							const rapidjson::Value& object = array[i];
-							if (object.IsObject())
-							{
-								userInfoStruct.hostids[i] = object["id"].GetInt();
-								log = log +" " + to_string(userInfoStruct.hostids[i]);
-							}
-						}
-						log = log + "}";
-						userInfoStruct.hostsize = len;
-					}
-					logInfo(log);
-				}
-				UpdateConfig(true);
-				::PostMessage(GetInitAuthLoginUIMgr()->GetParentHWND(), WM_CLIENTLOGTORTMSERVICE, (WPARAM)&userInfoStruct, 0);
-
-			}
-			else //result is False
-			{
-				CHAR szlog[MAX_PATH] = { 0 };
-				if (doc.HasMember("Error") && doc["Error"].IsString())
-				{
-					std::string err = doc["Error"].GetString();
-					logInfo("handleHttpLoginRes Failed. Error:" + err);
-					//sprintf_s(szlog, "handleHttpLoginRes Failed: Error=%s \n", err);
-					//OutputDebugStringA(szlog);
-				}
-				else
-				{
-					logInfo("handleHttpLoginRes Failed: Error is unknown!");
-					sprintf_s(szlog, "handleHttpLoginRes Failed: Error is unknown!\n");
-					OutputDebugStringA(szlog);
-				}
-
-				UpdateConfig(true);
-				ShowLoginErrorMessage(L"Login failed! Please check the name and password.");
-			}
-		}
-		else
-		{
-			logError("Error in parsing client login response:" + rsp);
-		}
-	}
 }
 
 

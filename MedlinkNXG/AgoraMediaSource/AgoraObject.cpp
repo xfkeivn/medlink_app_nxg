@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "AGRTMEventHandler.h"
 #include "string_util.h"
+#include "ConfigCenter.h"
 CAgoraObject *CAgoraObject::m_lpAgoraObject = NULL;
 IRtcEngine *CAgoraObject::m_lpAgoraEngine = NULL;
 CAgoraRTMInstance *CAgoraObject::m_lpAgoraRTMInstance = NULL;
@@ -325,6 +326,7 @@ BOOL CAgoraObject::EnableVideo(BOOL bEnable)
 	return nRet == 0 ? TRUE : FALSE;
 }
 
+
 BOOL CAgoraObject::IsVideoEnabled()
 {
 	return m_bVideoEnable;
@@ -627,8 +629,8 @@ void CAgoraObject::RTMLogin()
 
 void CAgoraObject::Invite(UINT uid, string channel)
 {
-	CString message = readRegKey(HOSPITAL_NAME, APP_REG_DIR) + readRegKey(DEPARTMENT_NAME, APP_REG_DIR) + L"," + readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-	std::string callFrom = StringUtil::wstring2utf8string(message.GetBuffer());
+	wstring message = RegConfig::Instance()->getHospitalName()+ L"," + RegConfig::Instance()->getDepartmentName() + L"," + RegConfig::Instance()->getEquipmentTypeName();
+	std::string callFrom = StringUtil::wstring2utf8string(message);
 	m_lpAgoraRTMInstance->SendInvitationPeer(uid, channel, callFrom);
 }
 

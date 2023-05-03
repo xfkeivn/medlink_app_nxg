@@ -12,7 +12,6 @@
 #include "HostDUIMgr.h"
 #include "VideoScreenControl.h"
 #include "CurlHttpClient.h"
-#include "utility_socket.h"
 #include <set>
 
 class websocket_endpoint;
@@ -60,6 +59,7 @@ protected:
 	afx_msg LRESULT onClientAcceptIncomingCall(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnRTMUserEvent(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnInvitationEvents(WPARAM wParam, LPARAM lParam);
+	
 
 	afx_msg LRESULT OnHostLogToRTMService(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientLogToRTMService(WPARAM wParam, LPARAM lParam);
@@ -73,7 +73,8 @@ protected:
 	afx_msg LRESULT OnParticipantLeave(WPARAM wParam, LPARAM lParam);
 	//afx_msg LRESULT OnClientNetworkError(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnInvitationExpire(WPARAM wParam, LPARAM lParam);
-	
+	afx_msg LRESULT OnHostDirectStartMeeting(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -88,8 +89,6 @@ protected:
 	
 	string getCurrentSocketStatus();
 	void sent_heart_beat();
-	static DWORD WINAPI threadTiming(LPVOID lpParamter);
-	void terminateHeartBeatThread();
 
 private:
 	CAGButton		m_btnMin;
@@ -106,7 +105,6 @@ private:
 	CFont       m_ftDes;
 	CFont		m_ftPhone;
 	CImageList	m_imgNetQuality;
-	websocket_endpoint endpoint;
 	HANDLE heartbeatThread;
 
 private:

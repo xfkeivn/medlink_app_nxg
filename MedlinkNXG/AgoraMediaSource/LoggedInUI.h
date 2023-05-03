@@ -69,6 +69,7 @@ protected:
 	vector<CListContainerElementUI*>                     m_listElements;
 private:
 	CButtonUI* m_btnStartMeeting;
+	CButtonUI* m_btnDirectStartMeeting;
 	CListUI*   m_clientslist;
 	bool m_bInMeeting;
 	ClientsManager* clients_manager;
@@ -83,8 +84,7 @@ private:
 private:
 	LPCTSTR string2LPCTSTR(string str);
 	void  onRequestHostClients();
-	void onClientsUpdate(string rsp);
 	void clearSelectedClients();
-	void handleHostClients(string rsp);
+	void handleHostClients(vector<Individual*> &clients);
 	string getStatusDestString();
 };

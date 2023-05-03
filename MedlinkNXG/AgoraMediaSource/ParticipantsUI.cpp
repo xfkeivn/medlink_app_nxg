@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "MessageProtocal.h"
 #include "ParticipantsUI.h"
-
+#include "ConfigCenter.h"
+#include "BackendComm.h"
+#include "VideoDlg.h"
 LPCTSTR string2LPCTSTR(string str)
 {
 	LPCTSTR  pDest = NULL;
@@ -13,7 +15,7 @@ LPCTSTR string2LPCTSTR(string str)
 	return pDest;
 }
 
-ParticipantsUI::ParticipantsUI(HWND hwnd)
+ParticipantsUI::ParticipantsUI(HWND hwnd, CVideoDlg *dlg)
 {
 	this->hwndParent = hwnd;
 	m_clientsManager = ClientsManager::getInstance();
@@ -22,6 +24,7 @@ ParticipantsUI::ParticipantsUI(HWND hwnd)
 	m_twoWinsQueueForWinMode4 = new TwoWinsQueue();
 	m_twoWinsQueueForWinMode6 = new TwoWinsQueue();
 	m_threeWinsQueueForWinMode7 = new ThreeWinsQueue();
+	m_videoDlg = dlg;
 }
 
 UINT ParticipantsUI::GetSkinRes()
@@ -63,6 +66,9 @@ void ParticipantsUI::InitWindow()
 	//}
 	::SetWindowPos(m_hWnd, NULL, 0, y, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_SHOWWINDOW);
 	m_participantslist = static_cast<CListUI*>(m_PaintManager.FindControl(_T("participants")));
+	m_pBtn = static_cast<CButtonUI*>(m_PaintManager.FindControl(_T("show_hide")));
+	m_InfoControlView = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(_T("InfoControlView")));
+	m_InfoControlView->SetVisible(true);
 	m_participantslist->SetDelayedDestroy(false);
 	CLabelUI* title_label = static_cast<CLabelUI*>(m_PaintManager.FindControl(_T("title")));
 	m_pip_btn = static_cast<COptionUI*>(m_PaintManager.FindControl(_T("pip_btn")));
@@ -110,10 +116,25 @@ void ParticipantsUI::Notify(TNotifyUI& msg)
 	//logInfo("msg.sType=" + StringUtil::StringFromLPCTSTR(msg.sType.GetData()) + ",msg.pSender=" + StringUtil::StringFromLPCTSTR(msg.pSender->GetName().GetData()));
 	if (msg.sType == _T("click"))
 	{
+		if (msg.pSender == m_pBtn) {
+			if (m_InfoControlView->IsVisible()) {
+				m_InfoControlView->SetVisible(false);
+				m_pBtn->SetText(L"<<");
+				m_videoDlg->onShowInfoControlView(false);
+				
+			}
+			else {
+				m_InfoControlView->SetVisible(true);
+				m_pBtn->SetText(L">>");
+				m_videoDlg->onShowInfoControlView(true);
+			}
+		}
+
+
 		if (msg.pSender->GetName() == L"remote_ctrl_btn")
 		{
-			BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-			CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+			BOOL isRCEnable = RegConfig::Instance()->getRCEnable();		
+			CString equipment = CString(RegConfig::Instance()->getEquipmentTypeName().c_str());
 			if (isRCEnable && equipment.MakeUpper() != _T("SPYGLASS"))
 			{
 				if (CAGConfig::GetInstance()->GetDeviceCom().IsEmpty())
@@ -594,8 +615,8 @@ Individual* ParticipantsUI::onUserJoined(UINT uid)
 	}
 	else
 	{
-		BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
-		CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
+		BOOL isRCEnable = RegConfig::Instance()->getRCEnable();
+		CString equipment = CString(RegConfig::Instance()->getEquipmentTypeName().c_str());
 		int divider = CAGConfig::GetInstance()->GetPictureDivider();
 		if (CAgoraObject::GetAgoraObject()->GetSelfUID() == uid || !isRCEnable || equipment.MakeUpper() == _T("SPYGLASS")
 			|| (divider == 2 && this->selectedVideoMode != VIDEO_HD1_MODE))
@@ -690,39 +711,8 @@ wstring ParticipantsUI::onUserLeave(UINT uid)
 
 void ParticipantsUI::onRequestParticipantInfo(string uid)
 {
-	//CString ip = CAGConfig::GetInstance()->GetWebServerIP();
-	//CString port = CAGConfig::GetInstance()->GetWebServerPort();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
-	string url = "";
-
-	int id = atoi(uid.c_str());
-	if (id >= 1000)
-	{
-		url = "http://" + ip_str + "/api-meeting/getHost/" + uid;
-	}
-	else
-	{
-		url = "http://" + ip_str + "/api-meeting/getClient/" + uid;
-	}
-	string response = CurlHttpClient::SendGetReq(url.c_str());
-	handleParticipantInfo(response);
-}
-
-void ParticipantsUI::handleParticipantInfo(string rsp)
-{
-	updateParticipant(rsp);
-}
-
-void ParticipantsUI::updateParticipant(string rsp)
-{
-	Individual* participant = m_clientsManager->updateParticipant(rsp);
+	Individual *participant = NULL;
+	BackendCommImpl::Instance()->requestParticientInfo(uid, m_clientsManager, participant);
 	if (participant != NULL)
 	{
 		map<Individual*, CListContainerElementUI*>::iterator iter = m_model_ui_map.find(participant);

@@ -86,12 +86,13 @@ private:
 	int* m_pQueue;
 	int m_pointer;
 };
+class CVideoDlg;
 class ParticipantsUI :
 	public CWindowWnd,
 	public INotifyUI
 {
 public:
-	ParticipantsUI(HWND hwnd);
+	ParticipantsUI(HWND hwnd, CVideoDlg *dlg);
 	virtual ~ParticipantsUI() {};
 
 	void onUserListUpdate(UINT *uids, UINT count);
@@ -118,11 +119,13 @@ public:
 
 protected:
 	CPaintManagerUI  m_PaintManager;
-
+	CVideoDlg *m_videoDlg;
 
 private:
 	HWND hwndParent;
 	CListUI*   m_participantslist;
+	CButtonUI* m_pBtn;
+	CVerticalLayoutUI *m_InfoControlView;
 	COptionUI* m_pip_btn;
 	COptionUI* m_pbyp_btn;
 	COptionUI* m_pup_btn;
@@ -159,10 +162,8 @@ private:
 
 private:
 	void onRequestParticipantInfo(string uid);
-	void updateParticipant(string resp);
 	void enableRemoteControl(bool enable);
 	void activeHDMIRadios();
-	void handleParticipantInfo(string rsp);
 
 };
 

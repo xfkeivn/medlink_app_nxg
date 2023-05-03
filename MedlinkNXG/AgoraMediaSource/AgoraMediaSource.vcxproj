@@ -65,15 +65,16 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)boost\include;$(SolutionDir)websocketpp;$(SolutionDir)rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;DShow;libYUV;$(SolutionDir)log4cpp\h;D:\Workspace\Medlink\remote_case_support_app\MedlinkNXG\nxg\debug</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\boost\include;$(SolutionDir)ThirdParty;$(SolutionDir)ThirdParty\rapidjson;$(SolutionDir);$(WindowsSDKDir_81)include\um;$(SolutionDir)ThirdParty\DShow;$(SolutionDir)ThirdParty\libYUV;$(SolutionDir)ThirdParty\log4cpp\h;$(SolutionDir)\nxg;$(SolutionDir)AgoraMediaSource</AdditionalIncludeDirectories>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)boost\lib;$(SolutionDir)libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)duilib\lib;$(SolutionDir)log4cpp\lib;D:\Workspace\Medlink\remote_case_support_app\MedlinkNXG\nxg\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MedlinkNXG.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\boost\lib;$(SolutionDir)ThirdParty\libYUV\debug;$(SolutionDir)lib\;$(SolutionDir)ThirdParty\duilib\lib;$(SolutionDir)ThirdParty\log4cpp\lib;D:\Workspace\Medlink\remote_case_support_app\MedlinkNXG\nxg\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <Midl>
@@ -138,9 +139,28 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="..\nxg\medlinknxg.log" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\nxg\AGDShowVideoCapture.h" />
+    <ClInclude Include="..\nxg\AgVideoBuffer.h" />
+    <ClInclude Include="..\nxg\AGVideoWndNXG.h" />
+    <ClInclude Include="..\nxg\CAnnotationWnd.h" />
+    <ClInclude Include="..\nxg\capture-filter.hpp" />
+    <ClInclude Include="..\nxg\CConfig.h" />
+    <ClInclude Include="..\nxg\CircleBuffer.hpp" />
+    <ClInclude Include="..\nxg\CustomMessages.h" />
+    <ClInclude Include="..\nxg\CVideoSourceManagerDlg.h" />
+    <ClInclude Include="..\nxg\DShowHelper.h" />
+    <ClInclude Include="..\nxg\FramePusherProxy.h" />
+    <ClInclude Include="..\nxg\FrameRecorder.h" />
+    <ClInclude Include="..\nxg\framework.h" />
+    <ClInclude Include="..\nxg\IVideoManagerConnector.h" />
+    <ClInclude Include="..\nxg\Language.h" />
+    <ClInclude Include="..\nxg\ShareMem.h" />
+    <ClInclude Include="..\nxg\targetver.h" />
+    <ClInclude Include="..\nxg\VideoSourceMgr.h" />
     <ClInclude Include="AGButton.h" />
     <ClInclude Include="AGComboBox.h" />
     <ClInclude Include="AGConfig.h" />
@@ -158,7 +178,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="AGVideoWnd.h" />
     <ClInclude Include="BackendComm.h" />
     <ClInclude Include="CColorStatic.h" />
-    <ClInclude Include="CDrawLayerDlg.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="clients_manager.h" />
     <ClInclude Include="client_common.h" />
@@ -182,7 +201,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="HIDControl.h" />
     <ClInclude Include="HospitalsInfo.h" />
     <ClInclude Include="HostDUIMgr.h" />
-    <ClInclude Include="IAGDShowDevice.h" />
     <ClInclude Include="incoming_call_ui.h" />
     <ClInclude Include="Individual.h" />
     <ClInclude Include="InitializationUI.h" />
@@ -210,9 +228,20 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClInclude Include="uuid.h" />
     <ClInclude Include="VideoDlg.h" />
     <ClInclude Include="VideoScreenControl.h" />
-    <ClInclude Include="video_preprocessing_plugin.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\nxg\AGDShowVideoCapture.cpp" />
+    <ClCompile Include="..\nxg\AgVideoBuffer.cpp" />
+    <ClCompile Include="..\nxg\AGVideoWndNXG.cpp" />
+    <ClCompile Include="..\nxg\CAnnotationWnd.cpp" />
+    <ClCompile Include="..\nxg\capture-filter.cpp" />
+    <ClCompile Include="..\nxg\CConfig.cpp" />
+    <ClCompile Include="..\nxg\CircleBuffer.cpp" />
+    <ClCompile Include="..\nxg\CVideoSourceManagerDlg.cpp" />
+    <ClCompile Include="..\nxg\DShowHelper.cpp" />
+    <ClCompile Include="..\nxg\FramePusherProxy.cpp" />
+    <ClCompile Include="..\nxg\FrameRecorder.cpp" />
+    <ClCompile Include="..\nxg\VideoSourceMgr.cpp" />
     <ClCompile Include="AGButton.cpp" />
     <ClCompile Include="AGComboBox.cpp" />
     <ClCompile Include="AGConfig.cpp" />
@@ -228,7 +257,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClCompile Include="AgoraRTMInstance.cpp" />
     <ClCompile Include="AGVideoWnd.cpp" />
     <ClCompile Include="BackendComm.cpp" />
-    <ClCompile Include="CDrawLayerDlg.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="clients_manager.cpp" />
     <ClCompile Include="commonFun.cpp" />
@@ -252,7 +280,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="HospitalsInfo.cpp" />
     <ClCompile Include="HostDUIMgr.cpp" />
     <ClCompile Include="incoming_call_ui.cpp" />
     <ClCompile Include="Individual.cpp" />
@@ -281,7 +308,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <ClCompile Include="uuid.cpp" />
     <ClCompile Include="VideoDlg.cpp" />
     <ClCompile Include="VideoScreenControl.cpp" />
-    <ClCompile Include="video_preprocessing_plugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AgoraMediaSource.rc2" />
@@ -291,9 +317,6 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <None Include="res\zpimgres.bin" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\10.bmp" />
-    <Image Include="res\8.bmp" />
-    <Image Include="res\9.bmp" />
     <Image Include="res\accept.gif" />
     <Image Include="res\AgoraMediaSource.ico" />
     <Image Include="res\bk_email.png" />
@@ -323,6 +346,8 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <Image Include="res\button_retry_press.png" />
     <Image Include="res\checkbox_bk.png" />
     <Image Include="res\draw.bmp" />
+    <Image Include="res\exit.bmp" />
+    <Image Include="res\freezeframe.bmp" />
     <Image Include="res\group.png" />
     <Image Include="res\hd1_disable.png" />
     <Image Include="res\hd1_normal.png" />
@@ -384,8 +409,10 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <Image Include="res\mlink_icon_audio_unmute.png" />
     <Image Include="res\mlink_icon_video_mute.png" />
     <Image Include="res\mlink_icon_video_unmute.png" />
+    <Image Include="res\next.bmp" />
     <Image Include="res\normal_checkbox.png" />
     <Image Include="res\participant.bmp" />
+    <Image Include="res\pause.bmp" />
     <Image Include="res\pbyp_disable.png" />
     <Image Include="res\pbyp_normal.png" />
     <Image Include="res\pbyp_push.png" />
@@ -395,18 +422,27 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <Image Include="res\pip_disable.png" />
     <Image Include="res\pip_normal.png" />
     <Image Include="res\pip_push.png" />
+    <Image Include="res\play.bmp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </Image>
+    <Image Include="res\play_record.jpg" />
+    <Image Include="res\play_record_pause.jpg" />
+    <Image Include="res\prev.bmp" />
     <Image Include="res\pup_disable.png" />
     <Image Include="res\pup_normal.png" />
     <Image Include="res\pup_push.png" />
     <Image Include="res\record.bmp" />
     <Image Include="res\remote.bmp" />
     <Image Include="res\remote1.bmp" />
+    <Image Include="res\review_record_next.jpg" />
+    <Image Include="res\review_record_prev.jpg" />
     <Image Include="res\ripple.gif" />
     <Image Include="res\rotate_disable.png" />
     <Image Include="res\rotate_normal.png" />
     <Image Include="res\rotate_push.png" />
     <Image Include="res\selected_checkbox.png" />
     <Image Include="res\setup.bmp" />
+    <Image Include="res\short_recording.jpg" />
     <Image Include="res\start_meeting_disable.png" />
     <Image Include="res\start_meeting_hot.png" />
     <Image Include="res\start_meeting_normal.png" />
@@ -417,8 +453,17 @@ if exist ..\duilib (copy ..\duilib\dll\*.dll ..\$(Configuration)\)</Command>
     <Image Include="res\waiting.gif" />
     <Image Include="res\waiting_big.gif" />
     <Image Include="res\warning.bmp" />
-    <Image Include="res\录制.bmp" />
-    <Image Include="res\设置.bmp" />
+    <Image Include="res\winmode1_disable.png" />
+    <Image Include="res\winmode1_normal.png" />
+    <Image Include="res\winmode2_disable.png" />
+    <Image Include="res\winmode2_normal.png" />
+    <Image Include="res\winmode4_disable.png" />
+    <Image Include="res\winmode4_normal.png" />
+    <Image Include="res\winmode6_disable.png" />
+    <Image Include="res\winmode6_normal.png" />
+    <Image Include="res\winmode7_normal.png" />
+    <Image Include="res\winmode8_disable.png" />
+    <Image Include="res\winmode8_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\ID_TEST_AUDIO.wav" />

@@ -82,24 +82,29 @@ public:
 class HospitalMgr
 {
 public:
-	HospitalMgr();
+	HospitalMgr() {};
 	virtual ~HospitalMgr() {};
 
 private:
-	vector<Hospital*> hospitals;
-	vector<Department*> departments;
-	vector<Equipment*> equipments;
+	vector<Hospital> hospitals;
+	vector<Department> departments;
+	vector<Equipment> equipments;
 
 public:
-	vector<Hospital*> getHospitals() {
+	vector<Hospital>& getHospitals() {
 		return hospitals;
 	};
-	vector<Department*> getDepartments() {
+	vector<Department>& getDepartments() {
 		return departments;
 	};
-	vector<Equipment*> getEquipments() {
+	vector<Equipment>& getEquipments() {
 		return equipments;
 	};
 
-	void handleHospitalsInfo(string rsp);
+	void clear()
+	{
+		hospitals.clear();
+		departments.clear();
+		equipments.clear();
+	}
 };

@@ -59,19 +59,16 @@ private:
 	
 	string               webserver_url;
 	HWND hwndParent;
-	HospitalMgr*         m_hospitalMgr;
+	HospitalMgr         m_hospitalMgr;
 private:
 	bool checkNetworkStatus();
-	void onRequestMeetingAccount();
 	void onRequestHospitalInfos();
-	void handlerHospitalInfos(string rsp);
+	void onRequestMeetingAccount();
+	void handlerHospitalInfos();
 	void logToRTMService(string user_id, string channel_name);
 	wstring stringToWstring(const std::string& str);
 	void InitAllControls();
 
-public:
-	void handleMeetingAccount(string rsp);
-	void onReceiveHospitalInfos(string rsp);
 
 };
 

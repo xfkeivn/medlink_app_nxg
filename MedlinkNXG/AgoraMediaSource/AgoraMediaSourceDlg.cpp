@@ -14,7 +14,7 @@
 #endif
 // CAgoraVideoCallDlg dialog
 
-
+#define KEEP_MEETING_ALIVE_TIMER 1000
 CAgoraMediaSourceDlg::CAgoraMediaSourceDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAgoraMediaSourceDlg::IDD, pParent)
 {
@@ -52,7 +52,7 @@ BEGIN_MESSAGE_MAP(CAgoraMediaSourceDlg, CDialogEx)
 	ON_WM_MOVE()
 	ON_WM_SHOWWINDOW()
 	ON_WM_SYSCOMMAND()
-
+	ON_WM_TIMER()
 	
 	ON_MESSAGE(WM_JOINCHANNEL, &CAgoraMediaSourceDlg::OnJoinChannel)
 	ON_MESSAGE(WM_LEAVECHANNEL, &CAgoraMediaSourceDlg::OnLeaveChannel)
@@ -90,6 +90,7 @@ BEGIN_MESSAGE_MAP(CAgoraMediaSourceDlg, CDialogEx)
 	ON_MESSAGE(WM_PARTICIPANT_LEAVE, &CAgoraMediaSourceDlg::OnParticipantLeave)
 	//ON_MESSAGE(WM_NETWORK_ERROR, &CAgoraMediaSourceDlg::OnClientNetworkError)
 	ON_MESSAGE(WM_INVITATION_EXPIRE, &CAgoraMediaSourceDlg::OnInvitationExpire)
+	ON_MESSAGE(WM_HOST_DIRECT_START_MEETING, &CAgoraMediaSourceDlg::OnHostDirectStartMeeting)
 END_MESSAGE_MAP()
 
 
@@ -355,7 +356,10 @@ LRESULT CAgoraMediaSourceDlg::OnLoginFailed(WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
-
+LRESULT CAgoraMediaSourceDlg::OnHostDirectStartMeeting(WPARAM wParam, LPARAM lParam)
+{
+	return OnJoinChannel(wParam, lParam);
+}
 LRESULT CAgoraMediaSourceDlg::OnLoginSuccess(WPARAM wParam, LPARAM lParam)
 {
 	//CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
@@ -393,46 +397,15 @@ LRESULT CAgoraMediaSourceDlg::OnClientOnlineStatusChange(WPARAM wParam, LPARAM l
 	return 0;
 }
 
-void CAgoraMediaSourceDlg::terminateHeartBeatThread()
-{
-	if (heartbeatThread != NULL)   //线程正在运行
-	{
-		TerminateThread(heartbeatThread, 0);
-		if (heartbeatThread != NULL)
-		{
-			CloseHandle(heartbeatThread);   //关闭线程句柄，可能线程已结束，但句柄还没释放
-			heartbeatThread = NULL;
-		}
-		logInfo("Terminate the heartbeat thread.");
-	}
-}
 
-DWORD WINAPI CAgoraMediaSourceDlg::threadTiming(LPVOID lpParamter)
-{
-	if (!lpParamter)
-		return 0;
-
-	CAgoraMediaSourceDlg* instance = (CAgoraMediaSourceDlg*)lpParamter;
-
-	while (instance->getCurrentSocketStatus() != "Open") {
-		Sleep(500);
-	}
-	logInfo("Start to send heart beat.");
-	while (instance->getCurrentSocketStatus() == "Open")
-	{
-		instance->sent_heart_beat();
-		Sleep(60000);
-	}
-	logInfo("Socket is closed, exit the heart beat thread.");
-	return 0;
-}
 string CAgoraMediaSourceDlg::getCurrentSocketStatus()
 {
-	return endpoint.get_current_status();
+	return BackendCommImpl::Instance()->websocketGetStatus();
+	
 }
 void CAgoraMediaSourceDlg::sent_heart_beat()
 {
-	endpoint.send(socketID, to_string(m_duimgr->getMeetingID()));
+	BackendCommImpl::Instance()->websocketSendHeartBeat(to_string(m_duimgr->getMeetingID()));
 }
 LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 {
@@ -445,10 +418,8 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 			logInfo("Init video screen com.");
 			VideoScreenControl::GetInstance()->Init(cs2s(CAGConfig::GetInstance()->GetVideoScreenCom()));
 		}
-		string equipment = RegConfig::Instance()->getEquipmentTypeName();
-		//CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-		bool isRCEnable = RegConfig::Instance()->getRCEnable();
-		//BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+		wstring equipment = RegConfig::Instance()->getEquipmentTypeName();
+		bool isRCEnable = RegConfig::Instance()->getRCEnable();	
 		if (CString(equipment.c_str()).MakeUpper() != _T("SPYGLASS") && isRCEnable)
 		{
 			logInfo("Init device com.");
@@ -459,11 +430,12 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannelSucces(WPARAM wParam, LPARAM lParam)
 		int meeting_id = BackendCommImpl::Instance()->reportStartMeeting(host_id);
 		if (meeting_id != -1)
 		{
-			string websocket_uri = RegConfig::Instance()->getWebSocketURI();
+			
 			setMeetingID(meeting_id);
-			endpoint.connect(websocket_uri);
-			terminateHeartBeatThread();
-			heartbeatThread = CreateThread(NULL, 0, threadTiming, (void*)this, 0, NULL);
+			BackendCommImpl::Instance()->websocketConnect();
+			SetTimer(KEEP_MEETING_ALIVE_TIMER, 30000, NULL);
+			
+			
 		}	
 	}
 	else
@@ -487,9 +459,11 @@ LRESULT CAgoraMediaSourceDlg::OnReJoinChannelSucces(WPARAM wParam, LPARAM lParam
 	{
 		logInfo("Reconnect socket connection for rejoining channel.");
 		//socketID = m_websocket->connect(websocket_uri, to_string(m_duimgr->getMeetingID()));
-		socketID = endpoint.connect(websocket_uri);
-		terminateHeartBeatThread();
-		heartbeatThread = CreateThread(NULL, 0, threadTiming, (void*)this, 0, NULL);
+		BackendCommImpl::Instance()->websocketConnect();
+		KillTimer(KEEP_MEETING_ALIVE_TIMER);
+		SetTimer(KEEP_MEETING_ALIVE_TIMER, 30000, NULL);
+		//terminateHeartBeatThread();
+		//heartbeatThread = CreateThread(NULL, 0, threadTiming, (void*)this, 0, NULL);
 	}	
 	return 0;
 }
@@ -553,18 +527,23 @@ void CAgoraMediaSourceDlg::InitDialog(CString strAppid)
 	m_lpAgoraObject = CAgoraObject::GetAgoraObject(strAppid);
 	m_lpRtcEngine = CAgoraObject::GetEngine(); 
 
-	m_lpAgoraObject->EnableVideo(TRUE);
+
+
+	//m_lpAgoraObject->EnableVideo(TRUE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
 	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetSelfHost(isHost);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	if (!isHost)
 	{
+		m_lpAgoraObject->EnableVideo(TRUE);
 		m_lpAgoraObject->MuteLocalVideo(true);
 		m_ftTitle.CreateFont(21, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 	}
 	else
 	{
+		m_lpAgoraObject->EnableVideo(TRUE);
+		m_lpAgoraObject->MuteLocalVideo(TRUE);
 		//m_ftTitle.CreateFont(40, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 		int fontsize = getResolutionFontSize(MAX_TITLE_SIZE);
 		m_ftTitle.CreateFont(fontsize, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
@@ -815,6 +794,7 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 		m_dlgVideo.ShowWindow(SW_SHOW);
 		m_dlgVideo.CenterWindow();
+		lpAgoraObject->EnableVideo(TRUE);
 	}
 	else
 	{
@@ -823,11 +803,15 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		CRect rcWorkArea;
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
 		m_dlgVideo.MoveWindow(&rcWorkArea);
+		lpAgoraObject->EnableVideo(TRUE);
+		lpAgoraObject->MuteLocalVideo(TRUE);
 	}
 
-	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
+	//m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
 	m_dlgVideo.CenterWindow();
+	
+	m_dlgVideo.startVideoManager(lpAgoraObject->GetSelfHost());
 
 	VideoCanvas vc;
 
@@ -845,7 +829,7 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	config.captureWidth = 1280;
 	config.captureHeight = 1024;
 	lpRtcEngine->setCameraCapturerConfiguration(config);
-	lpAgoraObject->EnableVideo(TRUE);
+	//lpAgoraObject->EnableVideo(TRUE);
 	//// 创建一个 EncryptionConfig 实例
 	//EncryptionConfig encryptionConfig;
 	//// 设置加密模式为国密 SM4 加密模式
@@ -867,9 +851,9 @@ LRESULT CAgoraMediaSourceDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		//config.degradationPreference = 
 		lpRtcEngine->setVideoEncoderConfiguration(config);
 		m_dlgVideo.SetLocalVideoWndResoluation(config.dimensions.width, config.dimensions.height);
-		lpRtcEngine->setupLocalVideo(vc);
+		//lpRtcEngine->setupLocalVideo(vc);
 		
-		lpRtcEngine->startPreview();	
+		//lpRtcEngine->startPreview();	
 	}
 	//lpAgoraObject->EnableVideo(TRUE);
 	m_dlgVideo.SetWindowText(strChannelName);
@@ -929,9 +913,10 @@ LRESULT CAgoraMediaSourceDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 		}
 		logInfo("Meeting is end, close current socket connection.");
 		//m_websocket->close(socketID, websocketpp::close::status::normal, "Meeting is End.");
-		endpoint.close(socketID, websocketpp::close::status::normal, "Meeting is End.");
-		socketID = -1;
-		terminateHeartBeatThread();
+		//endpoint.close(socketID, websocketpp::close::status::normal, "Meeting is End.");
+		BackendCommImpl::Instance()->websocketClose();
+		//socketID = -1;
+		//terminateHeartBeatThread();
 	}
 	return 0;
 }
@@ -1156,4 +1141,15 @@ CAgoraMediaSourceDlg::~CAgoraMediaSourceDlg()
 {
 	//delete this->m_client_user_struct;
 	//delete this->m_client_meeting_struct;
+}
+
+void CAgoraMediaSourceDlg ::OnTimer(UINT_PTR nIDEvent)
+{
+	
+	if (BackendCommImpl::Instance()->websocketGetStatus() == "Open")
+	{
+		SetTimer(KEEP_MEETING_ALIVE_TIMER, 3000, NULL);
+		BackendCommImpl::Instance()->websocketSendHeartBeat(to_string(m_duimgr->getMeetingID()));
+	}
+	
 }

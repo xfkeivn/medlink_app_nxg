@@ -1,176 +1,101 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Window>
-  <Font id="10" name="Arial" size="10" bold="false" italic="false" />
-  <Font id="11" name="Arial" size="11" bold="false" italic="false" />
-  <Font id="12" name="Arial" size="12" bold="false" italic="false" />
-  <Font id="13" name="Arial" size="13" bold="false" italic="false" />
-  <Font id="14" name="Arial" size="14" bold="false" italic="false" />
-  <Font id="15" name="Arial" size="15" bold="false" italic="false" />
-  <Font id="16" name="Arial" size="16" bold="false" italic="false" />
-  <Font id="17" name="Arial" size="17" bold="false" italic="false" />
-  <Font id="18" name="Arial" size="18" bold="false" italic="false" />
-  <Font id="19" name="Arial" size="19" bold="false" italic="false" />
-  <Font id="20" name="Arial" size="20" bold="false" italic="false" />
-  <Font id="21" name="Arial" size="21" bold="false" italic="false" />
-  <Font id="22" name="Arial" size="22" bold="false" italic="false" />
-  <Font id="23" name="Arial" size="23" bold="false" italic="false" />
-  <Font id="24" name="Arial" size="24" bold="false" italic="false" />
-  <Font id="25" name="Arial" size="25" bold="false" italic="false" />
-  <Font id="26" name="Arial" size="26" bold="false" italic="false" />
-  <Font id="27" name="Arial" size="27" bold="false" italic="false" />
-  <Font id="28" name="Arial" size="28" bold="false" italic="false" />
-  <Font id="29" name="Arial" size="29" bold="false" italic="false" />
-  <Font id="30" name="Arial" size="30" bold="false" italic="false" />
-  <Font id="31" name="Arial" size="31" bold="false" italic="false" />
-  <Font id="32" name="Arial" size="32" bold="false" italic="false" />
-  <Font id="33" name="Arial" size="33" bold="false" italic="false" />
-  <Font id="34" name="Arial" size="34" bold="false" italic="false" />
-  <Font id="35" name="Arial" size="35" bold="false" italic="false" />
-  <Font id="36" name="Arial" size="36" bold="false" italic="false" />
-  <Font id="37" name="Arial" size="37" bold="false" italic="false" />
-  <Font id="38" name="Arial" size="38" bold="false" italic="false" />
-  <Font id="39" name="Arial" size="39" bold="false" italic="false" />
-  <Font id="40" name="Arial" size="40" bold="false" italic="false" />
-	<Font id="0" name="Arial" size="32" bold="true"  />
-  <Default name="VScrollBar" shared="true" value="button2normalimage=&quot;file='res\participants_scrollbar.bmp' source='0,96,48,144' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\participants_scrollbar.bmp' source='48,96,96,144' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,96,144,144' mask='#FFFF00FF'&quot; button1normalimage=&quot;file='res\participants_scrollbar.bmp' source='0,0,48,48' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\participants_scrollbar.bmp' source='48,0,96,48' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,0,144,48' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\participants_scrollbar.bmp' source='0,144,48,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\participants_scrollbar.bmp' source='48,144,96,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,144,144,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
-    <VerticalLayout bkcolor="#FF262626" inset="10,2,10,2">
-       <Label name="title" text="Participants" height="50" textcolor="#fff5f7f8" disabledtextcolor="#fff5f7f8" padding="10,10,0,0" font="32"/>
-		  <List bkcolor="FF383838" borderround="30,30" itemhlinesize="2" itemhlinecolor="#FF535353" name ="participants" itembkcolor="#FF383838" itemselectedbkcolor="#FF383838"  itemhotbkcolor="#FF383838" itemdisabledbkcolor="#FF6D6D6D" inset="10,0,10,0" childpadding="10" vscrollbar="true">
-		  </List>
-      <VerticalLayout name="video_2input_ctrl" visible="false" height="300" inset="0,100,0,0" >
-        <HorizontalLayout>
-          <Control />
-          <Option name="hd1_btn" group="video_input" height="62" width="50" normalimage="res='BUTTON_HD1_NORMAL_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_HD1_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Control width="70"/>
-          <Option name="hd2_btn" group="video_input" height="62" width="50" normalimage="res='BUTTON_HD2_NORMAL_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_HD2_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Control />
-        </HorizontalLayout>
-        <HorizontalLayout>
-          <Control />
-            <Option name="pip_btn" group="video_input" height="62" width="66" normalimage="res='BUTTON_PIP_NORMAL_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_PIP_DISABLE_PNG' restype='ZPIMGRES'"/>
-            <Option name="pbyp_btn" group="video_input" height="62" width="67" normalimage="res='BUTTON_PBYP_NORMAL_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_PBYP_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Option name="pup_btn" group="video_input" height="62" width="67" normalimage="res='BUTTON_PUP_NORMAL_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_PUP_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Control />
-        </HorizontalLayout>
-        <HorizontalLayout name="pip_control" childpadding="10">
-          <Control />
-          <Button name="swap_btn" height="62" width="50" normalimage="res='BUTTON_SWAP_NORMAL_PNG' restype='ZPIMGRES'"
-						pushedimage="res='BUTTON_SWAP_PUSH_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_SWAP_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Button name="pic_btn" height="62" width="50" normalimage="res='BUTTON_PIC_NORMAL_PNG' restype='ZPIMGRES'"
-						pushedimage="res='BUTTON_PIC_PUSH_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_PIC_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Button name="rotate_btn" height="62" width="50" normalimage="res='BUTTON_ROTATE_NORMAL_PNG' restype='ZPIMGRES'"
-						pushedimage="res='BUTTON_ROTATE_PUSH_PNG' restype='ZPIMGRES'"
-            disabledimage="res='BUTTON_ROTATE_DISABLE_PNG' restype='ZPIMGRES'"/>
-          <Control />
-        </HorizontalLayout>
-      </VerticalLayout>
-      <VerticalLayout name="video_4input_ctrl" visible="false" height="400" inset="0,50,0,0">
-        <HorizontalLayout childpadding="0">
-          <Control />
-          <Option name="winmode1_btn" group="4video_input" height="96" width="112" normalimage="res='winmode1_normal.png' restype='ZPIMGRES'"
-            disabledimage="winmode1_disable.png' restype='ZPIMGRES'"/>
-          <Option name="winmode2_btn" group="4video_input" height="96" width="112" normalimage="res='winmode2_normal.png' restype='ZPIMGRES'"
-            disabledimage="res='winmode2_disable.png' restype='ZPIMGRES'"/>
-          <Option name="winmode4_btn" group="4video_input" height="96" width="112" normalimage="res='winmode4_normal.png' restype='ZPIMGRES'"
-            disabledimage="res='winmode4_disable.png' restype='ZPIMGRES'"/>
-          <Control />
-        </HorizontalLayout>
-        <HorizontalLayout childpadding="0">
-          <Control />
-          <Option name="winmode6_btn" group="4video_input" height="96" width="112" normalimage="res='winmode6_normal.png' restype='ZPIMGRES'"
-            disabledimage="res='winmode6_disable.png' restype='ZPIMGRES'"/>
-          <Option name="winmode7_btn" group="4video_input" height="96" width="112" normalimage="res='winmode7_normal.png' restype='ZPIMGRES'"
-            disabledimage="res='winmode7_disable.png' restype='ZPIMGRES'"/>
-          <Option name="winmode8_btn" group="4video_input" height="96" width="112" normalimage="res='winmode8_normal.png' restype='ZPIMGRES'"
-            disabledimage="res='winmode8_disable.png' restype='ZPIMGRES'"/>
-          <Control />
-        </HorizontalLayout>
-        <VerticalLayout >
-          <HorizontalLayout height="39" >
-            <Control />
-            <Option name="hdmi1" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="1-SPY" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
-            <Control width="40" />
-            <Option name="hdmi2" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="2-内镜" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <Control height="20" />
-          <HorizontalLayout height="39" >
-            <Control />
-            <Option name="hdmi3" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="3-X光" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
-            <Control width="40" />
-            <Option name="hdmi4" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="4-外景" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-        </VerticalLayout>
-<!--        <HorizontalLayout  height="30" text="Properties"  childpadding="15">
-
-          <Label text="Input:" height="30" width="38" textcolor="#fff5f7f8" font="16"/>
-          <Option name="winmode1_hdmi1" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI1" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
-          <Option name="winmode1_hdmi2" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI2" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
-          <Option name="winmode1_hdmi3" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI3" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
-          <Option name="winmode1_hdmi4" height="30" width="65" group="winmode1_input" normalimage="file='res\btn_radio_non.png' dest='1,8,14,21'" text="HDMI4" textcolor="#fff5f7f8" font="16" textpadding="16,0,0,0"/>
-
-        </HorizontalLayout> -->
-  <!--      <VerticalLayout name="winmode2_prop" visible="false" >
-          <HorizontalLayout >
-            <Label text="Input1:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode2_input1" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <HorizontalLayout >
-            <Label text="Input2:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode2_input2" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-        </VerticalLayout>
-        <VerticalLayout name="winmode4_prop" visible="false" >
-          <HorizontalLayout >
-            <Label text="Input1:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode4_input1" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <HorizontalLayout >
-            <Label text="Input2:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode4_input2" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-        </VerticalLayout>
-        <VerticalLayout name="winmode6_prop" visible="false" >
-          <HorizontalLayout >
-            <Label text="Input1:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode6_input1" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <HorizontalLayout >
-            <Label text="Input2:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode6_input2" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-        </VerticalLayout>
-        <VerticalLayout name="winmode7_prop" visible="false" >
-          <HorizontalLayout >
-            <Label text="Input1:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode7_input1" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <HorizontalLayout >
-            <Label text="Input2:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode7_input2" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-          <HorizontalLayout >
-            <Label text="Input3:" height="30" textcolor="#fff5f7f8" font="16"/>
-            <Combo name="winmode7_input3" height="30" bkcolor="#FFFFFFFF" itemtextcolor="#FF262626" itemselectedtextcolor="#FF262626" itemhottextcolor="#FF262626" font="16" itemfont="16" itemtextpadding="4,2,0,0" droptype="droplist" textpadding="4,0,0,0"/>
-            <Control />
-          </HorizontalLayout>
-        </VerticalLayout>-->
-      </VerticalLayout>
-    </VerticalLayout>
+	<Font id="10" name="Arial" />
+	<Font id="11" name="Arial" size="11" />
+	<Font id="12" name="Arial" size="12" />
+	<Font id="13" name="Arial" size="13" />
+	<Font id="14" name="Arial" size="14" />
+	<Font id="15" name="Arial" size="15" />
+	<Font id="16" name="Arial" size="16" />
+	<Font id="17" name="Arial" size="17" />
+	<Font id="18" name="Arial" size="18" />
+	<Font id="19" name="Arial" size="19" />
+	<Font id="20" name="Arial" size="20" />
+	<Font id="21" name="Arial" size="21" />
+	<Font id="22" name="Arial" size="22" />
+	<Font id="23" name="Arial" size="23" />
+	<Font id="24" name="Arial" size="24" />
+	<Font id="25" name="Arial" size="25" />
+	<Font id="26" name="Arial" size="26" />
+	<Font id="27" name="Arial" size="27" />
+	<Font id="28" name="Arial" size="28" />
+	<Font id="29" name="Arial" size="29" />
+	<Font id="30" name="Arial" size="30" />
+	<Font id="31" name="Arial" size="31" />
+	<Font id="32" name="Arial" size="32" />
+	<Font id="33" name="Arial" size="33" />
+	<Font id="34" name="Arial" size="34" />
+	<Font id="35" name="Arial" size="35" />
+	<Font id="36" name="Arial" size="36" />
+	<Font id="37" name="Arial" size="37" />
+	<Font id="38" name="Arial" size="38" />
+	<Font id="39" name="Arial" size="39" />
+	<Font id="40" name="Arial" size="40" />
+	<Font id="0" name="Arial" size="32" bold="true" />
+	<HorizontalLayout bkcolor="#FF262626">
+		<Button name="show_hide" width="21" text="&gt;&gt;" textcolor="0xFFFFFBF0" focusedtextcolor="0xFFC0DCC0" align="c" valign="v" pos="0,0,21,0" padding="1" />
+		<VerticalLayout bkcolor="#FF262626" inset="10,2,10,2" visible="false" name="InfoControlView">
+			<Default name="VScrollBar" shared="true" value="button2normalimage=&quot;file='res\participants_scrollbar.bmp' source='0,96,48,144' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\participants_scrollbar.bmp' source='48,96,96,144' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,96,144,144' mask='#FFFF00FF'&quot; button1normalimage=&quot;file='res\participants_scrollbar.bmp' source='0,0,48,48' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\participants_scrollbar.bmp' source='48,0,96,48' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,0,144,48' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\participants_scrollbar.bmp' source='0,144,48,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\participants_scrollbar.bmp' source='48,144,96,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\participants_scrollbar.bmp' source='96,144,144,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+			<HorizontalLayout height="50" pos="0,0,0,50">
+				<Label name="title" text="Participants" height="63" textcolor="#fff5f7f8" disabledtextcolor="#fff5f7f8" padding="1" font="32" pos="0,0,0,63" />
+			</HorizontalLayout>
+			<List bkcolor="FF383838" borderround="30,30" itemhlinesize="2" itemhlinecolor="#FF535353" name="participants" itembkcolor="#FF383838" itemselectedbkcolor="#FF383838" itemhotbkcolor="#FF383838" itemdisabledbkcolor="#FF6D6D6D" inset="10,0,10,0" childpadding="10" vscrollbar="true" />
+			<VerticalLayout name="video_2input_ctrl" visible="true" height="200" inset="0,10,0,0">
+				<HorizontalLayout>
+					<Control />
+					<Option name="hd1_btn" group="video_input" height="62" width="50" normalimage="res='BUTTON_HD1_NORMAL_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_HD1_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Control width="70" />
+					<Option name="hd2_btn" group="video_input" height="62" width="50" normalimage="res='BUTTON_HD2_NORMAL_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_HD2_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Control />
+				</HorizontalLayout>
+				<HorizontalLayout>
+					<Control />
+					<Option name="pip_btn" group="video_input" height="62" width="67" normalimage="res='BUTTON_PIP_NORMAL_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_PIP_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Option name="pbyp_btn" group="video_input" height="62" width="67" normalimage="res='BUTTON_PBYP_NORMAL_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_PBYP_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Option name="pup_btn" group="video_input" height="62" width="67" normalimage="res='BUTTON_PUP_NORMAL_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_PUP_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Control />
+				</HorizontalLayout>
+				<HorizontalLayout name="pip_control" childpadding="10">
+					<Control />
+					<Button name="swap_btn" height="62" width="50" normalimage="res='BUTTON_SWAP_NORMAL_PNG' restype='ZPIMGRES'" pushedimage="res='BUTTON_SWAP_PUSH_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_SWAP_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Button name="pic_btn" height="62" width="50" normalimage="res='BUTTON_PIC_NORMAL_PNG' restype='ZPIMGRES'" pushedimage="res='BUTTON_PIC_PUSH_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_PIC_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Button name="rotate_btn" height="62" width="50" normalimage="res='BUTTON_ROTATE_NORMAL_PNG' restype='ZPIMGRES'" pushedimage="res='BUTTON_ROTATE_PUSH_PNG' restype='ZPIMGRES'" disabledimage="res='BUTTON_ROTATE_DISABLE_PNG' restype='ZPIMGRES'" />
+					<Control />
+				</HorizontalLayout>
+			</VerticalLayout>
+			<VerticalLayout name="video_4input_ctrl" visible="false" height="280" inset="0,10,0,0">
+				<HorizontalLayout childpadding="0">
+					<Control />
+					<Option name="winmode1_btn" group="4video_input" height="96" width="112" normalimage="res='winmode1_normal.png' restype='ZPIMGRES'" disabledimage="winmode1_disable.png' restype='ZPIMGRES'" />
+					<Option name="winmode2_btn" group="4video_input" height="96" width="112" normalimage="res='winmode2_normal.png' restype='ZPIMGRES'" disabledimage="res='winmode2_disable.png' restype='ZPIMGRES'" />
+					<Option name="winmode4_btn" group="4video_input" height="96" width="112" normalimage="res='winmode4_normal.png' restype='ZPIMGRES'" disabledimage="res='winmode4_disable.png' restype='ZPIMGRES'" />
+					<Control />
+				</HorizontalLayout>
+				<HorizontalLayout childpadding="0">
+					<Control />
+					<Option name="winmode6_btn" group="4video_input" height="96" width="112" normalimage="res='winmode6_normal.png' restype='ZPIMGRES'" disabledimage="res='winmode6_disable.png' restype='ZPIMGRES'" />
+					<Option name="winmode7_btn" group="4video_input" height="96" width="112" normalimage="res='winmode7_normal.png' restype='ZPIMGRES'" disabledimage="res='winmode7_disable.png' restype='ZPIMGRES'" />
+					<Option name="winmode8_btn" group="4video_input" height="96" width="112" normalimage="res='winmode8_normal.png' restype='ZPIMGRES'" disabledimage="res='winmode8_disable.png' restype='ZPIMGRES'" />
+					<Control />
+				</HorizontalLayout>
+				<VerticalLayout>
+					<HorizontalLayout height="39">
+						<Control />
+						<Option name="hdmi1" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="1-SPY" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0" />
+						<Control width="40" />
+						<Option name="hdmi2" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="2-内镜" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0" />
+						<Control />
+					</HorizontalLayout>
+					<Control height="10" />
+					<HorizontalLayout height="39">
+						<Control />
+						<Option name="hdmi3" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="3-X光" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0" />
+						<Control width="40" />
+						<Option name="hdmi4" height="39" width="98" group="hdmi_input" normalimage="file='res\non_selected_radio.png' dest='0,0,38,39'" text="4-外景" textcolor="#fff5f7f8" font="16" textpadding="39,0,0,0" />
+						<Control />
+					</HorizontalLayout>
+				</VerticalLayout>
+			</VerticalLayout>
+		</VerticalLayout>
+	</HorizontalLayout>
 </Window>

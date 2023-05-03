@@ -1,7 +1,7 @@
 #pragma once
-#include "../libcurl/include/curl.h"
+#include "../ThirdParty/libcurl/include/curl.h"
 #include <sstream>
-#pragma comment(lib,"../libcurl/lib/libcurl.lib")
+#pragma comment(lib,"../ThirdParty/libcurl/lib/libcurl.lib")
 using namespace std;
 
 class CurlHttpClient

@@ -2,161 +2,34 @@
 #include "InitializationUI.h"
 #include <cstring>
 #include "AGConfig.h"
+#include "ConfigCenter.h"
+#include "BackendComm.h"
 
-void InitializationUI::handleMeetingAccount(string rsp)
+
+void InitializationUI::handlerHospitalInfos()
 {
-	rapidjson::Document doc;
-	if (!doc.Parse(rsp.data()).HasParseError())
-	{
-		string log = "Receive host meeting account response:";
-		if (doc.HasMember("Result") && doc["Result"].IsBool())
-		{
-			if (doc["Result"].GetBool())
-			{
-				if (doc.HasMember("Host") && doc["Host"].IsObject())
-				{
-					const rapidjson::Value& host = doc["Host"];
-					if (host.HasMember("is_enable") && host["is_enable"].IsBool())
-					{
-						bool is_enable = host["is_enable"].GetBool();
-						if (!is_enable)
-						{
-							logInfo(log + "is_enable=false, Current device is not available");
-							showInitializationError(L"Current device is not available, please contact the administrator.");
-							return;
-						}
-					}
-					string userid = "";
-					string channelname = "";
-					if (host.HasMember("id") && host["id"].IsInt())
-					{
-						userid = to_string(host["id"].GetInt());
-						log = log + " id=" + userid;
-					}
-					if (host.HasMember("channel") && host["channel"].IsObject())
-					{
-						const rapidjson::Value& channel = host["channel"];
-						if (channel.HasMember("channel_id") && channel["channel_id"].IsString())
-						{
-							channelname = channel["channel_id"].GetString();
-							log = log + " channel_id=" + channelname;
-						}
-					}
-					if (host.HasMember("hospital") && host["hospital"].IsObject())
-					{
-						const rapidjson::Value& hospital = host["hospital"];
-						int hospital_id = hospital["id"].GetInt();
-						string str_id = to_string(hospital_id);
-						log = log + " hospital_id=" + str_id;
-						CString cs_id(str_id.c_str());
-						//CAGConfig::GetInstance()->SetHospitalId(cs_id);
-						writeRegKey(HOSPITAL_ID, cs_id, APP_REG_DIR);
-						if (hospital.HasMember("chinese_name") && hospital["chinese_name"].IsString())
-						{
-							wstring cn_name = StringUtil::utf8string2wstring(hospital["chinese_name"].GetString());
-							log = log + " hospital_name=" + StringUtil::WStringToString(cn_name);
-							writeRegKey(HOSPITAL_NAME, cn_name.c_str(), APP_REG_DIR);
-							//CAGConfig::GetInstance()->SetHospitalName(cn_name.c_str());
-						}
-					}
-					if (host.HasMember("department") && host["department"].IsObject())
-					{
-						const rapidjson::Value& department = host["department"];
-						int department_id = department["id"].GetInt();
-						string str_id = to_string(department_id);
-						log = log + " department_id=" + str_id;
-						CString cs_id(str_id.c_str());
-						//CAGConfig::GetInstance()->SetDepartmentId(cs_id);
-						writeRegKey(DEPARTMENT_ID, cs_id, APP_REG_DIR);
-						if (department.HasMember("chinese_name") && department["chinese_name"].IsString())
-						{
-							wstring cn_name = StringUtil::utf8string2wstring(department["chinese_name"].GetString());
-							log = log + " department_name=" + StringUtil::WStringToString(cn_name);
-							//CAGConfig::GetInstance()->SetDepartmentName(cn_name.c_str());
-							writeRegKey(DEPARTMENT_NAME, cn_name.c_str(), APP_REG_DIR);
-						}
-					}
-					if (host.HasMember("equipment") && host["equipment"].IsObject())
-					{
-						const rapidjson::Value& equipment = host["equipment"];
-						int equipment_id = equipment["id"].GetInt();
-						string str_id = to_string(equipment_id);
-						log = log + " equipment_id=" + str_id;
-						CString cs_id(str_id.c_str());
-						//CAGConfig::GetInstance()->SetEquipmentId(cs_id);
-						writeRegKey(EQUIPMENT_ID, cs_id, APP_REG_DIR);
-						if (equipment.HasMember("name") && equipment["name"].IsString())
-						{
-							string name = equipment["name"].GetString();
-							log = log + " equipment_name=" + name;
-							CString cs_name(StringUtil::StringToWstring(name).c_str());
-							//CAGConfig::GetInstance()->SetEquipmentName(cs_name);
-							writeRegKey(EQUIPMENT_NAME, cs_name, APP_REG_DIR);
-							if (cs_name.MakeUpper() == L"ILAB" || cs_name.MakeUpper() == L"RHYTHMIA")
-							{
-								//CAGConfig::GetInstance()->setRelativeMousePos(TRUE);
-								writeRegKey(RELATIVE_MOUSE_POS, L"True", APP_REG_DIR);
-							}
-							else
-							{
-								//"Polaris"
-								writeRegKey(RELATIVE_MOUSE_POS, L"False", APP_REG_DIR);
-							}
-						}
-					}
-					logInfo(log);
-					logToRTMService(userid, channelname);
-				}
-			}
-			else
-			{
-				if (doc.HasMember("Error") && doc["Error"].IsString())
-				{
-					string error = doc["Error"].GetString();
-					logError(error);
-					showInitializationError(StringUtil::StringToWstring(error).c_str());
-				}
-			}
-		}
-	}
-	else
-	{
-		logError("Error in parsing host meeting account response:" + rsp);
-		showInitializationError(L"Can't get host messages from webserver.");
-	}
-
-}
-
-void InitializationUI::onReceiveHospitalInfos(string rsp)
-{
-	rapidjson::Document doc;
-	handlerHospitalInfos(rsp);
-
-}
-void InitializationUI::handlerHospitalInfos(string rsp)
-{
-	m_hospitalMgr->handleHospitalsInfo(rsp);
+	
 	int i;
 	CListLabelElementUI* item;
-	vector<Hospital*> hospitals = m_hospitalMgr->getHospitals();
+	vector<Hospital> &hospitals = m_hospitalMgr.getHospitals();
 	for (i = 0; i < hospitals.size(); i++)
 	{
 		item = new CListLabelElementUI();
-		item->SetText(hospitals[i]->getCNName().c_str());
+		item->SetText(hospitals[i].getCNName().c_str());
 		m_hospital_combo->Add(item);
 	}
-	vector<Department*> departments = m_hospitalMgr->getDepartments();
+	vector<Department> &departments = m_hospitalMgr.getDepartments();
 	for (i = 0; i < departments.size(); i++)
 	{
 		item = new CListLabelElementUI();
-		item->SetText(departments[i]->getCNName().c_str());
+		item->SetText(departments[i].getCNName().c_str());
 		m_department_combo->Add(item);
 	}
-	vector<Equipment*> equipments = m_hospitalMgr->getEquipments();
+	vector<Equipment> equipments = m_hospitalMgr.getEquipments();
 	for (i = 0; i < equipments.size(); i++)
 	{
 		item = new CListLabelElementUI();
-		CString text = CString(equipments[i]->getName().c_str());
+		CString text = CString(equipments[i].getName().c_str());
 		item->SetText(text);
 		m_equipment_combo->Add(item);
 	}
@@ -177,7 +50,7 @@ InitializationUI::InitializationUI(HWND hwnd)
 	m_equipment_combo = NULL;
 	m_department_combo = NULL;
 	m_init_btn = NULL;
-	m_hospitalMgr = new HospitalMgr();
+
 }
 
 InitializationUI::~InitializationUI()
@@ -254,7 +127,7 @@ void InitializationUI::InitAllControls()
 		ShowWaiting(false);
 		showInitializationError(L"Network Connection Error");
 	}
-	if (readRegKey(HOSPITAL_ID, APP_REG_DIR).IsEmpty())//(CAGConfig::GetInstance()->GetHospitalId().IsEmpty())
+	if (RegConfig::Instance()->getHospitalId().empty())//(CAGConfig::GetInstance()->GetHospitalId().IsEmpty())
 	{
 		logInfo("No registered hospital info, request hospital infos from webserver.");
 		onRequestHospitalInfos();
@@ -277,45 +150,35 @@ bool InitializationUI::checkNetworkStatus()
 void InitializationUI::onRequestMeetingAccount()
 {
 	logInfo("Hospital information registered, request host account from webserver.");
-	string uuid = UUIDGenerator::getInstance()->getUUID();
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR);
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);
-	CString hospital = readRegKey(HOSPITAL_ID, APP_REG_DIR);//CAGConfig::GetInstance()->GetHospitalId();
-	CString equipment = readRegKey(EQUIPMENT_ID, APP_REG_DIR);// CAGConfig::GetInstance()->GetEquipmentId();
-	CString department = readRegKey(DEPARTMENT_ID, APP_REG_DIR); //CAGConfig::GetInstance()->GetDepartmentId();
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}	
-	string hospital_str = CT2A(hospital.GetBuffer());
-	string equip_str = CT2A(equipment.GetBuffer());
-	string department_str = CT2A(department.GetBuffer());
-	string url = "http://" + ip_str + "/api-meeting/RequestMeetingAccount/UUID/" + uuid + "?hospital=" + hospital_str + "&equipment=" + equip_str + "&department=" + department_str;
-	//string url = "http://" + ip_str + "/api-meeting/RequestMeetingAccount/UUID/cb253764-ef3c-4c2c-954b-52c5a53a294f";
-	logInfo("Request url: " + url);
+	
 	m_waitingMessage->SetText(L"Waiting Login result...");
-	string response = CurlHttpClient::SendGetReq(url.c_str());
-	handleMeetingAccount(response);
+	string error_string, userid, channelname;
+	bool result = BackendCommImpl::Instance()->requestMeetingAccount(userid,channelname,error_string);
+	if (result)
+	{
+		logToRTMService(userid, channelname);
+	}
+	else
+	{
+		showInitializationError(utf82cs( error_string));
+	}
+	//handleMeetingAccount(response);
 	
 }
 
 void InitializationUI::onRequestHospitalInfos()
 {
-	CString ip = readRegKey(WEBSERVERIP, APP_REG_DIR); //CAGConfig::GetInstance()->GetWebServerIP();
-	CString port = readRegKey(WEBSERVERPORT, APP_REG_DIR);//CAGConfig::GetInstance()->GetWebServerPort();
-	string ip_str = CT2A(ip.GetBuffer());
-	if (port.GetLength() > 0)
-	{
-		CString c_ip_str = ip + ":" + port;
-		ip_str = CT2A(c_ip_str);
-	}
-	string url = "http://" + ip_str + "/api-meeting/getHostInitialInfo";
-	logInfo("Request url: " + url);
 	m_waitingMessage->SetText(L"Loading Infos...");
-	string response = CurlHttpClient::SendGetReq(url.c_str());
-	onReceiveHospitalInfos(response);
+	
+	bool result = BackendCommImpl::Instance()->requestHostInitialInfos(m_hospitalMgr);
+	if (result)
+	{
+		handlerHospitalInfos();
+	}
+	else
+	{
+		showInitializationError(L"There is error during get the hospiatal information");
+	}
 }
 
 
@@ -409,48 +272,47 @@ void InitializationUI::Notify(TNotifyUI& msg)
 			LPCTSTR ldepartment_str = m_department_combo->GetText();
 			LPCTSTR lequipment_str = m_equipment_combo->GetText();
 			string equipment_str = StringUtil::WStringToString(lequipment_str);
-			vector<Hospital*> hospitals = m_hospitalMgr->getHospitals();
-			vector<Department*> departments = m_hospitalMgr->getDepartments();
-			vector<Equipment*> equipments = m_hospitalMgr->getEquipments();
+			vector<Hospital> &hospitals = m_hospitalMgr.getHospitals();
+			vector<Department> &departments = m_hospitalMgr.getDepartments();
+			vector<Equipment> &equipments = m_hospitalMgr.getEquipments();
 			string hospital_id="";
 			string department_id = "";
 			string equipment_id = "";
 			for (int i = 0; i < hospitals.size(); i++)
 			{
-				if (hospitals[i]->getCNName() == lhospital_str)
+				if (hospitals[i].getCNName() == lhospital_str)
 				{
-					hospital_id = to_string(hospitals[i]->getId());
-					CString hospitalCStr = CString(hospital_id.c_str());
-					writeRegKey(HOSPITAL_ID, hospitalCStr, APP_REG_DIR);
-					writeRegKey(HOSPITAL_NAME, lhospital_str, APP_REG_DIR);
-					//CAGConfig::GetInstance()->SetHospitalId(hospitalCStr);
-					//CAGConfig::GetInstance()->SetHospitalName(lhospital_str);
+					hospital_id = to_string(hospitals[i].getId());
+					//CString hospitalCStr = CString(hospital_id.c_str());
+					RegConfig::Instance()->setHospitalId(hospital_id);
+					//string hospname = StringUtil::wstring2utf8string(lhospital_str);
+					RegConfig::Instance()->setHospitalName(lhospital_str);
+					
 					break;
 				}
 			}
 			for (int i = 0; i < departments.size(); i++)
 			{
-				if (departments[i]->getCNName() == ldepartment_str)
+				if (departments[i].getCNName() == ldepartment_str)
 				{
-					department_id = to_string(departments[i]->getId());
+					department_id = to_string(departments[i].getId());
 					CString departmentCStr = CString(department_id.c_str());
-					writeRegKey(DEPARTMENT_ID, departmentCStr, APP_REG_DIR);
-					writeRegKey(DEPARTMENT_NAME, ldepartment_str, APP_REG_DIR);
-					//CAGConfig::GetInstance()->SetDepartmentId(departmentCStr);
-					//CAGConfig::GetInstance()->SetDepartmentName(ldepartment_str);
+					RegConfig::Instance()->setDepartmentId(department_id);
+					//string departname = StringUtil::wstring2utf8string(ldepartment_str);
+					RegConfig::Instance()->setDepartmentName(ldepartment_str);
 					break;
 				}
 			}
 			for (int i = 0; i < equipments.size(); i++)
 			{
-				if (equipments[i]->getName() == equipment_str)
+				if (equipments[i].getName() == equipment_str)
 				{
-					equipment_id = to_string(equipments[i]->getId());
+					equipment_id = to_string(equipments[i].getId());
+
 					CString equipmentCStr = CString(equipment_id.c_str());
-					writeRegKey(EQUIPMENT_ID, equipmentCStr, APP_REG_DIR);
-					writeRegKey(EQUIPMENT_NAME, CString(equipments[i]->getName().c_str()), APP_REG_DIR);
-					//CAGConfig::GetInstance()->SetEquipmentId(equipmentCStr);
-					//CAGConfig::GetInstance()->SetEquipmentName(CString(equipments[i]->getName().c_str()));
+					RegConfig::Instance()->setEquipmentId(equipment_id);
+					
+					RegConfig::Instance()->setEquipmentTypeName(StringUtil::utf8string2wstring(equipment_str));
 					break;
 				}
 			}

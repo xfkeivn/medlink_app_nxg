@@ -24,7 +24,7 @@ public:
 	void CheckNetwork();
 	void UpdateConfig(bool loginResult);
 	ClientLoginUIMgr* GetInitAuthLoginUIMgr();
-	void handleHttpLoginRes(string rsp);
+
 
 	virtual void onLogout() {};
 	virtual void onZoomIdentityExpired() {};

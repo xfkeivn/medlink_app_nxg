@@ -6,7 +6,7 @@
 #include "AGDesktopCaptureDlg.h"
 #include "ReconnectingUI.h"
 #include "ChatDlg.h"
-#include "CDrawLayerDlg.h"
+#include "MessageProtocal.h"
 #include "AGConfig.h"
 // CVideoDlg 对话框
 #include "AgoraRTMInstance.h"
@@ -15,6 +15,8 @@
 #include <cmath>
 #include <queue>
 #include <mmsystem.h>
+#include "CVideoSourceManagerDlg.h"
+#include "VideoSourceMgr.h"
 using namespace std;
 typedef enum
 {
@@ -52,15 +54,10 @@ public:
 //		WHITEBOARD_GUEST
 //	};
 
-	HWND GetRemoteVideoWnd(int nIndex);
-	HWND GetLocalVideoWnd() { return m_wndLocal.GetSafeHwnd(); };
 
-	void SetLocalVideoWndResoluation(UINT w, UINT h) {
-		this->m_wndLocal.SetVideoResolution(w, h);
-	}
-	void SetRemoteVideoWndResoluation(int index,UINT w, UINT h) {
-		this->m_wndVideo[index].SetVideoResolution(w, h);
-	}
+	CWnd* GetLocalVideoWnd();
+	
+	void SetLocalVideoWndResoluation(int,int);
 
 	void RebindVideoWnd();
 
@@ -69,7 +66,10 @@ public:
 	void setAgoraMediaSourceDlgHWND(HWND hwnd);
 	void handleLeftOne(bool dropped, UINT uid);
 	UserStatus getParticipantStatus(UINT uid);
+	void startVideoManager(bool isHost);
+	void stopVideoManager();
 
+	void onShowInfoControlView(bool show = true);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -87,8 +87,8 @@ protected:
     afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg LRESULT OnShowModeChanged(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowBig(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnWindowShareStart(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnDesktopShareStart(WPARAM wParam, LPARAM lParam);
+	//afx_msg LRESULT OnWindowShareStart(WPARAM wParam, LPARAM lParam);
+	//afx_msg LRESULT OnDesktopShareStart(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEscapeKey(WPARAM wParam, LPARAM lParam);
 
 	afx_msg void OnBnClickedBtnmin();
@@ -115,8 +115,8 @@ protected:
 	//afx_msg void OnBnClickedScreenshare();
 	//afx_msg void OnBnClickedWindowshare();
 
-	afx_msg void OnBnClickedHostMode();
-	afx_msg void OnBnClickedGuestMode();
+	//afx_msg void OnBnClickedHostMode();
+	//afx_msg void OnBnClickedGuestMode();
 	// 用于处理引擎的回调消息
 	afx_msg LRESULT OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
@@ -132,7 +132,7 @@ protected:
 
 	afx_msg LRESULT OnStartRecordingService(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStopRecordingService(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnApiCallExecuted(WPARAM wParam, LPARAM lParam);
+	//afx_msg LRESULT OnApiCallExecuted(WPARAM wParam, LPARAM lParam);
 	
     //afx_msg LRESULT OnStreamMessage(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnEIDAudioQuality(WPARAM wParam, LPARAM lParam);
@@ -163,16 +163,10 @@ protected:
 
 	void InitCtrls();
 
-	void ShowVideo1();
-	void ShowVideo4();
-	void ShowMulti();
-
 	void ShowButtonsNormal();
 
 	void AdjustButtonsNormal(int cx, int cy);
-	void AdjustSizeVideo1(int cx, int cy);
-	void AdjustSizeVideo4(int cx, int cy);
-	void AdjustSizeVideoMulti(int cx, int cy);
+
 
 	void onStartAnnotation();
 	void onStopAnnotation();
@@ -182,8 +176,14 @@ protected:
 	static DWORD WINAPI threadTiming(LPVOID lpParamter);
 	void removeThread(UINT user_id);
 	void handleHostLeftMeetingResponse(string rsp);
+	
+	private:
+		void updateVideoArea();
+		void updateInfoControlViewArea();
 
 	private:
+
+
 	
 	int             pre_x = 0;
 	int             pre_y = 0;
@@ -206,34 +206,50 @@ protected:
 	CAGButton		m_btnEndCall;
 	//CAGButton		m_btnScrCap;
     CAGButton       m_btnSetup;
+
+	// NXG Control Button
+
 	CAGButton       m_btnRecording;
+	CAGButton       m_btnBackToNoInteractive;
+	CAGButton       m_btnRecordPlay;
+	CAGButton       m_btnRecordFreeze;
+	CAGButton       m_btnRecordNextFrame;
+	CAGButton       m_btnRecordPrevFrame;
+	CAGButton       m_btnRecordPause;
+
+
+	//show the layout 1,2,4
+	CAGButton       m_btnShowLayoutCtrlDlg;
+	//show the camera control
+	CAGButton       m_btnShowCameraCtrlDlg;
+
+
+	BOOL m_showInfoAndControlView = TRUE;
+
+
+
 
 	BOOL            m_bRemotingControling = FALSE;
-	
-
-
 	CAGButton		m_btnShow;
 
 	BOOL			m_bLastStat;
 	UINT			m_nScreenMode;
 	UINT			m_nBigShowedUID;
 	
-	CAGVideoWnd		m_wndLocal;
-	CAGVideoWnd		m_wndVideo[4];
 	CAGVideoWnd		*m_lpBigShowed;
 
-	CDeviceDlg		m_dlgDevice;
+	//CDeviceDlg		m_dlgDevice;
     //CChatDlg        m_dlgChat;
-	CDrawLayerDlg   m_DrawLayerDlg;
+	//CDrawLayerDlg   m_DrawLayerDlg;
 	ReconnectingUI*  m_reconnectingUI;
 	//BOOL			m_bShowParticipantWnd = false;
 	//ParticipantWnd  m_ParticipantWnd;
 	ParticipantsUI*  m_ParticipantsUI;
-	CAGScreenCaptureDlg		m_dlgScreenCapture;
-	CAGDesktopCaptureDlg	m_dlgDesktopCapture;
+	//CAGScreenCaptureDlg		m_dlgScreenCapture;
+	//CAGDesktopCaptureDlg	m_dlgDesktopCapture;
 
 	CRect			m_rcVideoArea;
-	CRect			m_rcChildVideoArea;
+
 
     CBitmap         m_bitMenuInfo;
     CBitmap         m_bitMenuDevice;
@@ -242,6 +258,8 @@ protected:
 	CImageList	    m_imgNetQuality;
 	int             m_networkQuality;
 	long            m_joinChannel_time;
+	VideoSourceMgr *pWndmgr = NULL;
+	CVideoSourceManagerDlg m_dlgVideoMgrContainer;
 
 
 private:	// data	
@@ -267,4 +285,8 @@ private:	// data
     BOOL            m_bShowInfo;
 	HWND            m_AgoraMedaiSourceDlg_hwnd;
 	int             m_client_meeting_id;
+	
+
+
+
 };

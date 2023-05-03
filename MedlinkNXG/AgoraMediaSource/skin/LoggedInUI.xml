@@ -1,61 +1,58 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Window bkcolor="#FF0F2B4B" caption="0,0,0,32">
-  <Font id="10" name="Arial" size="10" bold="false" italic="false" />
-  <Font id="11" name="Arial" size="11" bold="false" italic="false" />
-  <Font id="12" name="Arial" size="12" bold="false" italic="false" />
-  <Font id="13" name="Arial" size="13" bold="false" italic="false" />
-  <Font id="14" name="Arial" size="14" bold="false" italic="false" />
-  <Font id="15" name="Arial" size="15" bold="false" italic="false" />
-  <Font id="16" name="Arial" size="16" bold="false" italic="false" />
-  <Font id="17" name="Arial" size="17" bold="false" italic="false" />
-  <Font id="18" name="Arial" size="18" bold="false" italic="false" />
-  <Font id="19" name="Arial" size="19" bold="false" italic="false" />
-  <Font id="20" name="Arial" size="20" bold="false" italic="false" />
-  <Font id="21" name="Arial" size="21" bold="false" italic="false" />
-  <Font id="22" name="Arial" size="22" bold="false" italic="false" />
-  <Font id="23" name="Arial" size="23" bold="false" italic="false" />
-  <Font id="24" name="Arial" size="24" bold="false" italic="false" />
-  <Font id="25" name="Arial" size="25" bold="false" italic="false" />
-  <Font id="26" name="Arial" size="26" bold="false" italic="false" />
-  <Font id="27" name="Arial" size="27" bold="false" italic="false" />
-  <Font id="28" name="Arial" size="28" bold="false" italic="false" />
-  <Font id="29" name="Arial" size="29" bold="false" italic="false" />
-  <Font id="30" name="Arial" size="30" bold="false" italic="false" />
-  <Font id="31" name="Arial" size="31" bold="false" italic="false" />
-  <Font id="32" name="Arial" size="32" bold="false" italic="false" />
-  <Font id="33" name="Arial" size="33" bold="false" italic="false" />
-  <Font id="34" name="Arial" size="34" bold="false" italic="false" />
-  <Font id="35" name="Arial" size="35" bold="false" italic="false" />
-  <Font id="36" name="Arial" size="36" bold="false" italic="false" />
-  <Font id="37" name="Arial" size="37" bold="false" italic="false" />
-  <Font id="38" name="Arial" size="38" bold="false" italic="false" />
-  <Font id="39" name="Arial" size="39" bold="false" italic="false" />
-  <Font id="40" name="Arial" size="40" bold="false" italic="false" />
-  <!--<Default name="VScrollBar" value="button1normalimage=&quot;file='res\scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='res\scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='res\scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='res\scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='res\scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='res\scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='res\scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='res\scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='res\scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='res\scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='res\scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='res\scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='res\scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />-->
-  <Default name="VScrollBar" shared="true" value="button2normalimage=&quot;file='res\clients_scrollbar.bmp' source='0,96,48,144' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\clients_scrollbar.bmp' source='48,96,96,144' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,96,144,144' mask='#FFFF00FF'&quot; button1normalimage=&quot;file='res\clients_scrollbar.bmp' source='0,0,48,48' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\clients_scrollbar.bmp' source='48,0,96,48' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,0,144,48' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\clients_scrollbar.bmp' source='0,144,48,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\clients_scrollbar.bmp' source='48,144,96,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,144,144,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
-  <!--<Default name="VScrollBar" value="button1normalimage=&quot;file='res\down_48.png' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='res\up_48.png' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\thumb_normal.png' source='0,0,48,48' corner='2,2,2,2' &quot; thumbhotimage=&quot;file='res\thumb_hot.png' source='0,0,16,16' corner='2,2,2,2' &quot; thumbpushedimage=&quot;file='res\thumb_push.png' source='0,0,16,16' corner='2,2,2,2'&quot;" />-->
-  <HorizontalLayout bordersize="2,0,2,2" bordercolor="#FFBCBCBC" inset="0,0,1,1" >
-    <VerticalLayout name="left" bkcolor="#FF19375A">
-      <Label name ="contacts_label" text="Contacts" font="40" textcolor="#FFFFFFFF" align="left" />          
-      <List name ="clients_list" itembkcolor="#FF20436C" itemselectedbkcolor="#FF285384"  itemhotbkcolor="#FF285384" inset="0,0,10,0" childpadding="10" vscrollbar="true">
-      </List>
-    </VerticalLayout>
-    <VerticalLayout name="right" bkcolor="#FFFFFFFF">
-      <Control name="bsc_image_top" height="30"/>
-      <HorizontalLayout>
-        <Control />
-        <Control name="bsc_image" height="260" width="1172" bkimage="res='bsc_image.png' restype='ZPIMGRES'"/>
-        <Control name="bsc_image_right" width="30" />
-      </HorizontalLayout>
-      <HorizontalLayout >
-        <Control />
-        <Button  name="btn_startMeeting" width="920" height="168" normalimage="res='start_meeting_normal.png' restype='ZPIMGRES'"
-						hotimage="res='start_meeting_hot.png' restype='ZPIMGRES'"
-						pushedimage="res='start_meeting_push.png' restype='ZPIMGRES'"
-            disabledimage="res='start_meeting_disable.png' restype='ZPIMGRES'"/>
-        <Control />
-      </HorizontalLayout>
-      <Label name="version_label" align="right" textcolor="#A1A09A" font="24" />
-    </VerticalLayout>
-  </HorizontalLayout>
+	<Font id="10" name="Arial" />
+	<Font id="11" name="Arial" size="11" />
+	<Font id="12" name="Arial" size="12" />
+	<Font id="13" name="Arial" size="13" />
+	<Font id="14" name="Arial" size="14" />
+	<Font id="15" name="Arial" size="15" />
+	<Font id="16" name="Arial" size="16" />
+	<Font id="17" name="Arial" size="17" />
+	<Font id="18" name="Arial" size="18" />
+	<Font id="19" name="Arial" size="19" />
+	<Font id="20" name="Arial" size="20" />
+	<Font id="21" name="Arial" size="21" />
+	<Font id="22" name="Arial" size="22" />
+	<Font id="23" name="Arial" size="23" />
+	<Font id="24" name="Arial" size="24" />
+	<Font id="25" name="Arial" size="25" />
+	<Font id="26" name="Arial" size="26" />
+	<Font id="27" name="Arial" size="27" />
+	<Font id="28" name="Arial" size="28" />
+	<Font id="29" name="Arial" size="29" />
+	<Font id="30" name="Arial" size="30" />
+	<Font id="31" name="Arial" size="31" />
+	<Font id="32" name="Arial" size="32" />
+	<Font id="33" name="Arial" size="33" />
+	<Font id="34" name="Arial" size="34" />
+	<Font id="35" name="Arial" size="35" />
+	<Font id="36" name="Arial" size="36" />
+	<Font id="37" name="Arial" size="37" />
+	<Font id="38" name="Arial" size="38" />
+	<Font id="39" name="Arial" size="39" />
+	<Font id="40" name="Arial" size="40" />
+	<!--<Default name="VScrollBar" value="button1normalimage=&quot;file='res\scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='res\scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='res\scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='res\scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='res\scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='res\scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='res\scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='res\scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='res\scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='res\scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='res\scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='res\scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='res\scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />-->
+	<Default name="VScrollBar" shared="true" value="button2normalimage=&quot;file='res\clients_scrollbar.bmp' source='0,96,48,144' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='res\clients_scrollbar.bmp' source='48,96,96,144' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,96,144,144' mask='#FFFF00FF'&quot; button1normalimage=&quot;file='res\clients_scrollbar.bmp' source='0,0,48,48' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='res\clients_scrollbar.bmp' source='48,0,96,48' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,0,144,48' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\clients_scrollbar.bmp' source='0,144,48,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='res\clients_scrollbar.bmp' source='48,144,96,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='res\clients_scrollbar.bmp' source='96,144,144,192' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<!--<Default name="VScrollBar" value="button1normalimage=&quot;file='res\down_48.png' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='res\up_48.png' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='res\thumb_normal.png' source='0,0,48,48' corner='2,2,2,2' &quot; thumbhotimage=&quot;file='res\thumb_hot.png' source='0,0,16,16' corner='2,2,2,2' &quot; thumbpushedimage=&quot;file='res\thumb_push.png' source='0,0,16,16' corner='2,2,2,2'&quot;" />-->
+	<HorizontalLayout bordersize="2,0,2,2" bordercolor="#FFBCBCBC" inset="0,0,1,1">
+		<VerticalLayout name="left" bkcolor="#FF19375A">
+			<Label name="contacts_label" text="Contacts" font="40" textcolor="#FFFFFFFF" />
+			<List name="clients_list" itembkcolor="#FF20436C" itemselectedbkcolor="#FF285384" itemhotbkcolor="#FF285384" inset="0,0,10,0" childpadding="10" vscrollbar="true" />
+		</VerticalLayout>
+		<VerticalLayout name="right" bkcolor="#FFFFFFFF">
+			<Control name="bsc_image_top" height="30" />
+			<HorizontalLayout>
+				<Control />
+				<Control name="bsc_image" height="260" width="1172" bkimage="res='bsc_image.png' restype='ZPIMGRES'" />
+				<Control name="bsc_image_right" width="30" />
+			</HorizontalLayout>
+			<HorizontalLayout>
+				<Control />
+				<Button name="btn_startMeeting" width="920" height="168" normalimage="res='start_meeting_normal.png' restype='ZPIMGRES'" hotimage="res='start_meeting_hot.png' restype='ZPIMGRES'" pushedimage="res='start_meeting_push.png' restype='ZPIMGRES'" disabledimage="res='start_meeting_disable.png' restype='ZPIMGRES'" />
+				<Button name="btn_directStartMeeting" width="920" height="168" normalimage="res='start_meeting_normal.png' restype='ZPIMGRES'" hotimage="res='start_meeting_hot.png' restype='ZPIMGRES'" pushedimage="res='start_meeting_push.png' restype='ZPIMGRES'" disabledimage="res='start_meeting_disable.png' restype='ZPIMGRES'" />
+				<Control />
+			</HorizontalLayout>
+			<Label name="version_label" align="right" textcolor="#A1A09A" font="24" />
+		</VerticalLayout>
+	</HorizontalLayout>
 </Window>

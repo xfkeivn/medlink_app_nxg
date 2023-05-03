@@ -503,6 +503,8 @@ public:
     }
     /** Occurs when a voice or video stream URL address is added to the interactive live streaming.
 
+     @warning Agora will soon stop the service for injecting online media streams on the client. If you have not implemented this service, Agora recommends that you do not use it.
+
      @param rtcChannel IChannel
      @param url The URL address of the externally injected stream.
      @param uid User ID.
@@ -614,9 +616,7 @@ public:
      - If you want to join the same channel from different devices, ensure that the UIDs in all devices are different.
      - Ensure that the app ID you use to generate the token is the same with the app ID used when creating the `IRtcEngine` object.
 
-     @param token The token for authentication:
-     - In situations not requiring high security: You can use the temporary token generated at Console. For details, see [Get a temporary token](https://docs.agora.io/en/Agora%20Platform/token?platform=All%20Platforms#generate-a-token).
-     - In situations requiring high security: Set it as the token generated at your server. For details, see [Generate a token](https://docs.agora.io/en/Interactive%20Broadcast/token_server?platform=All%20Platforms).
+     @param token The token generated at your server. For details, see [Generate a token](https://docs.agora.io/en/Interactive%20Broadcast/token_server?platform=Windows).
      @param info (Optional) Additional information about the channel. This parameter can be set as null. Other users in the channel do not receive this information.
      @param uid The user ID. A 32-bit unsigned integer with a value ranging from 1 to (232-1). This parameter must be unique. If `uid` is not assigned (or set as `0`), the SDK assigns a `uid` and reports it in the \ref agora::rtc::IChannelEventHandler::onJoinChannelSuccess "onJoinChannelSuccess" callback. The app must maintain this user ID.
      @param options The channel media options: \ref agora::rtc::ChannelMediaOptions::ChannelMediaOptions "ChannelMediaOptions"
@@ -628,7 +628,8 @@ public:
         - -3(ERR_NOT_READY): The SDK fails to be initialized. You can try re-initializing the SDK.
         - -5(ERR_REFUSED): The request is rejected. This may be caused by the following:
            - You have created an IChannel object with the same channel name.
-           - You have joined and published a stream in a channel created by the IChannel object.
+           - You have joined and published a stream in a channel created by the IChannel object. When you join a channel created by the IRtcEngine object, the SDK publishes the local audio and video streams to that channel by default. Because the SDK does not support publishing a local stream to more than one channel simultaneously, an error occurs in this occasion.
+        - -7(ERR_NOT_INITIALIZED): The SDK is not initialized before calling this method.
      */
     virtual int joinChannel(const char* token,
                             const char* info,
@@ -646,10 +647,8 @@ public:
      @note To ensure smooth communication, use the same parameter type to identify the user. For example, if a user joins the channel with a user ID, then ensure all the other users use the user ID too. The same applies to the user account.
      If a user joins the channel with the Agora Web SDK, ensure that the uid of the user is set to the same parameter type.
 
-     @param token The token generated at your server:
-     - For low-security requirements: You can use the temporary token generated at Console. For details, see [Get a temporary toke](https://docs.agora.io/en/Voice/token?platform=All%20Platforms#get-a-temporary-token).
-     - For high-security requirements: Set it as the token generated at your server. For details, see [Get a token](https://docs.agora.io/en/Voice/token?platform=All%20Platforms#get-a-token).
-     @param userAccount The user account. The maximum length of this parameter is 255 bytes. Ensure that you set this parameter and do not set it as null. Supported character scopes are:
+     @param token The token generated at your server. For details, see [Generate a token](https://docs.agora.io/en/Interactive%20Broadcast/token_server?platform=Windows).
+     @param userAccount The user account. The maximum length of this parameter is 255 bytes. Ensure that the user account is unique and do not set it as null. Supported character scopes are:
      - All lowercase English letters: a to z.
      - All uppercase English letters: A to Z.
      - All numeric characters: 0 to 9.
@@ -663,6 +662,7 @@ public:
         - #ERR_INVALID_ARGUMENT (-2)
         - #ERR_NOT_READY (-3)
         - #ERR_REFUSED (-5)
+        - #ERR_NOT_INITIALIZED (-7)
      */
     virtual int joinChannelWithUserAccount(const char* token,
                                            const char* userAccount,
@@ -807,11 +807,9 @@ public:
      *
      * In scenarios requiring high security, Agora recommends calling this method to enable the built-in encryption before joining a channel.
      *
-     * All users in the same channel must use the same encryption mode and encryption key. Once all users leave the channel, the encryption key of this channel is automatically cleared.
+     * All users in the same channel must use the same encryption mode and encryption key. After a user leaves the channel, the SDK automatically disables the built-in encryption. To enable the built-in encryption, call this method before the user joins the channel again.
      *
-     * @note
-     * - If you enable the built-in encryption, you cannot use the RTMP or RTMPS streaming function.
-     * - Agora supports four encryption modes. If you choose an encryption mode (excepting `SM4_128_ECB` mode), you need to add an external encryption library when integrating the Android and iOS SDK. See the advanced guide *Channel Encryption*.
+     * @note If you enable the built-in encryption, you cannot use the RTMP or RTMPS streaming function.
      *
      * @param enabled Whether to enable the built-in encryption:
      * - true: Enable the built-in encryption.
@@ -889,7 +887,7 @@ public:
      *
      * @note
      * - This method applies to the `LIVE_BROADCASTING` profile only.
-     * - The difference between this method and \ref IChannel::setClientRole(CLIENT_ROLE_TYPE) "setClientRole1" is that
+     * - The difference between this method and \ref IChannel::setClientRole(CLIENT_ROLE_TYPE) "setClientRole" [1/2] is that
      * this method can set the user level in addition to the user role.
      *  - The user role determines the permissions that the SDK grants to a user, such as permission to send local
      * streams, receive remote streams, and push streams to a CDN address.
@@ -933,7 +931,7 @@ public:
 
      @note
      - For this method to work, enable stereo panning for remote users by calling the \ref agora::rtc::IRtcEngine::enableSoundPositionIndication "enableSoundPositionIndication" method before joining a channel.
-     - This method requires hardware support. For the best sound positioning, we recommend using a stereo speaker.
+     - This method requires hardware support. For the best sound positioning, we recommend using a wired headset.
      - Ensure that you call this method after joining a channel.
 
      @param uid The ID of the remote user.
@@ -969,55 +967,66 @@ public:
      - < 0: Failure.
      */
     virtual int setRemoteRenderMode(uid_t userId, RENDER_MODE_TYPE renderMode, VIDEO_MIRROR_MODE_TYPE mirrorMode) = 0;
-    /** Sets whether to receive all remote audio streams by default.
-
-     You can call this method either before or after joining a channel. If you call `setDefaultMuteAllRemoteAudioStreams (true)` after joining a channel, the remote audio streams of all subsequent users are not received.
-
-     @note If you want to resume receiving the audio stream, call \ref agora::rtc::IChannel::muteRemoteAudioStream "muteRemoteAudioStream (false)",
-     and specify the ID of the remote user whose audio stream you want to receive.
-     To receive the audio streams of multiple remote users, call `muteRemoteAudioStream (false)` as many times.
-     Calling `setDefaultMuteAllRemoteAudioStreams (false)` resumes receiving the audio streams of subsequent users only.
-
-     @param mute Sets whether to receive/stop receiving all remote users' audio streams by default:
-     - true:  Stops receiving all remote users' audio streams by default.
-     - false: (Default) Receives all remote users' audio streams by default.
-
-     @return
-     - 0: Success.
-     - < 0: Failure.
+    /** Stops or resumes subscribing to the audio streams of all remote users by default.
+     *
+     * @deprecated This method is deprecated from v3.3.0.
+     *
+     *
+     * Call this method after joining a channel. After successfully calling this method, the
+     * local user stops or resumes subscribing to the audio streams of all subsequent users.
+     *
+     * @note If you need to resume subscribing to the audio streams of remote users in the
+     * channel after calling \ref IRtcEngine::setDefaultMuteAllRemoteAudioStreams "setDefaultMuteAllRemoteAudioStreams" (true), do the following:
+     * - If you need to resume subscribing to the audio stream of a specified user, call \ref IRtcEngine::muteRemoteAudioStream "muteRemoteAudioStream" (false), and specify the user ID.
+     * - If you need to resume subscribing to the audio streams of multiple remote users, call \ref IRtcEngine::muteRemoteAudioStream "muteRemoteAudioStream" (false) multiple times.
+     *
+     * @param mute Sets whether to stop subscribing to the audio streams of all remote users by default.
+     * - true: Stop subscribing to the audio streams of all remote users by default.
+     * - false: (Default) Resume subscribing to the audio streams of all remote users by default.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
      */
     virtual int setDefaultMuteAllRemoteAudioStreams(bool mute) = 0;
-    /** Sets whether to receive all remote video streams by default.
-
-     You can call this method either before or after joining a channel. If you
-     call `setDefaultMuteAllRemoteVideoStreams (true)` after joining a channel,
-     the remote video streams of all subsequent users are not received.
-
-     @note If you want to resume receiving the video stream, call
-     \ref agora::rtc::IChannel::muteRemoteVideoStream "muteRemoteVideoStream (false)",
-     and specify the ID of the remote user whose video stream you want to receive.
-     To receive the video streams of multiple remote users, call `muteRemoteVideoStream (false)`
-     as many times. Calling `setDefaultMuteAllRemoteVideoStreams (false)` resumes
-     receiving the video streams of subsequent users only.
-
-     @param mute Sets whether to receive/stop receiving all remote users' video streams by default:
-     - true: Stop receiving all remote users' video streams by default.
-     - false: (Default) Receive all remote users' video streams by default.
-
-     @return
-     - 0: Success.
-     - < 0: Failure.
+    /** Stops or resumes subscribing to the video streams of all remote users by default.
+     *
+     * @deprecated This method is deprecated from v3.3.0.
+     *
+     * Call this method after joining a channel. After successfully calling this method, the
+     * local user stops or resumes subscribing to the video streams of all subsequent users.
+     *
+     * @note If you need to resume subscribing to the video streams of remote users in the
+     * channel after calling \ref IChannel::setDefaultMuteAllRemoteVideoStreams "setDefaultMuteAllRemoteVideoStreams" (true), do the following:
+     * - If you need to resume subscribing to the video stream of a specified user, call \ref IChannel::muteRemoteVideoStream "muteRemoteVideoStream" (false), and specify the user ID.
+     * - If you need to resume subscribing to the video streams of multiple remote users, call \ref IChannel::muteRemoteVideoStream "muteRemoteVideoStream" (false) multiple times.
+     *
+     * @param mute Sets whether to stop subscribing to the video streams of all remote users by default.
+     * - true: Stop subscribing to the video streams of all remote users by default.
+     * - false: (Default) Resume subscribing to the video streams of all remote users by default.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
      */
     virtual int setDefaultMuteAllRemoteVideoStreams(bool mute) = 0;
-    /** Stops/Resumes receiving all remote users' audio streams.
-
-     @param mute Sets whether to receive/stop receiving all remote users' audio streams.
-     - true: Stops receiving all remote users' audio streams.
-     - false: (Default) Receives all remote users' audio streams.
-
-     @return
-     - 0: Success.
-     - < 0: Failure.
+    /**
+     * Stops or resumes subscribing to the audio streams of all remote users.
+     *
+     * As of v3.3.0, after successfully calling this method, the local user stops or resumes
+     * subscribing to the audio streams of all remote users, including all subsequent users.
+     *
+     * @note
+     * - Call this method after joining a channel.
+     * - See recommended settings in *Set the Subscribing State*.
+     *
+     * @param mute Sets whether to stop subscribing to the audio streams of all remote users.
+     * - true: Stop subscribing to the audio streams of all remote users.
+     * - false: (Default) Resume subscribing to the audio streams of all remote users.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
      */
     virtual int muteAllRemoteAudioStreams(bool mute) = 0;
     /** Adjust the playback signal volume of the specified remote user.
@@ -1041,56 +1050,57 @@ public:
 	 - < 0: Failure.
      */
     virtual int adjustUserPlaybackSignalVolume(uid_t userId, int volume) = 0;
-    /** Stops/Resumes receiving a specified remote user's audio stream.
-
-	 @note
-     - You can call this method either before or after joining a channel. If you call it before joining a channel,
-     you need to maintain the `uid` of the remote user on your app level.
-     - If you called the \ref agora::rtc::IChannel::muteAllRemoteAudioStreams "muteAllRemoteAudioStreams" method and set `mute` as `true` to stop
-     receiving all remote users' audio streams, call the `muteAllRemoteAudioStreams` method and set `mute` as `false` before calling this method.
-     The `muteAllRemoteAudioStreams` method sets all remote audio streams, while the `muteRemoteAudioStream` method sets a specified remote audio stream.
-
-	 @param userId The user ID of the specified remote user sending the audio.
-	 @param mute Sets whether to receive/stop receiving a specified remote user's audio stream:
-	 - true: Stops receiving the specified remote user's audio stream.
-	 - false: (Default) Receives the specified remote user's audio stream.
-
-	 @return
-	 - 0: Success.
-	 - < 0: Failure.
-
-	 */
+    /**
+     * Stops or resumes subscribing to the audio stream of a specified user.
+     *
+     * @note
+     * - Call this method after joining a channel.
+     * - See recommended settings in *Set the Subscribing State*.
+     *
+     * @param userId The user ID of the specified remote user.
+     * @param mute Sets whether to stop subscribing to the audio stream of a specified user.
+     * - true: Stop subscribing to the audio stream of a specified user.
+     * - false: (Default) Resume subscribing to the audio stream of a specified user.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
+     */
     virtual int muteRemoteAudioStream(uid_t userId, bool mute) = 0;
-    /** Stops/Resumes receiving all video stream from a specified remote user.
-
-     @note You can call this method either before or after joining a channel.
-
-     @param mute Sets whether to receive/stop receiving all remote users' video streams:
-     - true: Stop receiving all remote users' video streams.
-     - false: (Default) Receive all remote users' video streams.
-
-     @return
-     - 0: Success.
-     - < 0: Failure.
+    /**
+     * Stops or resumes subscribing to the video streams of all remote users.
+     *
+     * As of v3.3.0, after successfully calling this method, the local user stops or resumes
+     * subscribing to the video streams of all remote users, including all subsequent users.
+     *
+     * @note
+     * - Call this method after joining a channel.
+     * - See recommended settings in *Set the Subscribing State*.
+     *
+     * @param mute Sets whether to stop subscribing to the video streams of all remote users.
+     * - true: Stop subscribing to the video streams of all remote users.
+     * - false: (Default) Resume subscribing to the video streams of all remote users.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
      */
     virtual int muteAllRemoteVideoStreams(bool mute) = 0;
-    /** Stops/Resumes receiving the video stream from a specified remote user.
-
-     @note
-     - You can call this method either before or after joining a channel. If you call it before joining a channel, you
-     need to maintain the `uid` of the remote user on your app level.
-     - If you called the \ref agora::rtc::IChannel::muteAllRemoteVideoStreams "muteAllRemoteVideoStreams" method and
-     set `mute` as `true` to stop receiving all remote video streams, call the `muteAllRemoteVideoStreams` method and
-     set `mute` as `false` before calling this method.
-
-     @param userId The user ID of the specified remote user.
-     @param mute Sets whether to stop/resume receiving the video stream from a specified remote user:
-     - true: Stop receiving the specified remote user's video stream.
-     - false: (Default) Receive the specified remote user's video stream.
-
-     @return
-     - 0: Success.
-     - < 0: Failure.
+    /**
+     * Stops or resumes subscribing to the video stream of a specified user.
+     *
+     * @note
+     * - Call this method after joining a channel.
+     * - See recommended settings in *Set the Subscribing State*.
+     *
+     * @param userId The user ID of the specified remote user.
+     * @param mute Sets whether to stop subscribing to the video stream of a specified user.
+     * - true: Stop subscribing to the video stream of a specified user.
+     * - false: (Default) Resume subscribing to the video stream of a specified user.
+     *
+     * @return
+     * - 0: Success.
+     * - < 0: Failure.
      */
     virtual int muteRemoteVideoStream(uid_t userId, bool mute) = 0;
     /** Sets the stream type of the remote video.
@@ -1108,6 +1118,11 @@ public:
      stream is set, the system automatically sets the resolution, frame rate, and bitrate of the low-video stream.
 
      The method result returns in the \ref agora::rtc::IRtcEngineEventHandler::onApiCallExecuted "onApiCallExecuted" callback.
+
+     @note You can call this method either before or after joining a channel. If you call both
+     \ref IChannel::setRemoteVideoStreamType "setRemoteVideoStreamType" and
+     \ref IChannel::setRemoteDefaultVideoStreamType "setRemoteDefaultVideoStreamType", the SDK applies the settings in
+     the \ref IChannel::setRemoteVideoStreamType "setRemoteVideoStreamType" method.
 
      @param userId The ID of the remote user sending the video stream.
      @param streamType  Sets the video-stream type. See #REMOTE_VIDEO_STREAM_TYPE.
@@ -1131,6 +1146,11 @@ public:
 
      The method result returns in the \ref agora::rtc::IRtcEngineEventHandler::onApiCallExecuted "onApiCallExecuted" callback.
 
+     @note You can call this method either before or after joining a channel. If you call both
+     \ref IChannel::setRemoteVideoStreamType "setRemoteVideoStreamType" and
+     \ref IChannel::setRemoteDefaultVideoStreamType "setRemoteDefaultVideoStreamType", the SDK applies the settings in
+     the \ref IChannel::setRemoteVideoStreamType "setRemoteVideoStreamType" method.
+
      @param streamType Sets the default video-stream type. See #REMOTE_VIDEO_STREAM_TYPE.
 
      @return
@@ -1140,10 +1160,12 @@ public:
     virtual int setRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE streamType) = 0;
     /** Creates a data stream.
 
+    @deprecated This method is deprecated from v3.3.0. Use the \ref IChannel::createDataStream(int* streamId, DataStreamConfig& config) "createDataStream" [2/2] method instead.
+
      Each user can create up to five data streams during the lifecycle of the IChannel.
 
      @note
-     - Set both the `reliable` and `ordered` parameters to `true` or `false`. Do not set one as `true` and the other as `false`.
+     - Do not set `reliable` as `true` while setting `ordered` as `false`.
      - Ensure that you call this method after joining a channel.
 
      @param[out] streamId The ID of the created data stream.
@@ -1162,15 +1184,20 @@ public:
      */
     virtual int createDataStream(int* streamId, bool reliable, bool ordered) = 0;
     /** Creates a data stream.
-
-     Each user can create up to five data streams during the lifecycle of the IChannel.
-
-     @param streamId The ID of the created data stream.
-     @param config  The config of data stream.
-
-     @return
-     - Returns 0: Success.
-     - < 0: Failure.
+     *
+     * @since v3.3.0
+     *
+     * Each user can create up to five data streams in a single channel.
+     *
+     * This method does not support data reliability. If the receiver receives a data packet five
+     * seconds or more after it was sent, the SDK directly discards the data.
+     *
+     * @param[out] streamId The ID of the created data stream.
+     * @param config The configurations for the data stream: DataStreamConfig.
+     *
+     * @return
+     * - 0: Creates the data stream successfully.
+     * - < 0: Fails to create the data stream.
      */
     virtual int createDataStream(int* streamId, DataStreamConfig& config) = 0;
     /** Sends data stream messages to all users in a channel.
@@ -1275,6 +1302,8 @@ public:
     - The remote client:
       - \ref agora::rtc::IChannelEventHandler::onUserJoined "onUserJoined" (uid: 666), if the method call is successful and the online media stream is injected into the channel.
 
+     @warning Agora will soon stop the service for injecting online media streams on the client. If you have not implemented this service, Agora recommends that you do not use it.
+
      @note
      - Ensure that you enable the RTMP Converter service before using this function. See Prerequisites in the advanced guide *Push Streams to CDN*.
      - This method applies to the Native SDK v2.4.1 and later.
@@ -1299,6 +1328,8 @@ public:
     /** Removes the voice or video stream URL address from a live streaming.
 
      This method removes the URL address (added by the \ref IChannel::addInjectStreamUrl "addInjectStreamUrl" method) from the live streaming.
+
+     @warning Agora will soon stop the service for injecting online media streams on the client. If you have not implemented this service, Agora recommends that you do not use it.
 
      @note If this method is called successfully, the SDK triggers the \ref IChannelEventHandler::onUserOffline "onUserOffline" callback and returns a stream uid of 666.
 
@@ -1392,7 +1423,7 @@ public:
      * \ref agora::rtc::IChannelEventHandler::onChannelMediaRelayStateChanged
      *  "onChannelMediaRelayStateChanged" callback with the
      * #RELAY_ERROR_SERVER_NO_RESPONSE (2) or
-     * #RELAY_ERROR_SERVER_CONNECTION_LOST (8) state code. You can leave the
+     * #RELAY_ERROR_SERVER_CONNECTION_LOST (8) error code. You can leave the
      * channel by calling the \ref leaveChannel() "leaveChannel" method, and
      * the media stream relay automatically stops.
      *
@@ -1462,6 +1493,7 @@ public:
      * @return
      * - 0: Success.
      * - < 0: Failure.
+     *    - -158 (ERR_MODULE_SUPER_RESOLUTION_NOT_FOUND): You have not integrated the dynamic library for the super-resolution algorithm.
      */
     virtual int enableRemoteSuperResolution(uid_t userId, bool enable) = 0;
     /// @endcond

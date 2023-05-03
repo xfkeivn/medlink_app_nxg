@@ -300,7 +300,7 @@ enum ERROR_CODE_TYPE
     /** 11: The request is canceled. This is for internal SDK use only, and it does not return to the application through any method or callback.
      */
     ERR_CANCELED = 11,
-    /** 12: The method is called too often. This is for internal SDK use only, and it does not return to the application through any method or callback.
+    /** 12: The method is called too often.
      */
     ERR_TOO_OFTEN = 12,
     /** 13: The SDK fails to bind to the network socket. This is for internal SDK use only, and it does not return to the application through any method or callback.
@@ -440,14 +440,20 @@ enum ERROR_CODE_TYPE
     /** 156: The format of the RTMP or RTMPS stream URL is not supported. Check whether the URL format is correct.
      */
     ERR_PUBLISH_STREAM_FORMAT_NOT_SUPPORTED = 156,
-  
-    /** 157: The App lack necessary library file. Check whether the dynamic library is loaded.
+    /** 157: The necessary dynamical library is not integrated. For example, if you call
+     * the \ref agora::rtc::IRtcEngine::enableDeepLearningDenoise "enableDeepLearningDenoise" but do not integrate the dynamical
+     * library for the deep-learning noise reduction into your project, the SDK reports this error code.
+     *
      */
     ERR_MODULE_NOT_FOUND = 157,
-
-    /** 158: The App lack necessary library file. Check whether the dynamic library is loaded.
+    /// @cond
+    /** 158: The dynamical library for the super-resolution algorithm is not integrated.
+     * When you call the \ref agora::rtc::IRtcEngine::enableRemoteSuperResolution "enableRemoteSuperResolution" method but
+     * do not integrate the dynamical library for the super-resolution algorithm
+     * into your project, the SDK reports this error code.
      */
     ERR_MODULE_SUPER_RESOLUTION_NOT_FOUND = 158,
+    /// @endcond
 
     //signaling: 400~600
     ERR_LOGOUT_OTHER = 400,  //
@@ -735,7 +741,7 @@ enum ERROR_CODE_TYPE
     ERR_VCM_ENCODER_SET_ERROR = 1603,
 };
 
-    /** Output log filter level. */
+/** Output log filter level. */
 enum LOG_FILTER_TYPE
 {
 /** 0: Do not output any log information. */
@@ -758,20 +764,22 @@ enum LOG_FILTER_TYPE
     LOG_FILTER_MASK = 0x80f,
     /// @endcond
 };
-
+/** The output log level of the SDK.
+ *
+ * @since v3.3.0
+ */
 enum class LOG_LEVEL {
-    /** 0: Do not output any log information. */
+  /** 0: Do not output any log. */
   LOG_LEVEL_NONE = 0x0000,
-  /** 0x000f: Output CRITICAL, ERROR, WARNING, and INFO level log information.
-   We recommend setting your log filter as this level.
+  /** 0x0001: (Default) Output logs of the FATAL, ERROR, WARN and INFO level. We recommend setting your log filter as this level.
    */
   LOG_LEVEL_INFO = 0x0001,
-  /** 0x000e: Outputs CRITICAL, ERROR, and WARNING level log information.
+  /** 0x0002: Output logs of the FATAL, ERROR and WARN level.
    */
   LOG_LEVEL_WARN = 0x0002,
-  /** 0x000c: Outputs CRITICAL and ERROR level log information. */
+  /** 0x0004: Output logs of the FATAL and ERROR level.  */
   LOG_LEVEL_ERROR = 0x0004,
-  /** 0x0008: Outputs CRITICAL level log information. */
+  /** 0x0008: Output logs of the FATAL level.  */
   LOG_LEVEL_FATAL = 0x0008,
 };
 } // namespace agora

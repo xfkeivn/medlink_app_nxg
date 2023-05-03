@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HostDUIMgr.h"
-
+#include "ConfigCenter.h"
 bool checkNetworkStatus()
 {
 	DWORD   flag;
@@ -39,7 +39,8 @@ void DUIMgr::onShowLoggedInUI()
 	loggedIn_ui = new LoggedInUI(m_hwndParent, string(strChannelName));
 	loggedIn_ui->Create(m_hwndParent, _T("MedLink"), UI_WNDSTYLE_CHILD, WS_EX_WINDOWEDGE | WS_EX_ACCEPTFILES);
 	loggedIn_ui->ShowWindow(true);
-	updateCOMPortandDisableCamera();
+	
+	//updateCOMPortandDisableCamera();
 }
 
 void DUIMgr::onSwitchToLoggedInUI()
@@ -227,8 +228,8 @@ void DUIMgr::updateCOMPortandDisableCamera()
 	CString ComPort = L"";
 	vector<CString> comdevice_names = CAGConfig::GetInstance()->GetCOMDeviceName();
 	vector<CString> excludedCameraNames = CAGConfig::GetInstance()->GetExcludedCameraNames();
-	CString equipment = readRegKey(EQUIPMENT_NAME, APP_REG_DIR);
-	BOOL isRCEnable = CString2BOOL(readRegKey(RCENABLE, APP_REG_DIR));
+	CString equipment = CString( RegConfig::Instance()->getEquipmentTypeName().c_str());
+	BOOL isRCEnable = RegConfig::Instance()->getRCEnable();
 	int pictureDivider = CAGConfig::GetInstance()->GetPictureDivider();
 	bool updateDeviceCom = true;
 	if (equipment.MakeUpper() == _T("SPYGLASS"))

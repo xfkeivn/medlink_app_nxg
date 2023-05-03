@@ -120,7 +120,7 @@ IMPLEMENT_DYNAMIC(CAGVideoWnd, CWnd)
 CAGVideoWnd::CAGVideoWnd()
 : m_nUID(0)
 , m_crBackColor(RGB(0x58, 0x58, 0x58))
-, m_bShowVideoInfo(FALSE)
+, m_bShowVideoInfo(TRUE)
 , m_bBigShow(FALSE)
 , m_bBackground(FALSE)
 {

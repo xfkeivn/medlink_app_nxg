@@ -1,26 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="CDrawLayerDlg.cpp" />
     <ClCompile Include="commonFun.cpp" />
     <ClCompile Include="CTipDlg.cpp" />
     <ClCompile Include="display_cc_ui.cpp" />
-    <ClCompile Include="DskcapsetDlg.cpp" />
-    <ClCompile Include="ChatDlg.cpp" />
-    <ClCompile Include="DeviceDlg.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="LanguageSet.cpp" />
     <ClCompile Include="LogoDlg.cpp" />
     <ClCompile Include="MessageProtocal.cpp" />
     <ClCompile Include="ParticipantsUI.cpp" />
     <ClCompile Include="ParticipantWnd.cpp" />
-    <ClCompile Include="SetupDlg.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="string_util.cpp" />
     <ClCompile Include="UIFriends.cpp" />
     <ClCompile Include="UIListCommonDefine.cpp" />
     <ClCompile Include="VideoDlg.cpp" />
-    <ClCompile Include="video_preprocessing_plugin.cpp" />
     <ClCompile Include="log_util.cpp" />
     <ClCompile Include="clients_manager.cpp">
       <Filter>Host</Filter>
@@ -38,9 +32,6 @@
       <Filter>Host</Filter>
     </ClCompile>
     <ClCompile Include="HardDriveSerialNumer.cpp">
-      <Filter>Host</Filter>
-    </ClCompile>
-    <ClCompile Include="HospitalsInfo.cpp">
       <Filter>Host</Filter>
     </ClCompile>
     <ClCompile Include="uuid.cpp">
@@ -142,32 +133,71 @@
     <ClCompile Include="AGVideoWnd.cpp">
       <Filter>Agora</Filter>
     </ClCompile>
+    <ClCompile Include="DskcapsetDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="SetupDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatDlg.cpp">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\CConfig.cpp" />
+    <ClCompile Include="..\nxg\AGDShowVideoCapture.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\AgVideoBuffer.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\AGVideoWndNXG.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\capture-filter.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\CircleBuffer.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\DShowHelper.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\FramePusherProxy.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\FrameRecorder.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\VideoSourceMgr.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\CVideoSourceManagerDlg.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\nxg\CAnnotationWnd.cpp">
+      <Filter>nxg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CColorStatic.h" />
-    <ClInclude Include="CDrawLayerDlg.h" />
     <ClInclude Include="commonFun.h" />
     <ClInclude Include="CTipDlg.h" />
     <ClInclude Include="display_cc_ui.h" />
-    <ClInclude Include="DskcapsetDlg.h" />
-    <ClInclude Include="ChatDlg.h" />
-    <ClInclude Include="DeviceDlg.h" />
     <ClInclude Include="FileIO.h" />
-    <ClInclude Include="IAGDShowDevice.h" />
     <ClInclude Include="LanguageSet.h" />
     <ClInclude Include="LogoDlg.h" />
     <ClInclude Include="MessageProtocal.h" />
     <ClInclude Include="ParticipantsUI.h" />
     <ClInclude Include="ParticipantWnd.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SetupDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="string_util.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UIFriends.hpp" />
     <ClInclude Include="UIListCommonDefine.hpp" />
     <ClInclude Include="VideoDlg.h" />
-    <ClInclude Include="video_preprocessing_plugin.h" />
     <ClInclude Include="log_util.h" />
     <ClInclude Include="clients_manager.h">
       <Filter>Host</Filter>
@@ -298,6 +328,64 @@
     <ClInclude Include="AGVideoWnd.h">
       <Filter>Agora</Filter>
     </ClInclude>
+    <ClInclude Include="DskcapsetDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatDlg.h">
+      <Filter>Agora\AgoraDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\CConfig.h" />
+    <ClInclude Include="..\nxg\framework.h" />
+    <ClInclude Include="..\nxg\Language.h" />
+    <ClInclude Include="..\nxg\targetver.h" />
+    <ClInclude Include="..\nxg\AGDShowVideoCapture.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\AgVideoBuffer.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\AGVideoWndNXG.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\capture-filter.hpp">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\CircleBuffer.hpp">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\CustomMessages.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\DShowHelper.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\FramePusherProxy.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\FrameRecorder.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\IVideoManagerConnector.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\ShareMem.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\VideoSourceMgr.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\CVideoSourceManagerDlg.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\nxg\CAnnotationWnd.h">
+      <Filter>nxg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="skin\group_individual_item.xml">
@@ -315,21 +403,6 @@
     <Xml Include="skin\LoggedInUI.xml">
       <Filter>Host\skin</Filter>
     </Xml>
-    <Xml Include="skin\mlink_incoming_call.xml">
-      <Filter>Client</Filter>
-    </Xml>
-    <Xml Include="skin\mlink_join_meeting.xml">
-      <Filter>Client</Filter>
-    </Xml>
-    <Xml Include="skin\mlink_login_frame.xml">
-      <Filter>Client</Filter>
-    </Xml>
-    <Xml Include="skin\participant_client.xml">
-      <Filter>Client</Filter>
-    </Xml>
-    <Xml Include="skin\participant_item_client.xml">
-      <Filter>Client</Filter>
-    </Xml>
     <Xml Include="skin\participant_host.xml">
       <Filter>Host\skin</Filter>
     </Xml>
@@ -339,22 +412,28 @@
     <Xml Include="skin\reconnectingUI.xml">
       <Filter>common</Filter>
     </Xml>
+    <Xml Include="skin\participant_item_client.xml">
+      <Filter>Client\skin</Filter>
+    </Xml>
+    <Xml Include="skin\participant_client.xml">
+      <Filter>Client\skin</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_login_frame.xml">
+      <Filter>Client\skin</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_join_meeting.xml">
+      <Filter>Client\skin</Filter>
+    </Xml>
+    <Xml Include="skin\mlink_incoming_call.xml">
+      <Filter>Client\skin</Filter>
+    </Xml>
     <Xml Include="skin\missed_call_ui.xml">
-      <Filter>Client</Filter>
+      <Filter>Client\skin</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AgoraMediaSource.ico">
       <Filter>Agora</Filter>
-    </Image>
-    <Image Include="res\8.bmp">
-      <Filter>images</Filter>
-    </Image>
-    <Image Include="res\9.bmp">
-      <Filter>images</Filter>
-    </Image>
-    <Image Include="res\10.bmp">
-      <Filter>images</Filter>
     </Image>
     <Image Include="res\accept.gif">
       <Filter>images</Filter>
@@ -722,10 +801,70 @@
     <Image Include="res\warning.bmp">
       <Filter>images</Filter>
     </Image>
-    <Image Include="res\录制.bmp">
+    <Image Include="res\play_record.jpg">
       <Filter>images</Filter>
     </Image>
-    <Image Include="res\设置.bmp">
+    <Image Include="res\play_record_pause.jpg">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\review_record_next.jpg">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\review_record_prev.jpg">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\short_recording.jpg">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode8_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode1_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode1_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode2_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode2_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode4_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode4_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode6_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode6_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode7_normal.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\winmode8_disable.png">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\play.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\pause.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\next.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\exit.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\prev.bmp">
+      <Filter>images</Filter>
+    </Image>
+    <Image Include="res\freezeframe.bmp">
       <Filter>images</Filter>
     </Image>
   </ItemGroup>
@@ -748,6 +887,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="..\nxg\medlinknxg.log" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Host">
@@ -788,6 +928,12 @@
     </Filter>
     <Filter Include="Agora\AgoraDlg">
       <UniqueIdentifier>{5ba270ea-cecb-48ba-976b-7a5491cbeabc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\skin">
+      <UniqueIdentifier>{15c56872-f9c0-449b-a264-e79709125208}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nxg">
+      <UniqueIdentifier>{8ecb6b69-1430-4cdc-8dfd-6bcac0e07bf8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
